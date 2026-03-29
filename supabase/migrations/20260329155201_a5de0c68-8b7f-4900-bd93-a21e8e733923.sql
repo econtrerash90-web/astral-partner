@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Users can insert own limits" ON public.daily_limits;
