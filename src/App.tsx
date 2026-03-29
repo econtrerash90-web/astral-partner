@@ -35,6 +35,7 @@ const AppRoutes = () => {
 
   return (
     <>
+      {user && <BetaBanner />}
       {user && <AppHeader />}
       <Routes>
         {/* Public routes */}
