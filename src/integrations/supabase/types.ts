@@ -280,6 +280,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_ascendant: { Args: { p_hour: number }; Returns: string }
+      calculate_moon_sign: { Args: { p_birth_date: string }; Returns: string }
+      calculate_zodiac_sign: {
+        Args: { p_day: number; p_month: number }
+        Returns: {
+          sign_element: string
+          sign_name: string
+          sign_planet: string
+          sign_symbol: string
+        }[]
+      }
       increment_reading_count: {
         Args: { p_date: string; p_type: string; p_user_id: string }
         Returns: undefined
