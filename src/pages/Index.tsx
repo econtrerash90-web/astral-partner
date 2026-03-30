@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Sparkles, BookOpen, Hash, Flame, Gem, Sun, Moon, ArrowUp, Heart, Briefcase, Activity, Palette, Clock, AlertTriangle, ChevronRight, RefreshCw, Layers, Crown, Feather, SquareAsterisk, Lock, Map } from "lucide-react";
+import { Star, Sparkles, BookOpen, Hash, Flame, Gem, Sun, Moon, ArrowUp, Heart, Briefcase, Activity, Palette, Clock, AlertTriangle, ChevronRight, RefreshCw, Layers, Crown, Feather, SquareAsterisk, Lock, Map, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -409,7 +409,7 @@ const Index = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 mb-3">
             <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
               <p className="section-label mb-1">Luna en</p>
               <p className="text-foreground font-display font-semibold">{chartData.moon_sign}</p>
@@ -419,6 +419,53 @@ const Index = () => {
               <p className="text-foreground font-display font-semibold">{chartData.ascendant}</p>
             </div>
           </div>
+
+          {/* Birth data */}
+          <div className="grid grid-cols-3 gap-2 mb-3">
+            <div className="p-2.5 rounded-lg bg-muted/10 border border-border/10 text-center">
+              <p className="text-muted-foreground text-[10px] font-body uppercase tracking-wider mb-0.5">Nacimiento</p>
+              <p className="text-foreground text-xs font-body font-medium">{chartData.birth_date}</p>
+            </div>
+            <div className="p-2.5 rounded-lg bg-muted/10 border border-border/10 text-center">
+              <p className="text-muted-foreground text-[10px] font-body uppercase tracking-wider mb-0.5">Hora</p>
+              <p className="text-foreground text-xs font-body font-medium">{chartData.birth_time}</p>
+            </div>
+            <div className="p-2.5 rounded-lg bg-muted/10 border border-border/10 text-center">
+              <p className="text-muted-foreground text-[10px] font-body uppercase tracking-wider mb-0.5">Lugar</p>
+              <p className="text-foreground text-xs font-body font-medium truncate">{chartData.birth_place}</p>
+            </div>
+          </div>
+
+          {/* Analysis - generated once, saved and displayed */}
+          {chartData.analysis && (
+            <div className="mt-4">
+              <button
+                onClick={() => setExpandedSection(expandedSection === "analysis" ? null : "analysis")}
+                className="w-full flex items-center justify-between p-3 rounded-xl bg-muted/10 border border-border/15 hover:bg-muted/20 transition-all"
+              >
+                <span className="text-sm font-body font-medium text-foreground/90 flex items-center gap-2">
+                  <Sparkles className="w-3.5 h-3.5 text-primary" />
+                  Puntos Clave de tu Carta
+                </span>
+                <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-300 ${expandedSection === "analysis" ? "rotate-180" : ""}`} />
+              </button>
+              <AnimatePresence>
+                {expandedSection === "analysis" && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="pt-3 px-1 text-foreground/80 text-sm font-body leading-relaxed">
+                      {formatAIText(chartData.analysis)}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
         </motion.div>
 
         <p className="text-center text-muted-foreground/30 text-[11px] mt-4 font-body">
