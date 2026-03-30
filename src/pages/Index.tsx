@@ -17,6 +17,7 @@ import {
   getAscendant,
   type AstralData,
 } from "@/lib/astral-calculations";
+import { formatAIText } from "@/lib/format-ai-text";
 
 interface DailyHoroscope {
   general: string;
