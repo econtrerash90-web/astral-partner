@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { User, Mail, BookOpen, TrendingUp, Lock, LogOut, Pencil, Calendar, Clock, MapPin, AlertTriangle, Loader2 } from "lucide-react";
+import { User, Mail, BookOpen, TrendingUp, Lock, LogOut, Pencil, Calendar, Clock, MapPin, AlertTriangle, Loader2, Download, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
@@ -27,7 +28,8 @@ interface ChartData {
 }
 
 const Profile = () => {
-  const { user, signOut, updatePassword } = useAuth();
+  const { user, signOut, updatePassword, session } = useAuth();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState<{ full_name: string; created_at: string } | null>(null);
   const [chart, setChart] = useState<ChartData | null>(null);
   const [stats, setStats] = useState({ entries: 0, predictions: 0 });
@@ -42,6 +44,12 @@ const Profile = () => {
   const [editPlace, setEditPlace] = useState("");
   const [saving, setSaving] = useState(false);
   const [confirmStep, setConfirmStep] = useState(false);
+
+  // Account management state
+  const [exporting, setExporting] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deleting, setDeleting] = useState(false);
 
   const loadData = async () => {
     if (!user) return;
@@ -230,16 +238,152 @@ const Profile = () => {
             </form>
           </motion.div>
 
+          {/* Data management (ARCO) */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+            className="glass-card p-5">
+            <h2 className="font-body text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">Mis Datos (Derechos ARCO)</h2>
+            <p className="text-muted-foreground text-xs font-body mb-4 leading-relaxed">
+              Conforme a la LFPDPPP, puedes acceder, rectificar, cancelar u oponerte al tratamiento de tus datos personales.
+            </p>
+            <div className="space-y-3">
+              <button
+                onClick={async () => {
+                  if (!session?.access_token) return;
+                  setExporting(true);
+                  try {
+                    const url = import.meta.env.VITE_SUPABASE_URL;
+                    const res = await fetch(`${url}/functions/v1/manage-account`, {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${session.access_token}`,
+                      },
+                      body: JSON.stringify({ action: "export" }),
+                    });
+                    if (!res.ok) throw new Error();
+                    const data = await res.json();
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+                    const a = document.createElement("a");
+                    a.href = URL.createObjectURL(blob);
+                    a.download = `astrelle-datos-${new Date().toISOString().slice(0, 10)}.json`;
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                    toast.success("Datos exportados exitosamente");
+                  } catch {
+                    toast.error("Error al exportar los datos");
+                  }
+                  setExporting(false);
+                }}
+                disabled={exporting}
+                className="w-full btn-glass flex items-center justify-center gap-2 py-2.5 text-sm"
+              >
+                {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                Exportar mis datos
+              </button>
+
+              <button
+                onClick={() => { setDeleteOpen(true); setDeleteConfirmText(""); }}
+                className="w-full btn-glass-destructive flex items-center justify-center gap-2 py-2.5 text-sm"
+              >
+                <Trash2 className="w-4 h-4" />
+                Eliminar mi cuenta y datos
+              </button>
+            </div>
+          </motion.div>
+
           {/* Logout */}
           <button
             onClick={signOut}
-            className="w-full btn-glass-destructive flex items-center justify-center gap-2"
+            className="w-full btn-glass flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground"
           >
             <LogOut className="w-4 h-4" />
             Cerrar Sesión
           </button>
         </div>
       </div>
+
+      {/* Delete Account Dialog */}
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <DialogContent className="bg-card border-border max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-display text-lg text-destructive flex items-center gap-2">
+              <Trash2 className="w-5 h-5" /> Eliminar Cuenta
+            </DialogTitle>
+            <DialogDescription className="font-body text-sm">
+              Esta acción es <strong>permanente e irreversible</strong>. Se eliminarán todos tus datos: carta astral, lecturas, diario, predicciones, fechas importantes y tu cuenta de usuario.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-3 space-y-4">
+            <div className="flex items-start gap-3 p-4 rounded-xl bg-destructive/10 border border-destructive/20">
+              <AlertTriangle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+              <div className="font-body text-sm text-foreground/90 space-y-1">
+                <p className="font-medium">Se eliminarán permanentemente:</p>
+                <ul className="text-xs text-muted-foreground list-disc pl-4 space-y-0.5">
+                  <li>Tu perfil y carta astral</li>
+                  <li>Todas las lecturas y predicciones</li>
+                  <li>Entradas del diario astral</li>
+                  <li>Fechas importantes guardadas</li>
+                  <li>Tu cuenta de usuario</li>
+                </ul>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-foreground/80 font-body text-sm mb-2 block">
+                Escribe <strong>"ELIMINAR"</strong> para confirmar:
+              </label>
+              <input
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                className="input-modern"
+                placeholder="ELIMINAR"
+              />
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <button
+              onClick={() => setDeleteOpen(false)}
+              className="btn-glass px-4 py-2 text-sm"
+              disabled={deleting}
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={async () => {
+                if (deleteConfirmText !== "ELIMINAR" || !session?.access_token) return;
+                setDeleting(true);
+                try {
+                  const url = import.meta.env.VITE_SUPABASE_URL;
+                  const res = await fetch(`${url}/functions/v1/manage-account`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${session.access_token}`,
+                    },
+                    body: JSON.stringify({ action: "delete" }),
+                  });
+                  if (!res.ok) throw new Error();
+                  toast.success("Tu cuenta ha sido eliminada. Hasta pronto. ✨");
+                  setDeleteOpen(false);
+                  await signOut();
+                  navigate("/");
+                } catch {
+                  toast.error("Error al eliminar la cuenta. Intenta de nuevo.");
+                }
+                setDeleting(false);
+              }}
+              disabled={deleting || deleteConfirmText !== "ELIMINAR"}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 px-4 py-2 text-sm rounded-xl font-body font-medium transition-colors disabled:opacity-50 flex items-center gap-2"
+            >
+              {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+              {deleting ? "Eliminando..." : "Eliminar permanentemente"}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Chart Dialog */}
       <Dialog open={editOpen} onOpenChange={(open) => { setEditOpen(open); if (!open) setConfirmStep(false); }}>

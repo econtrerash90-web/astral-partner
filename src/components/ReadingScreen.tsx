@@ -271,6 +271,13 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
         {/* Result */}
         {result && !isRevealing ? (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            {/* Disclaimer */}
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/20 border border-border/20">
+              <span className="text-xs">ⓘ</span>
+              <p className="text-muted-foreground text-[11px] font-body">
+                Interpretación con fines de entretenimiento y reflexión personal. No constituye asesoría profesional.
+              </p>
+            </div>
             {/* Tarot: 3 cards */}
             {type === "tarot" && result.cards && (
               <div className="space-y-3">

@@ -14,6 +14,9 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [acceptSensitiveData, setAcceptSensitiveData] = useState(false);
+  const [acceptMarketing, setAcceptMarketing] = useState(false);
 
   if (!loading && user) return <Navigate to="/" replace />;
 
@@ -22,6 +25,8 @@ const Register = () => {
     if (!fullName || !email || !password || !confirmPassword) return toast.error("Completa todos los campos");
     if (password.length < 8) return toast.error("La contraseña debe tener al menos 8 caracteres");
     if (password !== confirmPassword) return toast.error("Las contraseñas no coinciden");
+    if (!acceptTerms) return toast.error("Debes aceptar los Términos y Condiciones");
+    if (!acceptSensitiveData) return toast.error("Debes aceptar el tratamiento de datos sensibles para usar Astrelle");
 
     setIsSubmitting(true);
     const { error } = await signUp(email, password, fullName);
@@ -74,10 +79,57 @@ const Register = () => {
             </div>
           ))}
 
+          {/* Consent checkboxes */}
+          <div className="space-y-3 pt-2">
+            <label className="flex items-start gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={acceptTerms}
+                onChange={(e) => setAcceptTerms(e.target.checked)}
+                className="mt-1 rounded border-border/30 bg-muted/20 text-primary focus:ring-primary/30"
+              />
+              <span className="text-foreground/70 text-xs font-body leading-relaxed">
+                He leído y acepto los{" "}
+                <Link to="/terminos" className="text-primary hover:underline" target="_blank">Términos y Condiciones</Link>,
+                el{" "}
+                <Link to="/privacidad" className="text-primary hover:underline" target="_blank">Aviso de Privacidad</Link>
+                {" "}y la{" "}
+                <Link to="/reembolso" className="text-primary hover:underline" target="_blank">Política de Reembolso</Link>.
+                <span className="text-destructive"> *</span>
+              </span>
+            </label>
+
+            <label className="flex items-start gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={acceptSensitiveData}
+                onChange={(e) => setAcceptSensitiveData(e.target.checked)}
+                className="mt-1 rounded border-border/30 bg-muted/20 text-primary focus:ring-primary/30"
+              />
+              <span className="text-foreground/70 text-xs font-body leading-relaxed">
+                Otorgo mi <strong>consentimiento expreso</strong> para el tratamiento de mis datos sensibles (fecha, hora y lugar de nacimiento) conforme al{" "}
+                <Link to="/privacidad" className="text-primary hover:underline" target="_blank">Aviso de Privacidad</Link> y la LFPDPPP.
+                <span className="text-destructive"> *</span>
+              </span>
+            </label>
+
+            <label className="flex items-start gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={acceptMarketing}
+                onChange={(e) => setAcceptMarketing(e.target.checked)}
+                className="mt-1 rounded border-border/30 bg-muted/20 text-primary focus:ring-primary/30"
+              />
+              <span className="text-foreground/70 text-xs font-body leading-relaxed">
+                Deseo recibir novedades, contenido astrológico y promociones por correo electrónico. (Opcional)
+              </span>
+            </label>
+          </div>
+
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="btn-gold w-full py-3.5 flex items-center justify-center gap-2"
+            disabled={isSubmitting || !acceptTerms || !acceptSensitiveData}
+            className="btn-gold w-full py-3.5 flex items-center justify-center gap-2 disabled:opacity-50"
           >
             <Sparkles className="w-4 h-4" />
             {isSubmitting ? "Creando cuenta..." : "Registrarme"}

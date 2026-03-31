@@ -103,6 +103,9 @@ const Premium = () => {
                     <span className="text-2xl font-display font-bold text-foreground">{plan.price}</span>
                     <span className="text-muted-foreground text-sm font-body">/{plan.interval}</span>
                   </div>
+                  <p className="text-muted-foreground/60 text-[10px] font-body text-center mt-2 leading-snug">
+                    Al suscribirte, confirmas que Astrelle es un servicio de entretenimiento astrológico sin garantías de resultados.
+                  </p>
                   <button
                     onClick={() => checkout(key)}
                     disabled={loading}
