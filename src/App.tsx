@@ -72,6 +72,13 @@ const AppRoutes = () => {
         <Route path="/mapa-estelar" element={<ProtectedRoute><SkyMap /></ProtectedRoute>} />
         <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
+        {/* Legal routes */}
+        <Route path="/terminos" element={<Terms />} />
+        <Route path="/privacidad" element={<Privacy />} />
+        <Route path="/cookies" element={<Cookies />} />
+        <Route path="/descargo" element={<Disclaimer />} />
+        <Route path="/reembolso" element={<Refund />} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
 

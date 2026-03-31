@@ -150,7 +150,14 @@ const Landing = () => {
         </div>
 
         {/* Footer */}
-        <div className="px-4 pb-8 text-center">
+        <div className="px-4 pb-8 text-center space-y-3">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+            <Link to="/terminos" className="text-muted-foreground/40 hover:text-muted-foreground/70 text-[11px] font-body transition-colors">Términos</Link>
+            <Link to="/privacidad" className="text-muted-foreground/40 hover:text-muted-foreground/70 text-[11px] font-body transition-colors">Privacidad</Link>
+            <Link to="/cookies" className="text-muted-foreground/40 hover:text-muted-foreground/70 text-[11px] font-body transition-colors">Cookies</Link>
+            <Link to="/descargo" className="text-muted-foreground/40 hover:text-muted-foreground/70 text-[11px] font-body transition-colors">Descargo</Link>
+            <Link to="/reembolso" className="text-muted-foreground/40 hover:text-muted-foreground/70 text-[11px] font-body transition-colors">Reembolso</Link>
+          </div>
           <p className="text-muted-foreground/30 text-[11px] font-body">© 2026 Astrelle · Todos los derechos reservados</p>
         </div>
       </div>
