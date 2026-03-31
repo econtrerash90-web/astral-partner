@@ -27,6 +27,11 @@ import Oracle from "./pages/Oracle";
 import Premium from "./pages/Premium";
 import SkyMap from "./pages/SkyMap";
 import NotFound from "./pages/NotFound";
+import Terms from "./pages/legal/Terms";
+import Privacy from "./pages/legal/Privacy";
+import Cookies from "./pages/legal/Cookies";
+import Disclaimer from "./pages/legal/Disclaimer";
+import Refund from "./pages/legal/Refund";
 
 const queryClient = new QueryClient();
 
