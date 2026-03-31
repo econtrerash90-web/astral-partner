@@ -28,7 +28,8 @@ interface ChartData {
 }
 
 const Profile = () => {
-  const { user, signOut, updatePassword } = useAuth();
+  const { user, signOut, updatePassword, session } = useAuth();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState<{ full_name: string; created_at: string } | null>(null);
   const [chart, setChart] = useState<ChartData | null>(null);
   const [stats, setStats] = useState({ entries: 0, predictions: 0 });
@@ -43,6 +44,12 @@ const Profile = () => {
   const [editPlace, setEditPlace] = useState("");
   const [saving, setSaving] = useState(false);
   const [confirmStep, setConfirmStep] = useState(false);
+
+  // Account management state
+  const [exporting, setExporting] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deleting, setDeleting] = useState(false);
 
   const loadData = async () => {
     if (!user) return;
