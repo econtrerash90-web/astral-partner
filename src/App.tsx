@@ -27,6 +27,11 @@ import Oracle from "./pages/Oracle";
 import Premium from "./pages/Premium";
 import SkyMap from "./pages/SkyMap";
 import NotFound from "./pages/NotFound";
+import Terms from "./pages/legal/Terms";
+import Privacy from "./pages/legal/Privacy";
+import Cookies from "./pages/legal/Cookies";
+import Disclaimer from "./pages/legal/Disclaimer";
+import Refund from "./pages/legal/Refund";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +71,13 @@ const AppRoutes = () => {
         <Route path="/sky-map" element={<ProtectedRoute><SkyMap /></ProtectedRoute>} />
         <Route path="/mapa-estelar" element={<ProtectedRoute><SkyMap /></ProtectedRoute>} />
         <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+
+        {/* Legal routes */}
+        <Route path="/terminos" element={<Terms />} />
+        <Route path="/privacidad" element={<Privacy />} />
+        <Route path="/cookies" element={<Cookies />} />
+        <Route path="/descargo" element={<Disclaimer />} />
+        <Route path="/reembolso" element={<Refund />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
