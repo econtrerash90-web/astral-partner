@@ -14,6 +14,9 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [acceptSensitiveData, setAcceptSensitiveData] = useState(false);
+  const [acceptMarketing, setAcceptMarketing] = useState(false);
 
   if (!loading && user) return <Navigate to="/" replace />;
 
@@ -22,6 +25,8 @@ const Register = () => {
     if (!fullName || !email || !password || !confirmPassword) return toast.error("Completa todos los campos");
     if (password.length < 8) return toast.error("La contraseña debe tener al menos 8 caracteres");
     if (password !== confirmPassword) return toast.error("Las contraseñas no coinciden");
+    if (!acceptTerms) return toast.error("Debes aceptar los Términos y Condiciones");
+    if (!acceptSensitiveData) return toast.error("Debes aceptar el tratamiento de datos sensibles para usar Astrelle");
 
     setIsSubmitting(true);
     const { error } = await signUp(email, password, fullName);
