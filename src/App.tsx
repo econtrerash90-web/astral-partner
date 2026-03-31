@@ -83,7 +83,14 @@ const AppRoutes = () => {
       </Routes>
 
       {/* Powered by Elfawa footer */}
-      <footer className="relative z-10 py-4 text-center border-t border-border/30">
+      <footer className="relative z-10 py-4 text-center border-t border-border/30 space-y-2">
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+          <Link to="/terminos" className="text-muted-foreground/40 hover:text-muted-foreground/70 text-[11px] font-body transition-colors">Términos</Link>
+          <Link to="/privacidad" className="text-muted-foreground/40 hover:text-muted-foreground/70 text-[11px] font-body transition-colors">Privacidad</Link>
+          <Link to="/cookies" className="text-muted-foreground/40 hover:text-muted-foreground/70 text-[11px] font-body transition-colors">Cookies</Link>
+          <Link to="/descargo" className="text-muted-foreground/40 hover:text-muted-foreground/70 text-[11px] font-body transition-colors">Descargo</Link>
+          <Link to="/reembolso" className="text-muted-foreground/40 hover:text-muted-foreground/70 text-[11px] font-body transition-colors">Reembolso</Link>
+        </div>
         <div className="flex items-center justify-center gap-2">
           <span className="text-muted-foreground/50 text-xs font-body">Powered by</span>
           <img src={elfawaLogo} alt="Elfawa" className="h-5 w-5 opacity-60" />
