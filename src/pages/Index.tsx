@@ -211,9 +211,9 @@ const Index = () => {
         <div className="relative z-10 px-4 py-8 sm:py-12 max-w-2xl mx-auto">
           <motion.header initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
             <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent mb-2" style={{ backgroundImage: "var(--gradient-title)" }}>
-              Genera Tu Carta Astral
+              Crea Tu Perfil Personal
             </h1>
-            <p className="text-muted-foreground text-sm font-body">Cuéntanos cuándo y dónde naciste para crear tu perfil</p>
+            <p className="text-muted-foreground text-sm font-body">Cuéntanos cuándo y dónde naciste para conocer más sobre ti</p>
           </motion.header>
           <AstralForm onSubmit={handleSubmit} isLoading={isLoading} />
         </div>
