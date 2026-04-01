@@ -378,6 +378,8 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
               </div>
             )}
 
+            </div>{/* close resultRef */}
+
             {/* Actions */}
             <div className="flex gap-3">
               <button
