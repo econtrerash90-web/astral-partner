@@ -27,6 +27,7 @@ import Angels from "./pages/Angels";
 import Oracle from "./pages/Oracle";
 import Premium from "./pages/Premium";
 import SkyMap from "./pages/SkyMap";
+import NatalChart from "./pages/NatalChart";
 import NotFound from "./pages/NotFound";
 import Terms from "./pages/legal/Terms";
 import Privacy from "./pages/legal/Privacy";
@@ -70,6 +71,7 @@ const AppRoutes = () => {
         <Route path="/oraculo" element={<ProtectedRoute><Oracle /></ProtectedRoute>} />
         <Route path="/premium" element={<ProtectedRoute><Premium /></ProtectedRoute>} />
         <Route path="/sky-map" element={<ProtectedRoute><SkyMap /></ProtectedRoute>} />
+        <Route path="/carta-natal" element={<ProtectedRoute><NatalChart /></ProtectedRoute>} />
         <Route path="/mapa-estelar" element={<ProtectedRoute><SkyMap /></ProtectedRoute>} />
         <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
