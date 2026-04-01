@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, RefreshCw, Lock, Crown, Share2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import ExtraShareCard from "@/components/ExtraShareCard";
+import ResultShareButtons from "@/components/ResultShareButtons";
 import { type ReadingType, getLimit, isLocked, READING_META, CATEGORIES } from "@/lib/reading-limits";
 import { useSubscription } from "@/hooks/useSubscription";
 
