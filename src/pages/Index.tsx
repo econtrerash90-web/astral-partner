@@ -482,10 +482,15 @@ const Index = () => {
 
 // ─── Sub-components ───
 
-const SignPill = ({ icon, label }: { icon: React.ReactNode; label: string }) => (
-  <span className="pill-tag">
+const SignPill = ({ icon, label, tooltip }: { icon: React.ReactNode; label: string; tooltip?: string }) => (
+  <span className="pill-tag group relative cursor-default">
     {icon}
     <span>{label}</span>
+    {tooltip && (
+      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 rounded-lg bg-card border border-border text-xs font-body text-foreground/80 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50">
+        {tooltip}
+      </span>
+    )}
   </span>
 );
 
