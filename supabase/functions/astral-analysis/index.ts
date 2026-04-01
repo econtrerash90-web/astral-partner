@@ -30,23 +30,24 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "Eres un astrólogo experto con profundo conocimiento en astrología occidental. Proporcionas análisis detallados, profesionales y personalizados. Responde siempre en español con un tono místico pero accesible."
+            content: "Eres un coach de vida y guía de bienestar personal. Ayudas a las personas a entenderse mejor a sí mismas. NUNCA uses términos astrológicos técnicos como tránsitos, aspectos, casas astrológicas, conjunciones, oposiciones, trígonos, retornos, nodos, etc. Habla en lenguaje cotidiano sobre personalidad, emociones y comportamiento. Responde siempre en español con un tono cálido y cercano."
           },
           {
             role: "user",
-            content: `Proporciona un análisis detallado de la carta astral para una persona con:
-- Sol en ${sunSign}
-- Luna en ${moonSign}
-- Ascendente en ${ascendant}
-- Nacida en ${birthPlace}
+            content: `Haz un análisis de personalidad para alguien con estas características:
+- Personalidad tipo: ${sunSign} (su esencia)
+- Mundo emocional tipo: ${moonSign} (cómo siente)
+- Imagen que proyecta: ${ascendant} (cómo lo ven los demás)
+- Lugar de origen: ${birthPlace}
 
 Incluye:
-1. Interpretación de la personalidad basada en estos elementos
-2. Características principales y tendencias
-3. Áreas de fortaleza y desarrollo
-4. Cómo interactúan estas tres energías entre sí
+1. ¿Cómo es esta persona en su día a día? Sus rasgos más fuertes
+2. ¿Cómo maneja sus emociones y relaciones?
+3. ¿En qué es buena y en qué puede mejorar?
+4. ¿Cómo se combinan estos tres aspectos de su personalidad?
 
-Usa emojis relevantes para hacer el texto más visual (☀️🌙⬆️🔮✨).`
+NO uses jerga astrológica. Habla como si le explicaras a un amigo quién es esta persona.
+Usa emojis para hacer el texto más visual (💪🧠❤️✨🌟).`
           }
         ],
       }),
@@ -83,20 +84,22 @@ Usa emojis relevantes para hacer el texto más visual (☀️🌙⬆️🔮✨).
         messages: [
           {
             role: "system",
-            content: "Eres un astrólogo experto que genera predicciones semanales personalizadas. Tono positivo, motivador y místico. Responde en español."
+            content: "Eres un coach de vida que da consejos semanales personalizados. Tono positivo, motivador y cercano. NUNCA uses términos astrológicos técnicos. Responde en español."
           },
           {
             role: "user",
-            content: `Genera una predicción semanal personalizada para una persona con:
-- Sol en ${sunSign}
-- Luna en ${moonSign}
-- Ascendente en ${ascendant}
+            content: `Genera consejos para esta semana para alguien con:
+- Personalidad tipo: ${sunSign}
+- Emociones tipo: ${moonSign}
+- Imagen que proyecta: ${ascendant}
 
-La predicción debe cubrir:
-- 💕 Amor y relaciones
-- 💼 Trabajo y finanzas
-- 🌿 Salud y bienestar
-- 💫 Consejo de la semana
+NO uses jerga astrológica. Habla en lenguaje cotidiano sobre la vida real.
+
+Los consejos deben cubrir:
+- 💕 Amor y relaciones: cómo le irá con su pareja, familia o amigos
+- 💼 Trabajo y dinero: qué oportunidades o retos puede esperar
+- 🌿 Salud y bienestar: cómo cuidarse esta semana
+- 💫 Consejo de la semana: algo práctico y motivador
 
 Usa emojis y formato claro con secciones.`
           }
@@ -122,30 +125,32 @@ Usa emojis y formato claro con secciones.`
         messages: [
           {
             role: "system",
-            content: "Eres un astrólogo y guía espiritual experto. Respondes en español con tono místico. Debes responder SOLO en el formato JSON solicitado, sin texto adicional."
+            content: "Eres un guía de bienestar y energía positiva. NUNCA uses términos astrológicos técnicos. Respondes en español con tono cálido. Debes responder SOLO en el formato JSON solicitado, sin texto adicional."
           },
           {
             role: "user",
             content: `Fecha actual: ${dateStr}
 
-Para una persona con Sol en ${sunSign}, Luna en ${moonSign} y Ascendente en ${ascendant}, genera en formato JSON exacto (sin markdown, sin backticks):
+Para alguien con personalidad tipo ${sunSign}, emociones tipo ${moonSign} y que proyecta energía de ${ascendant}, genera en formato JSON exacto (sin markdown, sin backticks):
+
+No uses jerga astrológica. Habla en lenguaje cotidiano.
 
 {
   "luckyNumber": {
-    "number": <número de la suerte del 1 al 99 basado en la carta astral y la posición actual de los astros>,
-    "reason": "<explicación breve de por qué este número es significativo para esta carta astral hoy, máximo 2 oraciones>"
+    "number": <número de la suerte del 1 al 99 para hoy>,
+    "reason": "<por qué este número es especial para esta persona hoy, máximo 2 oraciones, sin jerga>"
   },
   "ritual": {
-    "candleColor": "<color de vela recomendado según la carta astral y posición actual de los astros>",
+    "candleColor": "<color de vela recomendado para esta persona>",
     "title": "<nombre corto del ritual, máximo 5 palabras>",
-    "description": "<descripción del ritual paso a paso con la vela del color indicado, considerando la posición actual de los astros y la carta astral, máximo 4 oraciones>",
-    "bestTime": "<mejor momento del día para realizar el ritual>"
+    "description": "<pasos sencillos del ritual enfocado en relajación y bienestar, máximo 4 oraciones>",
+    "bestTime": "<mejor momento del día para hacerlo>"
   },
   "amulet": {
-    "stone": "<nombre de la piedra o cristal de poder espiritual alineado con la carta astral y el periodo astrológico actual>",
+    "stone": "<piedra o cristal recomendado para esta persona>",
     "emoji": "<emoji que represente la piedra>",
-    "properties": "<propiedades espirituales de la piedra, máximo 2 oraciones>",
-    "howToUse": "<cómo usar el amuleto para maximizar su poder, máximo 2 oraciones>"
+    "properties": "<beneficios para el bienestar emocional y mental, máximo 2 oraciones>",
+    "howToUse": "<cómo usar el amuleto en el día a día, máximo 2 oraciones>"
   }
 }`
           }

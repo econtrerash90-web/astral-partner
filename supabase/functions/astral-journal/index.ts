@@ -28,8 +28,8 @@ serve(async (req) => {
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
           messages: [
-            { role: "system", content: "Eres un guía astrológico que genera prompts de journaling profundos y personalizados. Responde SOLO con los 3 prompts, uno por línea, sin numeración, sin introducción, sin conclusión." },
-            { role: "user", content: `Genera 3 prompts de journaling para una persona con Sol en ${sunSign}, Luna en ${moonSign} y Ascendente en ${ascendant}. Los prompts deben ayudarle a conectar con su esencia astrológica, reflexionar sobre su crecimiento personal y explorar sus emociones.` },
+            { role: "system", content: "Eres un coach de bienestar que genera preguntas de reflexión personal. NUNCA uses términos astrológicos técnicos. Responde SOLO con las 3 preguntas, una por línea, sin numeración, sin introducción, sin conclusión." },
+            { role: "user", content: `Genera 3 preguntas de reflexión para alguien con personalidad tipo ${sunSign}, emociones tipo ${moonSign} y que proyecta energía de ${ascendant}. Las preguntas deben ayudarle a entenderse mejor, reflexionar sobre su crecimiento personal y explorar sus emociones. No uses jerga astrológica, habla en lenguaje cotidiano.` },
           ],
         }),
       });
@@ -47,8 +47,8 @@ serve(async (req) => {
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
           messages: [
-            { role: "system", content: "Eres un analista emocional astrológico experto. Responde en español." },
-            { role: "user", content: `Analiza esta entrada de diario de una persona con Sol en ${sunSign}. Proporciona: 1) Estado emocional predominante (1-2 palabras), 2) Un insight breve y alentador (2-3 líneas), 3) Una afirmación positiva personalizada, 4) Sugiere 2-3 tags temáticos relevantes (una palabra cada uno, ej: gratitud, ansiedad, amor). Entrada: "${entryText?.slice(0, 500)}"` },
+            { role: "system", content: "Eres un coach emocional experto. NUNCA uses términos astrológicos técnicos. Responde en español con lenguaje cotidiano." },
+            { role: "user", content: `Analiza esta entrada de diario de alguien con personalidad tipo ${sunSign}. Proporciona: 1) Estado emocional predominante (1-2 palabras), 2) Un mensaje breve y alentador (2-3 líneas, sin jerga astrológica), 3) Una afirmación positiva personalizada, 4) Sugiere 2-3 tags temáticos relevantes (una palabra cada uno, ej: gratitud, ansiedad, amor). Entrada: "${entryText?.slice(0, 500)}"` },
           ],
           tools: [{
             type: "function",
