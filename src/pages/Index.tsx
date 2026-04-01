@@ -238,9 +238,9 @@ const Index = () => {
             Hola, {displayName}
           </h1>
           <div className="flex items-center gap-4 mt-3">
-            <SignPill icon={<Sun className="w-3 h-3 text-primary" />} label={chartData.sun_sign_name} />
-            <SignPill icon={<Moon className="w-3 h-3 text-accent" />} label={chartData.moon_sign} />
-            <SignPill icon={<ArrowUp className="w-3 h-3 text-nebula" />} label={chartData.ascendant} />
+            <SignPill icon={<Sun className="w-3 h-3 text-primary" />} label={chartData.sun_sign_name} tooltip={getSignTrait(chartData.sun_sign_name, "sun")} />
+            <SignPill icon={<Moon className="w-3 h-3 text-accent" />} label={chartData.moon_sign} tooltip={getSignTrait(chartData.moon_sign, "moon")} />
+            <SignPill icon={<ArrowUp className="w-3 h-3 text-nebula" />} label={chartData.ascendant} tooltip={getSignTrait(chartData.ascendant, "asc")} />
           </div>
         </motion.div>
 
