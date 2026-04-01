@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Gem, RefreshCw, Star, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import ExtraShareCard from "@/components/ExtraShareCard";
+import ResultShareButtons from "@/components/ResultShareButtons";
 
 interface AmuletData {
   stone: string;
@@ -17,6 +17,7 @@ interface AmuletData {
 
 const Amulet = () => {
   const { user } = useAuth();
+  const resultRef = useRef<HTMLDivElement>(null);
   const [chartData, setChartData] = useState<{ sun_sign_name: string; moon_sign: string; ascendant: string } | null>(null);
   const [data, setData] = useState<AmuletData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
