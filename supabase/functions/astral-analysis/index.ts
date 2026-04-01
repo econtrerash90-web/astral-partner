@@ -30,23 +30,24 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "Eres un astrólogo experto con profundo conocimiento en astrología occidental. Proporcionas análisis detallados, profesionales y personalizados. Responde siempre en español con un tono místico pero accesible."
+            content: "Eres un coach de vida y guía de bienestar personal. Ayudas a las personas a entenderse mejor a sí mismas. NUNCA uses términos astrológicos técnicos como tránsitos, aspectos, casas astrológicas, conjunciones, oposiciones, trígonos, retornos, nodos, etc. Habla en lenguaje cotidiano sobre personalidad, emociones y comportamiento. Responde siempre en español con un tono cálido y cercano."
           },
           {
             role: "user",
-            content: `Proporciona un análisis detallado de la carta astral para una persona con:
-- Sol en ${sunSign}
-- Luna en ${moonSign}
-- Ascendente en ${ascendant}
-- Nacida en ${birthPlace}
+            content: `Haz un análisis de personalidad para alguien con estas características:
+- Personalidad tipo: ${sunSign} (su esencia)
+- Mundo emocional tipo: ${moonSign} (cómo siente)
+- Imagen que proyecta: ${ascendant} (cómo lo ven los demás)
+- Lugar de origen: ${birthPlace}
 
 Incluye:
-1. Interpretación de la personalidad basada en estos elementos
-2. Características principales y tendencias
-3. Áreas de fortaleza y desarrollo
-4. Cómo interactúan estas tres energías entre sí
+1. ¿Cómo es esta persona en su día a día? Sus rasgos más fuertes
+2. ¿Cómo maneja sus emociones y relaciones?
+3. ¿En qué es buena y en qué puede mejorar?
+4. ¿Cómo se combinan estos tres aspectos de su personalidad?
 
-Usa emojis relevantes para hacer el texto más visual (☀️🌙⬆️🔮✨).`
+NO uses jerga astrológica. Habla como si le explicaras a un amigo quién es esta persona.
+Usa emojis para hacer el texto más visual (💪🧠❤️✨🌟).`
           }
         ],
       }),
