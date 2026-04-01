@@ -27,6 +27,7 @@ import Angels from "./pages/Angels";
 import Oracle from "./pages/Oracle";
 import Premium from "./pages/Premium";
 import SkyMap from "./pages/SkyMap";
+import NatalChart from "./pages/NatalChart";
 import NotFound from "./pages/NotFound";
 import Terms from "./pages/legal/Terms";
 import Privacy from "./pages/legal/Privacy";
