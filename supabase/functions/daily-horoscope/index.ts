@@ -41,7 +41,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "Eres un astrólogo experto. Respondes SOLO en formato JSON válido sin markdown ni backticks. Tono místico pero accesible, en español latino."
+            content: "Eres un guía de bienestar personal que usa la sabiduría de los astros para dar consejos prácticos. NUNCA uses términos técnicos como 'tránsito', 'aspecto', 'casa astrológica', 'conjunción', 'oposición', 'trígono', 'cuadratura', 'retorno solar', 'nodo lunar' ni ningún otro término astrológico complejo. Habla como si le explicaras a un amigo cómo será su día, enfocándote en emociones, relaciones, trabajo y salud. Respondes SOLO en formato JSON válido sin markdown ni backticks. En español latino."
           },
           {
             role: "user",
