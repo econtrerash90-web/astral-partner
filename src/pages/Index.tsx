@@ -123,7 +123,7 @@ const Index = () => {
       }, { onConflict: "user_id,reading_date,reading_type" });
     } catch (e) {
       console.error("Horoscope error:", e);
-      toast.error("No se pudo generar el horóscopo. Intenta de nuevo.");
+      toast.error("No se pudo generar tu lectura del día. Intenta de nuevo.");
     } finally {
       setIsLoadingHoroscope(false);
     }
