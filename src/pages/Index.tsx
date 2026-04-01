@@ -470,7 +470,7 @@ const Index = () => {
         </motion.div>
 
         <p className="text-center text-muted-foreground/30 text-[11px] mt-4 font-body">
-          Los análisis astrológicos son interpretativos y no constituyen asesoría profesional.
+          Las lecturas son para entretenimiento y reflexión personal, no sustituyen asesoría profesional.
         </p>
       </div>
     </div>
