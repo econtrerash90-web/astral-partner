@@ -384,7 +384,7 @@ const Index = () => {
               <div className="feature-icon w-8 h-8 rounded-xl">
                 <Star className="w-4 h-4 text-primary" />
               </div>
-              <h2 className="font-display text-base text-foreground tracking-wide">Tu Carta Astral</h2>
+              <h2 className="font-display text-base text-foreground tracking-wide">Tu Perfil Astral</h2>
             </div>
             <button onClick={() => setShowForm(true)} className="text-xs font-body text-primary hover:text-primary/80 transition-colors">
               Recalcular
