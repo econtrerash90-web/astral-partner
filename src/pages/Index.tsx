@@ -356,7 +356,7 @@ const Index = () => {
 
         {/* ─── Tiradas ─── */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
-          <p className="section-label mb-3 px-1">🔮 Tiradas</p>
+          <p className="section-label mb-3 px-1">🔮 Lecturas</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <QuickAccessCard to="/tarot" icon={<Layers className="w-5 h-5" />} label="Tarot" color="primary" badge={isPremium ? "∞" : "1/día"} />
             <QuickAccessCard to="/el-secreto" icon={<Crown className="w-5 h-5" />} label="El Secreto" color="accent" badge={isPremium ? "∞" : "Premium"} locked={!isPremium} />
