@@ -71,6 +71,7 @@ const AppRoutes = () => {
         <Route path="/oraculo" element={<ProtectedRoute><Oracle /></ProtectedRoute>} />
         <Route path="/premium" element={<ProtectedRoute><Premium /></ProtectedRoute>} />
         <Route path="/sky-map" element={<ProtectedRoute><SkyMap /></ProtectedRoute>} />
+        <Route path="/carta-natal" element={<ProtectedRoute><NatalChart /></ProtectedRoute>} />
         <Route path="/mapa-estelar" element={<ProtectedRoute><SkyMap /></ProtectedRoute>} />
         <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
