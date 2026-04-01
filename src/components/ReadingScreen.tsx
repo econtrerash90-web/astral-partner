@@ -269,6 +269,7 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
         {/* Result */}
         {result && !isRevealing ? (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            <div ref={resultRef}>
             {/* Disclaimer */}
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/20 border border-border/20">
               <span className="text-xs">ⓘ</span>
