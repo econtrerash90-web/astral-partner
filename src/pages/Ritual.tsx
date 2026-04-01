@@ -113,7 +113,7 @@ const Ritual = () => {
 
         {data ? (
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="space-y-5">
-            <div className="glass-card p-8">
+            <div ref={resultRef} className="glass-card p-8">
               <div className="text-center mb-6">
                 <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
                   <Flame className="w-8 h-8 text-primary" />
@@ -136,13 +136,10 @@ const Ritual = () => {
               </button>
             </div>
             {showShare && (
-              <ExtraShareCard
-                type="ritual"
-                title="Mi Ritual Sugerido"
-                mainContent={data.title}
-                subtitle={`🕯️ Vela ${data.candleColor} · ${data.bestTime}`}
-                description={data.description}
-                chartData={chartData}
+              <ResultShareButtons
+                captureRef={resultRef}
+                filename="ritual"
+                shareText={`✨ Mi ritual del día: ${data.title}`}
               />
             )}
           </motion.div>

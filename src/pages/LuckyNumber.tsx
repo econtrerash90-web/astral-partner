@@ -108,7 +108,7 @@ const LuckyNumber = () => {
 
         {data ? (
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="space-y-5">
-            <div className="glass-card p-8 text-center">
+            <div ref={resultRef} className="glass-card p-8 text-center">
               <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
                 <Hash className="w-8 h-8 text-primary" />
               </div>
@@ -126,12 +126,10 @@ const LuckyNumber = () => {
               </button>
             </div>
             {showShare && (
-              <ExtraShareCard
-                type="luckyNumber"
-                title="Mi Número de la Suerte"
-                mainContent={String(data.number)}
-                subtitle={data.reason}
-                chartData={chartData}
+              <ResultShareButtons
+                captureRef={resultRef}
+                filename="numero-suerte"
+                shareText={`✨ Mi número de la suerte es ${data.number}`}
               />
             )}
           </motion.div>
