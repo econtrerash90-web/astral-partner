@@ -212,7 +212,7 @@ const Index = () => {
             <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent mb-2" style={{ backgroundImage: "var(--gradient-title)" }}>
               Genera Tu Carta Astral
             </h1>
-            <p className="text-muted-foreground text-sm font-body">Ingresa tus datos de nacimiento para comenzar</p>
+            <p className="text-muted-foreground text-sm font-body">Cuéntanos cuándo y dónde naciste para crear tu perfil</p>
           </motion.header>
           <AstralForm onSubmit={handleSubmit} isLoading={isLoading} />
         </div>
