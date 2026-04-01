@@ -23,7 +23,7 @@ const TAROT_CARDS = [
 ];
 
 const buildPrompt = (req: ReadingRequest, dateStr: string): string => {
-  const base = `Fecha actual: ${dateStr}\nPersona con Sol en ${req.sun_sign_name}, Luna en ${req.moon_sign}, Ascendente en ${req.ascendant}.\nCategoría: ${req.category}${req.question ? `\nPregunta: ${req.question}` : ""}`;
+  const base = `Fecha actual: ${dateStr}\nPersona con personalidad tipo ${req.sun_sign_name}, emociones tipo ${req.moon_sign}, que proyecta energía de ${req.ascendant}.\nTema: ${req.category}${req.question ? `\nPregunta: ${req.question}` : ""}\n\nIMPORTANTE: No uses NINGÚN término astrológico técnico. Habla en lenguaje cotidiano sobre emociones, decisiones y situaciones de la vida real.`;
 
   switch (req.type) {
     case "tarot": {
@@ -31,66 +31,66 @@ const buildPrompt = (req: ReadingRequest, dateStr: string): string => {
       const selected = shuffled.slice(0, 3);
       return `${base}
 
-Realiza una tirada de tarot de 3 cartas: Pasado, Presente y Futuro.
-Las cartas seleccionadas son: ${selected.join(", ")}.
+Realiza una lectura de 3 cartas: Lo que dejaste atrás, Tu momento actual, Lo que viene.
+Las cartas son: ${selected.join(", ")}.
 
 Responde en JSON exacto (sin markdown, sin backticks):
 {
   "cards": [
-    { "name": "${selected[0]}", "position": "Pasado", "emoji": "<emoji representativo>", "meaning": "<interpretación de 2-3 oraciones para esta posición>" },
-    { "name": "${selected[1]}", "position": "Presente", "emoji": "<emoji representativo>", "meaning": "<interpretación de 2-3 oraciones para esta posición>" },
-    { "name": "${selected[2]}", "position": "Futuro", "emoji": "<emoji representativo>", "meaning": "<interpretación de 2-3 oraciones para esta posición>" }
+    { "name": "${selected[0]}", "position": "Lo que dejaste atrás", "emoji": "<emoji>", "meaning": "<qué significa esta carta para su pasado reciente, 2-3 oraciones en lenguaje simple>" },
+    { "name": "${selected[1]}", "position": "Tu momento actual", "emoji": "<emoji>", "meaning": "<qué le dice esta carta sobre su situación actual, 2-3 oraciones>" },
+    { "name": "${selected[2]}", "position": "Lo que viene", "emoji": "<emoji>", "meaning": "<qué puede esperar próximamente, 2-3 oraciones>" }
   ],
-  "synthesis": "<síntesis general de la lectura, 3-4 oraciones conectando las tres cartas>",
-  "advice": "<consejo práctico basado en la lectura, 1-2 oraciones>"
+  "synthesis": "<resumen conectando las tres cartas en lenguaje cotidiano, 3-4 oraciones>",
+  "advice": "<consejo práctico y accionable, 1-2 oraciones>"
 }`;
     }
 
     case "secret":
       return `${base}
 
-Genera una lectura tipo "El Secreto" (Ley de Atracción) con una afirmación poderosa, un mensaje del universo y una acción concreta para hoy.
+Genera un mensaje motivacional con una afirmación positiva, un mensaje de ánimo personalizado y una acción concreta para mejorar su día.
 
 Responde en JSON exacto (sin markdown, sin backticks):
 {
-  "title": "<título corto de la revelación, 3-5 palabras>",
+  "title": "<título motivador corto, 3-5 palabras>",
   "emoji": "<emoji representativo>",
-  "affirmation": "<afirmación poderosa en primera persona para repetir, 1-2 oraciones>",
-  "message": "<mensaje del universo personalizado según la carta astral, 3-4 oraciones>",
-  "action": "<acción concreta para hoy basada en la ley de atracción, 2-3 oraciones>",
-  "mantra": "<mantra corto de 5-8 palabras para meditar>"
+  "affirmation": "<frase positiva en primera persona para repetirse, 1-2 oraciones>",
+  "message": "<mensaje de ánimo personalizado según su forma de ser, 3-4 oraciones>",
+  "action": "<algo concreto que puede hacer hoy para sentirse mejor, 2-3 oraciones>",
+  "mantra": "<frase corta de 5-8 palabras para recordar durante el día>"
 }`;
 
     case "angels":
       return `${base}
 
-Genera un mensaje angelical con el nombre del ángel o arcángel que guía a esta persona hoy, su mensaje, una oración y un ritual opcional.
+Genera un mensaje de guía espiritual con el nombre del ángel o guía protector del día, un mensaje reconfortante y una práctica de bienestar.
 
 Responde en JSON exacto (sin markdown, sin backticks):
 {
-  "angelName": "<nombre del ángel o arcángel>",
+  "angelName": "<nombre del ángel o guía>",
   "emoji": "<emoji representativo>",
   "title": "<título del mensaje, 3-5 palabras>",
-  "message": "<mensaje angelical personalizado, 3-4 oraciones con tono amoroso y espiritual>",
-  "prayer": "<oración sugerida para conectar con este ángel, 2-3 oraciones>",
-  "ritual": "<ritual opcional sencillo con vela o incienso, 2-3 oraciones>",
-  "color": "<color asociado al ángel>"
+  "message": "<mensaje reconfortante y personalizado, 3-4 oraciones con tono cálido>",
+  "prayer": "<meditación o reflexión sugerida, 2-3 oraciones>",
+  "ritual": "<actividad sencilla de relajación con vela o incienso, 2-3 oraciones>",
+  "color": "<color que representa esta guía>"
 }`;
 
     case "oracle":
       return `${base}
 
-Genera una carta de oráculo con un mensaje universal profundo, una revelación sobre el camino de vida y un símbolo de poder.
+Genera un mensaje de sabiduría con una revelación sobre su momento de vida actual y un símbolo que lo represente.
 
 Responde en JSON exacto (sin markdown, sin backticks):
 {
-  "title": "<título de la carta oráculo, 2-4 palabras>",
+  "title": "<título del mensaje, 2-4 palabras>",
   "emoji": "<emoji representativo>",
-  "symbol": "<símbolo de poder: animal, elemento o arquetipo>",
-  "message": "<mensaje del oráculo profundo y personalizado, 3-4 oraciones>",
-  "revelation": "<revelación sobre el camino de vida, 2-3 oraciones>",
-  "element": "<elemento asociado: Fuego, Agua, Tierra o Aire>",
-  "power": "<cualidad o poder que se activa hoy, 1 frase corta>"
+  "symbol": "<animal, elemento natural o figura que lo represente>",
+  "message": "<mensaje de sabiduría personalizado sobre su vida actual, 3-4 oraciones>",
+  "revelation": "<algo importante que debe tener en cuenta sobre su camino, 2-3 oraciones>",
+  "element": "<elemento natural asociado: Fuego, Agua, Tierra o Aire>",
+  "power": "<fortaleza que puede activar hoy, 1 frase corta>"
 }`;
   }
 };
