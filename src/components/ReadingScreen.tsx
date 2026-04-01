@@ -450,9 +450,12 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
               <div className="glass-card p-5 text-center">
                 <Crown className="w-8 h-8 text-primary mx-auto mb-2" />
                 <p className="text-sm font-body text-foreground/80 mb-1">¡Ya usaste tu tirada de hoy!</p>
-                <p className="text-xs font-body text-muted-foreground">
+                <p className="text-xs font-body text-muted-foreground mb-3">
                   Con Premium+ obtienes hasta {getLimit(type, true)} tiradas diarias
                 </p>
+                <Link to="/premium" className="text-primary text-sm font-body underline underline-offset-2 hover:text-primary/80">
+                  Conoce los planes y elige el tuyo →
+                </Link>
               </div>
             )}
           </motion.div>
