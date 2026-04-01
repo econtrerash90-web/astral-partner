@@ -413,12 +413,14 @@ const Index = () => {
 
           <div className="grid grid-cols-2 gap-3 mb-3">
             <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
-              <p className="section-label mb-1">Emociones</p>
+              <p className="section-label mb-1">Tus emociones</p>
               <p className="text-foreground font-display font-semibold">{chartData.moon_sign}</p>
+              <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(chartData.moon_sign, "moon")}</p>
             </div>
             <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
               <p className="section-label mb-1">Cómo te ven</p>
               <p className="text-foreground font-display font-semibold">{chartData.ascendant}</p>
+              <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(chartData.ascendant, "asc")}</p>
             </div>
           </div>
 
