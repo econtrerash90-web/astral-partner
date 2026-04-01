@@ -20,6 +20,7 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
   const navigate = useNavigate();
   const meta = READING_META[type];
   const { isPremium } = useSubscription();
+  const resultRef = useRef<HTMLDivElement>(null);
 
   const [chartData, setChartData] = useState<{ sun_sign_name: string; moon_sign: string; ascendant: string } | null>(null);
   const [category, setCategory] = useState("");
