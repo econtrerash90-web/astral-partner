@@ -370,7 +370,7 @@ const Index = () => {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
           <p className="section-label mb-3 px-1">✨ Consultas</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <QuickAccessCard to="/diario" icon={<BookOpen className="w-5 h-5" />} label="Diario Astral" color="accent" />
+            <QuickAccessCard to="/diario" icon={<BookOpen className="w-5 h-5" />} label="Diario" color="accent" />
             <QuickAccessCard to="/numero-suerte" icon={<Hash className="w-5 h-5" />} label="Número" color="primary" />
             <QuickAccessCard to="/ritual" icon={<Flame className="w-5 h-5" />} label="Ritual" color="nebula" />
             <QuickAccessCard to="/sky-map" icon={<Map className="w-5 h-5" />} label="Mapa Estelar" color="accent" badge={isPremium ? "" : "Premium"} locked={!isPremium} />
