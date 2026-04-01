@@ -184,7 +184,7 @@ const Index = () => {
 
       if (chart) setChartData(chart);
       setShowForm(false);
-      toast.success("¡Tu perfil astral está listo!");
+      toast.success("¡Tu perfil personal está listo!");
     } catch (err) {
       console.error(err);
       toast.error("No pudimos crear tu perfil. Intenta de nuevo.");
