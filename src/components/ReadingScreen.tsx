@@ -396,13 +396,11 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
               </button>
             </div>
 
-            {showShare && chartData && (
-              <ExtraShareCard
-                type="luckyNumber"
-                title={`Mi lectura de ${meta.label}`}
-                mainContent={type === "tarot" ? (result.cards?.[1]?.name || meta.label) : (result.title || meta.label)}
-                subtitle={type === "tarot" ? (result.synthesis?.slice(0, 100) || "") : (result.message?.slice(0, 100) || "")}
-                chartData={chartData}
+            {showShare && (
+              <ResultShareButtons
+                captureRef={resultRef}
+                filename={`lectura-${type}`}
+                shareText={`✨ Mi lectura de ${meta.label}`}
               />
             )}
           </motion.div>
