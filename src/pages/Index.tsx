@@ -18,6 +18,7 @@ import {
   type AstralData,
 } from "@/lib/astral-calculations";
 import { formatAIText } from "@/lib/format-ai-text";
+import { getSignTrait, getMoonTransitLabel, ELEMENT_FRIENDLY, PLANET_FRIENDLY } from "@/lib/sign-descriptions";
 
 interface DailyHoroscope {
   general: string;
