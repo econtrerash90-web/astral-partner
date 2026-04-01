@@ -273,7 +273,7 @@ const Index = () => {
                 <Sparkles className="w-4 h-4 text-primary" />
               </div>
               <h2 className="font-display text-base text-foreground tracking-wide">
-                Horóscopo del Día
+                Tu Día de Hoy
               </h2>
             </div>
             <button onClick={generateHoroscope} disabled={isLoadingHoroscope}
