@@ -183,10 +183,10 @@ const Index = () => {
 
       if (chart) setChartData(chart);
       setShowForm(false);
-      toast.success("¡Tu carta astral ha sido generada!");
+      toast.success("¡Tu perfil astral está listo!");
     } catch (err) {
       console.error(err);
-      toast.error("Error al generar tu carta astral.");
+      toast.error("No pudimos crear tu perfil. Intenta de nuevo.");
     } finally {
       setIsLoading(false);
     }
@@ -212,7 +212,7 @@ const Index = () => {
             <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent mb-2" style={{ backgroundImage: "var(--gradient-title)" }}>
               Genera Tu Carta Astral
             </h1>
-            <p className="text-muted-foreground text-sm font-body">Ingresa tus datos de nacimiento para comenzar</p>
+            <p className="text-muted-foreground text-sm font-body">Cuéntanos cuándo y dónde naciste para crear tu perfil</p>
           </motion.header>
           <AstralForm onSubmit={handleSubmit} isLoading={isLoading} />
         </div>
@@ -248,11 +248,11 @@ const Index = () => {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
             className="flex items-center gap-2 flex-wrap">
             {horoscope.currentMoonSign && (
-              <span className="pill-tag">🌙 Luna en {horoscope.currentMoonSign}</span>
+             <span className="pill-tag">🌙 Luna en {horoscope.currentMoonSign}</span>
             )}
             {horoscope.mercuryRetrograde && (
               <span className="pill-tag-danger pill-tag">
-                <AlertTriangle className="w-3 h-3" /> Mercurio retrógrado
+                <AlertTriangle className="w-3 h-3" /> Energía en pausa ☿
               </span>
             )}
             {horoscope.luckyColor && (
@@ -273,7 +273,7 @@ const Index = () => {
                 <Sparkles className="w-4 h-4 text-primary" />
               </div>
               <h2 className="font-display text-base text-foreground tracking-wide">
-                Horóscopo del Día
+                Tu Día de Hoy
               </h2>
             </div>
             <button onClick={generateHoroscope} disabled={isLoadingHoroscope}
@@ -285,7 +285,7 @@ const Index = () => {
           {isLoadingHoroscope && !horoscope ? (
             <div className="flex items-center gap-3 py-8 justify-center">
               <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              <p className="text-muted-foreground text-sm font-body">Consultando los astros...</p>
+              <p className="text-muted-foreground text-sm font-body">Preparando tu lectura...</p>
             </div>
           ) : horoscope ? (
             <div className="space-y-5">
@@ -347,7 +347,7 @@ const Index = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-foreground font-body text-sm font-semibold">Astrelle Premium+</p>
-                <p className="text-muted-foreground text-xs font-body">Tiradas ilimitadas, Sky Map, IA avanzada desde $4.99/mes</p>
+                <p className="text-muted-foreground text-xs font-body">Lecturas sin límites, mapa estelar y más desde $4.99/mes</p>
               </div>
               <ChevronRight className="w-4 h-4 text-primary shrink-0" />
             </Link>
@@ -356,12 +356,12 @@ const Index = () => {
 
         {/* ─── Tiradas ─── */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
-          <p className="section-label mb-3 px-1">🔮 Tiradas</p>
+          <p className="section-label mb-3 px-1">🔮 Lecturas</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <QuickAccessCard to="/tarot" icon={<Layers className="w-5 h-5" />} label="Tarot" color="primary" badge={isPremium ? "∞" : "1/día"} />
-            <QuickAccessCard to="/el-secreto" icon={<Crown className="w-5 h-5" />} label="El Secreto" color="accent" badge={isPremium ? "∞" : "Premium"} locked={!isPremium} />
-            <QuickAccessCard to="/angeles" icon={<Feather className="w-5 h-5" />} label="Ángeles" color="nebula" badge={isPremium ? "∞" : "Premium"} locked={!isPremium} />
-            <QuickAccessCard to="/oraculo" icon={<SquareAsterisk className="w-5 h-5" />} label="Oráculo" color="primary" badge={isPremium ? "∞" : "Premium"} locked={!isPremium} />
+            <QuickAccessCard to="/tarot" icon={<Layers className="w-5 h-5" />} label="Tarot" color="primary" badge={isPremium ? "Sin límites" : "1/día"} />
+            <QuickAccessCard to="/el-secreto" icon={<Crown className="w-5 h-5" />} label="El Secreto" color="accent" badge={isPremium ? "Sin límites" : "Premium"} locked={!isPremium} />
+            <QuickAccessCard to="/angeles" icon={<Feather className="w-5 h-5" />} label="Ángeles" color="nebula" badge={isPremium ? "Sin límites" : "Premium"} locked={!isPremium} />
+            <QuickAccessCard to="/oraculo" icon={<SquareAsterisk className="w-5 h-5" />} label="Oráculo" color="primary" badge={isPremium ? "Sin límites" : "Premium"} locked={!isPremium} />
           </div>
         </motion.div>
 
@@ -372,7 +372,7 @@ const Index = () => {
             <QuickAccessCard to="/diario" icon={<BookOpen className="w-5 h-5" />} label="Diario Astral" color="accent" />
             <QuickAccessCard to="/numero-suerte" icon={<Hash className="w-5 h-5" />} label="Número" color="primary" />
             <QuickAccessCard to="/ritual" icon={<Flame className="w-5 h-5" />} label="Ritual" color="nebula" />
-            <QuickAccessCard to="/sky-map" icon={<Map className="w-5 h-5" />} label="Sky Map" color="accent" badge={isPremium ? "" : "Premium"} locked={!isPremium} />
+            <QuickAccessCard to="/sky-map" icon={<Map className="w-5 h-5" />} label="Mapa Estelar" color="accent" badge={isPremium ? "" : "Premium"} locked={!isPremium} />
           </div>
         </motion.div>
 
@@ -384,7 +384,7 @@ const Index = () => {
               <div className="feature-icon w-8 h-8 rounded-xl">
                 <Star className="w-4 h-4 text-primary" />
               </div>
-              <h2 className="font-display text-base text-foreground tracking-wide">Tu Carta Astral</h2>
+              <h2 className="font-display text-base text-foreground tracking-wide">Tu Perfil Astral</h2>
             </div>
             <button onClick={() => setShowForm(true)} className="text-xs font-body text-primary hover:text-primary/80 transition-colors">
               Recalcular
@@ -393,18 +393,18 @@ const Index = () => {
 
           {/* Sun sign featured */}
           <div className="glass-card-elevated p-4 rounded-xl mb-3 border-primary/10">
-            <p className="section-label mb-1">Sol en</p>
+            <p className="section-label mb-1">Tu signo</p>
             <p className="text-foreground text-xl font-display font-semibold flex items-center gap-2">
               <span className="text-2xl">{chartData.sun_sign_symbol}</span>
               {chartData.sun_sign_name}
             </p>
             <div className="grid grid-cols-2 gap-2 mt-3">
               <div className="flex justify-between items-center p-2.5 bg-muted/20 rounded-lg">
-                <span className="text-muted-foreground text-xs font-body">Elemento</span>
+                 <span className="text-muted-foreground text-xs font-body">Energía</span>
                 <span className="text-primary font-medium text-xs font-body">{chartData.sun_sign_element}</span>
               </div>
               <div className="flex justify-between items-center p-2.5 bg-muted/20 rounded-lg">
-                <span className="text-muted-foreground text-xs font-body">Planeta</span>
+                <span className="text-muted-foreground text-xs font-body">Influencia</span>
                 <span className="text-primary font-medium text-xs font-body">{chartData.sun_sign_planet}</span>
               </div>
             </div>
@@ -412,11 +412,11 @@ const Index = () => {
 
           <div className="grid grid-cols-2 gap-3 mb-3">
             <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
-              <p className="section-label mb-1">Luna en</p>
+              <p className="section-label mb-1">Emociones</p>
               <p className="text-foreground font-display font-semibold">{chartData.moon_sign}</p>
             </div>
             <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
-              <p className="section-label mb-1">Ascendente en</p>
+              <p className="section-label mb-1">Cómo te ven</p>
               <p className="text-foreground font-display font-semibold">{chartData.ascendant}</p>
             </div>
           </div>
@@ -446,7 +446,7 @@ const Index = () => {
               >
                 <span className="text-sm font-body font-medium text-foreground/90 flex items-center gap-2">
                   <Sparkles className="w-3.5 h-3.5 text-primary" />
-                  Puntos Clave de tu Carta
+                  Lo que dicen tus estrellas
                 </span>
                 <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-300 ${expandedSection === "analysis" ? "rotate-180" : ""}`} />
               </button>
@@ -470,7 +470,7 @@ const Index = () => {
         </motion.div>
 
         <p className="text-center text-muted-foreground/30 text-[11px] mt-4 font-body">
-          Los análisis astrológicos son interpretativos y no constituyen asesoría profesional.
+          Las lecturas son para entretenimiento y reflexión personal, no sustituyen asesoría profesional.
         </p>
       </div>
     </div>
