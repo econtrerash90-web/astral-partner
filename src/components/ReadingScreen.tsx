@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, RefreshCw, Lock, Crown, Share2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import ExtraShareCard from "@/components/ExtraShareCard";
+import ResultShareButtons from "@/components/ResultShareButtons";
 import { type ReadingType, getLimit, isLocked, READING_META, CATEGORIES } from "@/lib/reading-limits";
 import { useSubscription } from "@/hooks/useSubscription";
 
@@ -20,6 +20,7 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
   const navigate = useNavigate();
   const meta = READING_META[type];
   const { isPremium } = useSubscription();
+  const resultRef = useRef<HTMLDivElement>(null);
 
   const [chartData, setChartData] = useState<{ sun_sign_name: string; moon_sign: string; ascendant: string } | null>(null);
   const [category, setCategory] = useState("");
@@ -268,6 +269,7 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
         {/* Result */}
         {result && !isRevealing ? (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            <div ref={resultRef}>
             {/* Disclaimer */}
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/20 border border-border/20">
               <span className="text-xs">ⓘ</span>
@@ -376,6 +378,8 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
               </div>
             )}
 
+            </div>{/* close resultRef */}
+
             {/* Actions */}
             <div className="flex gap-3">
               <button
@@ -395,13 +399,11 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
               </button>
             </div>
 
-            {showShare && chartData && (
-              <ExtraShareCard
-                type="luckyNumber"
-                title={`Mi lectura de ${meta.label}`}
-                mainContent={type === "tarot" ? (result.cards?.[1]?.name || meta.label) : (result.title || meta.label)}
-                subtitle={type === "tarot" ? (result.synthesis?.slice(0, 100) || "") : (result.message?.slice(0, 100) || "")}
-                chartData={chartData}
+            {showShare && (
+              <ResultShareButtons
+                captureRef={resultRef}
+                filename={`lectura-${type}`}
+                shareText={`✨ Mi lectura de ${meta.label}`}
               />
             )}
           </motion.div>

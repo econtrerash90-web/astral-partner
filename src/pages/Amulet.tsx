@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Gem, RefreshCw, Star, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import ExtraShareCard from "@/components/ExtraShareCard";
+import ResultShareButtons from "@/components/ResultShareButtons";
 
 interface AmuletData {
   stone: string;
@@ -17,6 +17,7 @@ interface AmuletData {
 
 const Amulet = () => {
   const { user } = useAuth();
+  const resultRef = useRef<HTMLDivElement>(null);
   const [chartData, setChartData] = useState<{ sun_sign_name: string; moon_sign: string; ascendant: string } | null>(null);
   const [data, setData] = useState<AmuletData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -112,13 +113,13 @@ const Amulet = () => {
 
         {data ? (
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="space-y-5">
-            <div className="glass-card p-8 text-center">
+            <div ref={resultRef} className="glass-card p-8 text-center">
               <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">{data.emoji}</span>
               </div>
               <h2 className="font-display text-2xl text-foreground font-semibold mb-4">{data.stone}</h2>
               <div className="bg-muted/30 p-5 rounded-xl border border-border mb-4">
-                <p className="text-muted-foreground text-xs font-body tracking-wide mb-2">Propiedades Espirituales</p>
+                <p className="text-muted-foreground text-xs font-body tracking-wide mb-2">Propiedades</p>
                 <p className="text-foreground/80 text-base font-body leading-relaxed">{data.properties}</p>
               </div>
               <div className="bg-primary/5 p-5 rounded-xl border border-primary/15">
@@ -137,12 +138,10 @@ const Amulet = () => {
               </button>
             </div>
             {showShare && (
-              <ExtraShareCard
-                type="amulet"
-                title="Mi Amuleto de la Suerte"
-                mainContent={`${data.emoji} ${data.stone}`}
-                subtitle={data.properties}
-                chartData={chartData}
+              <ResultShareButtons
+                captureRef={resultRef}
+                filename="amuleto"
+                shareText={`✨ Mi amuleto: ${data.emoji} ${data.stone}`}
               />
             )}
           </motion.div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Hash, RefreshCw, Star, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -6,10 +6,11 @@ import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import ExtraShareCard from "@/components/ExtraShareCard";
+import ResultShareButtons from "@/components/ResultShareButtons";
 
 const LuckyNumber = () => {
   const { user } = useAuth();
+  const resultRef = useRef<HTMLDivElement>(null);
   const [chartData, setChartData] = useState<{ sun_sign_name: string; moon_sign: string; ascendant: string } | null>(null);
   const [data, setData] = useState<{ number: number; reason: string } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -107,7 +108,7 @@ const LuckyNumber = () => {
 
         {data ? (
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="space-y-5">
-            <div className="glass-card p-8 text-center">
+            <div ref={resultRef} className="glass-card p-8 text-center">
               <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
                 <Hash className="w-8 h-8 text-primary" />
               </div>
@@ -125,12 +126,10 @@ const LuckyNumber = () => {
               </button>
             </div>
             {showShare && (
-              <ExtraShareCard
-                type="luckyNumber"
-                title="Mi Número de la Suerte"
-                mainContent={String(data.number)}
-                subtitle={data.reason}
-                chartData={chartData}
+              <ResultShareButtons
+                captureRef={resultRef}
+                filename="numero-suerte"
+                shareText={`✨ Mi número de la suerte es ${data.number}`}
               />
             )}
           </motion.div>
