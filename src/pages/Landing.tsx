@@ -4,10 +4,10 @@ import { Sparkles, Star, BookOpen, TrendingUp, Heart, Shield, ArrowRight, Moon, 
 import StarField from "@/components/StarField";
 
 const features = [
-  { icon: Star, title: "Carta Astral", desc: "Sol, Luna y Ascendente con análisis personalizados por IA.", color: "feature-icon", textColor: "text-primary" },
-  { icon: BookOpen, title: "Diario Astral", desc: "Reflexiones guiadas con prompts según tu carta natal.", color: "feature-icon-accent", textColor: "text-accent" },
-  { icon: TrendingUp, title: "Predicción Semanal", desc: "Pronóstico en amor, trabajo, salud y crecimiento.", color: "feature-icon-nebula", textColor: "text-nebula" },
-  { icon: Heart, title: "Compatibilidad", desc: "Compara dos cartas astrales y descubre la armonía.", color: "feature-icon", textColor: "text-primary" },
+  { icon: Star, title: "Tu Perfil Astral", desc: "Descubre qué dice tu fecha de nacimiento sobre tu personalidad y emociones.", color: "feature-icon", textColor: "text-primary" },
+  { icon: BookOpen, title: "Diario Personal", desc: "Escribe lo que sientes cada día con preguntas que te ayudan a reflexionar.", color: "feature-icon-accent", textColor: "text-accent" },
+  { icon: TrendingUp, title: "Tu Semana", desc: "Recibe cada semana consejos sobre amor, trabajo y bienestar.", color: "feature-icon-nebula", textColor: "text-nebula" },
+  { icon: Heart, title: "Compatibilidad", desc: "Descubre qué tan bien conectas con otra persona según sus estrellas.", color: "feature-icon", textColor: "text-primary" },
 ];
 
 const testimonials = [
