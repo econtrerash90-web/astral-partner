@@ -183,7 +183,7 @@ const Index = () => {
 
       if (chart) setChartData(chart);
       setShowForm(false);
-      toast.success("¡Tu carta astral ha sido generada!");
+      toast.success("¡Tu perfil astral está listo!");
     } catch (err) {
       console.error(err);
       toast.error("Error al generar tu carta astral.");
