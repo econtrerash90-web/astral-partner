@@ -186,7 +186,7 @@ const Index = () => {
       toast.success("¡Tu perfil astral está listo!");
     } catch (err) {
       console.error(err);
-      toast.error("Error al generar tu carta astral.");
+      toast.error("No pudimos crear tu perfil. Intenta de nuevo.");
     } finally {
       setIsLoading(false);
     }
