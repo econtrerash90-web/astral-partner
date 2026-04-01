@@ -347,7 +347,7 @@ const Index = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-foreground font-body text-sm font-semibold">Astrelle Premium+</p>
-                <p className="text-muted-foreground text-xs font-body">Tiradas ilimitadas, Sky Map, IA avanzada desde $4.99/mes</p>
+                <p className="text-muted-foreground text-xs font-body">Lecturas sin límites, mapa estelar y más desde $4.99/mes</p>
               </div>
               <ChevronRight className="w-4 h-4 text-primary shrink-0" />
             </Link>
