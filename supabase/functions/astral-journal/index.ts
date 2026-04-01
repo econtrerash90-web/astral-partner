@@ -28,8 +28,8 @@ serve(async (req) => {
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
           messages: [
-            { role: "system", content: "Eres un guía astrológico que genera prompts de journaling profundos y personalizados. Responde SOLO con los 3 prompts, uno por línea, sin numeración, sin introducción, sin conclusión." },
-            { role: "user", content: `Genera 3 prompts de journaling para una persona con Sol en ${sunSign}, Luna en ${moonSign} y Ascendente en ${ascendant}. Los prompts deben ayudarle a conectar con su esencia astrológica, reflexionar sobre su crecimiento personal y explorar sus emociones.` },
+            { role: "system", content: "Eres un coach de bienestar que genera preguntas de reflexión personal. NUNCA uses términos astrológicos técnicos. Responde SOLO con las 3 preguntas, una por línea, sin numeración, sin introducción, sin conclusión." },
+            { role: "user", content: `Genera 3 preguntas de reflexión para alguien con personalidad tipo ${sunSign}, emociones tipo ${moonSign} y que proyecta energía de ${ascendant}. Las preguntas deben ayudarle a entenderse mejor, reflexionar sobre su crecimiento personal y explorar sus emociones. No uses jerga astrológica, habla en lenguaje cotidiano.` },
           ],
         }),
       });
