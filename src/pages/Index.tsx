@@ -401,12 +401,12 @@ const Index = () => {
             </p>
             <div className="grid grid-cols-2 gap-2 mt-3">
               <div className="flex justify-between items-center p-2.5 bg-muted/20 rounded-lg">
-                 <span className="text-muted-foreground text-xs font-body">Energía</span>
-                <span className="text-primary font-medium text-xs font-body">{chartData.sun_sign_element}</span>
+                 <span className="text-muted-foreground text-xs font-body">Tu energía</span>
+                <span className="text-primary font-medium text-xs font-body">{ELEMENT_FRIENDLY[chartData.sun_sign_element] || chartData.sun_sign_element}</span>
               </div>
               <div className="flex justify-between items-center p-2.5 bg-muted/20 rounded-lg">
-                <span className="text-muted-foreground text-xs font-body">Influencia</span>
-                <span className="text-primary font-medium text-xs font-body">{chartData.sun_sign_planet}</span>
+                <span className="text-muted-foreground text-xs font-body">Tu impulso</span>
+                <span className="text-primary font-medium text-xs font-body">{PLANET_FRIENDLY[chartData.sun_sign_planet] || chartData.sun_sign_planet}</span>
               </div>
             </div>
           </div>
