@@ -84,20 +84,22 @@ Usa emojis para hacer el texto más visual (💪🧠❤️✨🌟).`
         messages: [
           {
             role: "system",
-            content: "Eres un astrólogo experto que genera predicciones semanales personalizadas. Tono positivo, motivador y místico. Responde en español."
+            content: "Eres un coach de vida que da consejos semanales personalizados. Tono positivo, motivador y cercano. NUNCA uses términos astrológicos técnicos. Responde en español."
           },
           {
             role: "user",
-            content: `Genera una predicción semanal personalizada para una persona con:
-- Sol en ${sunSign}
-- Luna en ${moonSign}
-- Ascendente en ${ascendant}
+            content: `Genera consejos para esta semana para alguien con:
+- Personalidad tipo: ${sunSign}
+- Emociones tipo: ${moonSign}
+- Imagen que proyecta: ${ascendant}
 
-La predicción debe cubrir:
-- 💕 Amor y relaciones
-- 💼 Trabajo y finanzas
-- 🌿 Salud y bienestar
-- 💫 Consejo de la semana
+NO uses jerga astrológica. Habla en lenguaje cotidiano sobre la vida real.
+
+Los consejos deben cubrir:
+- 💕 Amor y relaciones: cómo le irá con su pareja, familia o amigos
+- 💼 Trabajo y dinero: qué oportunidades o retos puede esperar
+- 🌿 Salud y bienestar: cómo cuidarse esta semana
+- 💫 Consejo de la semana: algo práctico y motivador
 
 Usa emojis y formato claro con secciones.`
           }
