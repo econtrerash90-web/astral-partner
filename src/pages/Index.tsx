@@ -394,7 +394,7 @@ const Index = () => {
 
           {/* Sun sign featured */}
           <div className="glass-card-elevated p-4 rounded-xl mb-3 border-primary/10">
-            <p className="section-label mb-1">Tu signo</p>
+              <p className="section-label mb-1">Tu signo</p>
             <p className="text-foreground text-xl font-display font-semibold flex items-center gap-2">
               <span className="text-2xl">{chartData.sun_sign_symbol}</span>
               {chartData.sun_sign_name}
