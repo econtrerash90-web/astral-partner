@@ -446,7 +446,7 @@ const Index = () => {
               >
                 <span className="text-sm font-body font-medium text-foreground/90 flex items-center gap-2">
                   <Sparkles className="w-3.5 h-3.5 text-primary" />
-                  Puntos Clave de tu Carta
+                  Lo que dicen tus estrellas
                 </span>
                 <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-300 ${expandedSection === "analysis" ? "rotate-180" : ""}`} />
               </button>
