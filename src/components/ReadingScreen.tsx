@@ -164,18 +164,15 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
             </div>
             <h1 className="font-display text-2xl text-foreground mb-2">{meta.emoji} {meta.label}</h1>
             <p className="text-muted-foreground font-body text-sm mb-6 leading-relaxed">
-              Esta funcionalidad está disponible con Premium+
+              Esta funcionalidad está disponible con Premium+.{" "}
+              <Link to="/premium" className="text-primary underline underline-offset-2 hover:text-primary/80">
+                Conoce los planes y elige el tuyo →
+              </Link>
             </p>
-            <div className="glass-card-elevated p-4 mb-6 border-primary/15">
-              <Crown className="w-6 h-6 text-primary mx-auto mb-2" />
-              <p className="text-sm font-body text-foreground/80">
-                Desbloquea {READING_META[type].label} y más con Premium+
-              </p>
-            </div>
             <div className="flex gap-3">
-              <button onClick={() => navigate("/premium")} className="flex-1 btn-gold py-3">
-                Ver Premium+
-              </button>
+              <Link to="/premium" className="flex-1 btn-gold py-3 text-center">
+                Ver planes
+              </Link>
               <button onClick={() => navigate("/")} className="flex-1 btn-glass py-3">
                 Volver
               </button>

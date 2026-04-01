@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Crown, Check, Star, Sparkles, BookOpen, Map, Brain, TrendingUp, Loader2, Settings, Lock } from "lucide-react";
-import { useSearchParams, Link } from "react-router-dom";
+import { Crown, Check, Star, Sparkles, Loader2, Settings, ChevronDown } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useSubscription, PLANS } from "@/hooks/useSubscription";
@@ -9,19 +9,64 @@ import { useSubscription, PLANS } from "@/hooks/useSubscription";
 /* ── What each plan includes ── */
 const freeBenefits = [
   "1 lectura de Tarot al día",
-  "Tu perfil astral personalizado",
+  "Tu perfil de personalidad",
   "Lectura diaria básica",
-  "Acceso al diario de reflexión",
+  "Diario de reflexión",
 ];
 
 const premiumBenefits = [
-  "Lecturas ilimitadas de Tarot, El Secreto, Ángeles y Oráculo",
-  "Mapa estelar interactivo con tu cielo de nacimiento",
-  "Análisis emocional profundo en tu diario",
+  "Lecturas ilimitadas: Tarot, El Secreto, Ángeles y Oráculo",
+  "Tu Mapa Estelar interactivo",
+  "Análisis emocional en tu diario",
   "Consejos semanales personalizados",
   "Preguntas de reflexión más profundas",
   "Acceso anticipado a nuevas funciones",
 ];
+
+/* ── FAQ ── */
+const faqs = [
+  {
+    q: "¿Qué incluye el plan gratuito?",
+    a: "Con el plan gratuito puedes hacer 1 lectura de Tarot por día, ver tu perfil de personalidad, recibir tu lectura diaria y escribir en tu diario de reflexión. Es perfecto para conocer Astrelle sin compromiso.",
+  },
+  {
+    q: "¿Qué más obtengo con Premium+?",
+    a: "Con Premium+ no tienes límites de lecturas: puedes hacer cuantas quieras de Tarot, El Secreto, Ángeles y Oráculo. También accedes a tu Mapa Estelar interactivo, análisis emocional en tu diario, consejos semanales y preguntas de reflexión personalizadas.",
+  },
+  {
+    q: "¿Puedo cancelar en cualquier momento?",
+    a: "Sí, puedes cancelar tu suscripción cuando quieras. Seguirás disfrutando de Premium+ hasta el final del período que ya pagaste, sin cargos adicionales.",
+  },
+  {
+    q: "¿Cómo funciona el pago?",
+    a: "El pago se procesa de forma segura a través de Stripe. Astrelle no almacena datos de tu tarjeta. Puedes pagar con tarjeta de crédito o débito.",
+  },
+  {
+    q: "¿Necesito saber de astrología para usar Astrelle?",
+    a: "¡Para nada! Astrelle traduce todo a un lenguaje simple y cotidiano. Te hablamos de tu personalidad, emociones y energía — no de términos técnicos complicados.",
+  },
+  {
+    q: "¿Astrelle es un servicio profesional?",
+    a: "Astrelle es un servicio de entretenimiento y reflexión personal. No sustituye asesoría médica, psicológica, legal ni financiera.",
+  },
+];
+
+const FaqItem = ({ q, a }: { q: string; a: string }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border-b border-border/20 last:border-b-0">
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between py-4 text-left gap-3">
+        <span className="text-sm font-body font-medium text-foreground">{q}</span>
+        <ChevronDown className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="pb-4">
+          <p className="text-sm font-body text-muted-foreground leading-relaxed">{a}</p>
+        </motion.div>
+      )}
+    </div>
+  );
+};
 
 const Premium = () => {
   const { isPremium, loading, subscriptionEnd, checkout, openPortal, checkSubscription } = useSubscription();
@@ -82,7 +127,7 @@ const Premium = () => {
               <Star className="w-4 h-4 text-muted-foreground" />
               <h3 className="font-display text-lg text-foreground">Gratis</h3>
             </div>
-            <p className="text-muted-foreground text-xs font-body mb-4">Para conocer las estrellas</p>
+            <p className="text-muted-foreground text-xs font-body mb-4">Para explorar tu perfil</p>
             <div className="space-y-3">
               {freeBenefits.map((b) => (
                 <div key={b} className="flex items-start gap-2.5">
@@ -120,7 +165,7 @@ const Premium = () => {
         {/* ── Pricing cards ── */}
         {!isPremium && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
-            className="space-y-4">
+            className="space-y-4" id="planes">
             <h2 className="font-display text-center text-lg text-foreground tracking-wide">Elige tu plan Premium+</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -160,6 +205,20 @@ const Premium = () => {
             </div>
           </motion.div>
         )}
+
+        {/* ── FAQ ── */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
+          className="glass-card p-5 sm:p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <h2 className="font-display text-lg text-foreground tracking-wide">Preguntas frecuentes</h2>
+          </div>
+          <div className="divide-y-0">
+            {faqs.map((faq) => (
+              <FaqItem key={faq.q} q={faq.q} a={faq.a} />
+            ))}
+          </div>
+        </motion.div>
       </div>
     </div>
   );

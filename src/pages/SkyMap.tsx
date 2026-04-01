@@ -149,13 +149,16 @@ const SkyMap = () => {
             className="font-display text-2xl font-bold tracking-wide bg-clip-text text-transparent mb-3"
             style={{ backgroundImage: "var(--gradient-title)" }}
           >
-            Sky Map
+            Mapa Estelar
           </h1>
           <p className="text-muted-foreground text-sm font-body mb-6">
-            El mapa estelar interactivo es una funcionalidad exclusiva de Premium+
+            El mapa estelar interactivo es una funcionalidad exclusiva de Premium+.{" "}
+            <Link to="/premium" className="text-primary underline underline-offset-2 hover:text-primary/80">
+              Conoce los planes y elige el tuyo →
+            </Link>
           </p>
           <Link to="/premium" className="btn-gold py-3 inline-flex items-center gap-2">
-            <Star className="w-4 h-4" /> Desbloquear Premium+
+            <Star className="w-4 h-4" /> Ver planes
           </Link>
         </div>
       </div>
