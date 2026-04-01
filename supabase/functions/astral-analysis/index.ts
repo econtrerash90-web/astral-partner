@@ -125,30 +125,32 @@ Usa emojis y formato claro con secciones.`
         messages: [
           {
             role: "system",
-            content: "Eres un astrólogo y guía espiritual experto. Respondes en español con tono místico. Debes responder SOLO en el formato JSON solicitado, sin texto adicional."
+            content: "Eres un guía de bienestar y energía positiva. NUNCA uses términos astrológicos técnicos. Respondes en español con tono cálido. Debes responder SOLO en el formato JSON solicitado, sin texto adicional."
           },
           {
             role: "user",
             content: `Fecha actual: ${dateStr}
 
-Para una persona con Sol en ${sunSign}, Luna en ${moonSign} y Ascendente en ${ascendant}, genera en formato JSON exacto (sin markdown, sin backticks):
+Para alguien con personalidad tipo ${sunSign}, emociones tipo ${moonSign} y que proyecta energía de ${ascendant}, genera en formato JSON exacto (sin markdown, sin backticks):
+
+No uses jerga astrológica. Habla en lenguaje cotidiano.
 
 {
   "luckyNumber": {
-    "number": <número de la suerte del 1 al 99 basado en la carta astral y la posición actual de los astros>,
-    "reason": "<explicación breve de por qué este número es significativo para esta carta astral hoy, máximo 2 oraciones>"
+    "number": <número de la suerte del 1 al 99 para hoy>,
+    "reason": "<por qué este número es especial para esta persona hoy, máximo 2 oraciones, sin jerga>"
   },
   "ritual": {
-    "candleColor": "<color de vela recomendado según la carta astral y posición actual de los astros>",
+    "candleColor": "<color de vela recomendado para esta persona>",
     "title": "<nombre corto del ritual, máximo 5 palabras>",
-    "description": "<descripción del ritual paso a paso con la vela del color indicado, considerando la posición actual de los astros y la carta astral, máximo 4 oraciones>",
-    "bestTime": "<mejor momento del día para realizar el ritual>"
+    "description": "<pasos sencillos del ritual enfocado en relajación y bienestar, máximo 4 oraciones>",
+    "bestTime": "<mejor momento del día para hacerlo>"
   },
   "amulet": {
-    "stone": "<nombre de la piedra o cristal de poder espiritual alineado con la carta astral y el periodo astrológico actual>",
+    "stone": "<piedra o cristal recomendado para esta persona>",
     "emoji": "<emoji que represente la piedra>",
-    "properties": "<propiedades espirituales de la piedra, máximo 2 oraciones>",
-    "howToUse": "<cómo usar el amuleto para maximizar su poder, máximo 2 oraciones>"
+    "properties": "<beneficios para el bienestar emocional y mental, máximo 2 oraciones>",
+    "howToUse": "<cómo usar el amuleto en el día a día, máximo 2 oraciones>"
   }
 }`
           }

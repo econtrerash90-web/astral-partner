@@ -46,26 +46,28 @@ serve(async (req) => {
           {
             role: "user",
             content: `Fecha: ${dateStr}
-Luna actual en: ${currentMoonSign}
-${isMercuryRetrograde ? "⚠️ Mercurio está retrógrado" : ""}
+Energía del día influenciada por: ${currentMoonSign}
+${isMercuryRetrograde ? "⚠️ Hoy es un día para ir con calma y revisar decisiones" : ""}
 
-Para una persona con Sol en ${sunSign}, Luna en ${moonSign} y Ascendente en ${ascendant}, genera en formato JSON exacto:
+Para una persona con personalidad tipo ${sunSign}, emociones tipo ${moonSign} y que proyecta energía de ${ascendant}, genera en formato JSON exacto:
+
+IMPORTANTE: No uses NINGÚN término astrológico técnico. Habla de emociones, comportamientos, decisiones y situaciones cotidianas. Como si fueras un coach de vida dando consejos del día.
 
 {
-  "general": "<horóscopo general del día en 3-4 oraciones, personalizado>",
+  "general": "<cómo será el día de esta persona en 3-4 oraciones, hablando de su ánimo, energía y qué esperar>",
   "energy": <nivel de energía del 1 al 10>,
   "love": <nivel de amor del 1 al 10>,
   "work": <nivel de trabajo del 1 al 10>,
   "health": <nivel de salud del 1 al 10>,
-  "loveDetail": "<detalle sobre amor hoy, 1-2 oraciones>",
-  "workDetail": "<detalle sobre trabajo hoy, 1-2 oraciones>",
-  "healthDetail": "<detalle sobre salud hoy, 1-2 oraciones>",
-  "luckyColor": "<color de la suerte hoy>",
-  "luckyHour": "<hora más favorable del día>",
-  "advice": "<consejo del día en 1-2 oraciones, motivador y personalizado>",
+  "loveDetail": "<cómo le irá en el amor y relaciones hoy, 1-2 oraciones sin jerga>",
+  "workDetail": "<cómo le irá en el trabajo o estudios hoy, 1-2 oraciones sin jerga>",
+  "healthDetail": "<cómo cuidar su salud y bienestar hoy, 1-2 oraciones sin jerga>",
+  "luckyColor": "<color que le traerá buena vibra hoy>",
+  "luckyHour": "<mejor hora del día para tomar decisiones importantes>",
+  "advice": "<consejo práctico del día en 1-2 oraciones, motivador y en lenguaje cotidiano>",
   "currentMoonSign": "${currentMoonSign}",
   "mercuryRetrograde": ${isMercuryRetrograde},
-  "journalPrompt": "<pregunta reflexiva para journaling basada en las energías del día y la carta natal, 1 oración>"
+  "journalPrompt": "<pregunta sencilla para reflexionar sobre cómo te sientes hoy, 1 oración>"
 }`
           }
         ],

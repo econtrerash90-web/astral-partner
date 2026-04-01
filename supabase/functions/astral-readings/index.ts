@@ -121,7 +121,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "Eres un oráculo místico, tarotista y guía espiritual experto. Respondes en español con tono místico, cálido y profundo. Debes responder SOLO en el formato JSON solicitado, sin texto adicional, sin markdown, sin backticks.",
+            content: "Eres un guía de bienestar emocional y coach de vida. Respondes en español con tono cálido, cercano y motivador. NUNCA uses términos astrológicos técnicos como tránsitos, aspectos, casas, conjunciones, retornos, nodos, etc. Habla como un amigo sabio que da consejos prácticos sobre la vida. Debes responder SOLO en el formato JSON solicitado, sin texto adicional, sin markdown, sin backticks.",
           },
           { role: "user", content: prompt },
         ],
