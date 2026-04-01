@@ -18,14 +18,27 @@ const ResultShareButtons = ({ captureRef, filename, shareText }: ResultShareButt
     if (!captureRef.current) return null;
     setGenerating(true);
     try {
-      const dataUrl = await toPng(captureRef.current, {
+      // Add watermark element temporarily
+      const watermark = document.createElement("div");
+      watermark.style.cssText =
+        "position:absolute;bottom:12px;right:16px;display:flex;align-items:center;gap:4px;opacity:0.5;font-size:13px;font-family:sans-serif;color:#c4b5fd;pointer-events:none;z-index:9999;";
+      watermark.innerHTML = "✨ Astrelle";
+      const container = captureRef.current;
+      const prevPosition = container.style.position;
+      container.style.position = "relative";
+      container.appendChild(watermark);
+
+      const dataUrl = await toPng(container, {
         pixelRatio: 2,
         cacheBust: true,
         backgroundColor: "#0f1029",
-        style: {
-          borderRadius: "0",
-        },
+        style: { borderRadius: "0" },
       });
+
+      // Remove watermark
+      container.removeChild(watermark);
+      container.style.position = prevPosition;
+
       const res = await fetch(dataUrl);
       return await res.blob();
     } catch (e) {
