@@ -18,6 +18,7 @@ import {
   type AstralData,
 } from "@/lib/astral-calculations";
 import { formatAIText } from "@/lib/format-ai-text";
+import { getSignTrait, getMoonTransitLabel, ELEMENT_FRIENDLY, PLANET_FRIENDLY } from "@/lib/sign-descriptions";
 
 interface DailyHoroscope {
   general: string;
@@ -122,7 +123,7 @@ const Index = () => {
       }, { onConflict: "user_id,reading_date,reading_type" });
     } catch (e) {
       console.error("Horoscope error:", e);
-      toast.error("No se pudo generar el horóscopo. Intenta de nuevo.");
+      toast.error("No se pudo generar tu lectura del día. Intenta de nuevo.");
     } finally {
       setIsLoadingHoroscope(false);
     }
@@ -183,7 +184,7 @@ const Index = () => {
 
       if (chart) setChartData(chart);
       setShowForm(false);
-      toast.success("¡Tu perfil astral está listo!");
+      toast.success("¡Tu perfil personal está listo!");
     } catch (err) {
       console.error(err);
       toast.error("No pudimos crear tu perfil. Intenta de nuevo.");
@@ -210,9 +211,9 @@ const Index = () => {
         <div className="relative z-10 px-4 py-8 sm:py-12 max-w-2xl mx-auto">
           <motion.header initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
             <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent mb-2" style={{ backgroundImage: "var(--gradient-title)" }}>
-              Genera Tu Carta Astral
+              Crea Tu Perfil Personal
             </h1>
-            <p className="text-muted-foreground text-sm font-body">Cuéntanos cuándo y dónde naciste para crear tu perfil</p>
+            <p className="text-muted-foreground text-sm font-body">Cuéntanos cuándo y dónde naciste para conocer más sobre ti</p>
           </motion.header>
           <AstralForm onSubmit={handleSubmit} isLoading={isLoading} />
         </div>
@@ -237,9 +238,9 @@ const Index = () => {
             Hola, {displayName}
           </h1>
           <div className="flex items-center gap-4 mt-3">
-            <SignPill icon={<Sun className="w-3 h-3 text-primary" />} label={chartData.sun_sign_name} />
-            <SignPill icon={<Moon className="w-3 h-3 text-accent" />} label={chartData.moon_sign} />
-            <SignPill icon={<ArrowUp className="w-3 h-3 text-nebula" />} label={chartData.ascendant} />
+            <SignPill icon={<Sun className="w-3 h-3 text-primary" />} label={chartData.sun_sign_name} tooltip={getSignTrait(chartData.sun_sign_name, "sun")} />
+            <SignPill icon={<Moon className="w-3 h-3 text-accent" />} label={chartData.moon_sign} tooltip={getSignTrait(chartData.moon_sign, "moon")} />
+            <SignPill icon={<ArrowUp className="w-3 h-3 text-nebula" />} label={chartData.ascendant} tooltip={getSignTrait(chartData.ascendant, "asc")} />
           </div>
         </motion.div>
 
@@ -248,7 +249,7 @@ const Index = () => {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
             className="flex items-center gap-2 flex-wrap">
             {horoscope.currentMoonSign && (
-             <span className="pill-tag">🌙 Luna en {horoscope.currentMoonSign}</span>
+             <span className="pill-tag">{getMoonTransitLabel(horoscope.currentMoonSign)}</span>
             )}
             {horoscope.mercuryRetrograde && (
               <span className="pill-tag-danger pill-tag">
@@ -369,7 +370,7 @@ const Index = () => {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
           <p className="section-label mb-3 px-1">✨ Consultas</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <QuickAccessCard to="/diario" icon={<BookOpen className="w-5 h-5" />} label="Diario Astral" color="accent" />
+            <QuickAccessCard to="/diario" icon={<BookOpen className="w-5 h-5" />} label="Diario" color="accent" />
             <QuickAccessCard to="/numero-suerte" icon={<Hash className="w-5 h-5" />} label="Número" color="primary" />
             <QuickAccessCard to="/ritual" icon={<Flame className="w-5 h-5" />} label="Ritual" color="nebula" />
             <QuickAccessCard to="/sky-map" icon={<Map className="w-5 h-5" />} label="Mapa Estelar" color="accent" badge={isPremium ? "" : "Premium"} locked={!isPremium} />
@@ -393,31 +394,33 @@ const Index = () => {
 
           {/* Sun sign featured */}
           <div className="glass-card-elevated p-4 rounded-xl mb-3 border-primary/10">
-            <p className="section-label mb-1">Tu signo</p>
+              <p className="section-label mb-1">Tu signo</p>
             <p className="text-foreground text-xl font-display font-semibold flex items-center gap-2">
               <span className="text-2xl">{chartData.sun_sign_symbol}</span>
               {chartData.sun_sign_name}
             </p>
             <div className="grid grid-cols-2 gap-2 mt-3">
               <div className="flex justify-between items-center p-2.5 bg-muted/20 rounded-lg">
-                 <span className="text-muted-foreground text-xs font-body">Energía</span>
-                <span className="text-primary font-medium text-xs font-body">{chartData.sun_sign_element}</span>
+                 <span className="text-muted-foreground text-xs font-body">Tu energía</span>
+                <span className="text-primary font-medium text-xs font-body">{ELEMENT_FRIENDLY[chartData.sun_sign_element] || chartData.sun_sign_element}</span>
               </div>
               <div className="flex justify-between items-center p-2.5 bg-muted/20 rounded-lg">
-                <span className="text-muted-foreground text-xs font-body">Influencia</span>
-                <span className="text-primary font-medium text-xs font-body">{chartData.sun_sign_planet}</span>
+                <span className="text-muted-foreground text-xs font-body">Tu impulso</span>
+                <span className="text-primary font-medium text-xs font-body">{PLANET_FRIENDLY[chartData.sun_sign_planet] || chartData.sun_sign_planet}</span>
               </div>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 mb-3">
             <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
-              <p className="section-label mb-1">Emociones</p>
+              <p className="section-label mb-1">Tus emociones</p>
               <p className="text-foreground font-display font-semibold">{chartData.moon_sign}</p>
+              <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(chartData.moon_sign, "moon")}</p>
             </div>
             <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
               <p className="section-label mb-1">Cómo te ven</p>
               <p className="text-foreground font-display font-semibold">{chartData.ascendant}</p>
+              <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(chartData.ascendant, "asc")}</p>
             </div>
           </div>
 
@@ -446,7 +449,7 @@ const Index = () => {
               >
                 <span className="text-sm font-body font-medium text-foreground/90 flex items-center gap-2">
                   <Sparkles className="w-3.5 h-3.5 text-primary" />
-                  Lo que dicen tus estrellas
+                  Tu personalidad según las estrellas
                 </span>
                 <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-300 ${expandedSection === "analysis" ? "rotate-180" : ""}`} />
               </button>
@@ -479,10 +482,15 @@ const Index = () => {
 
 // ─── Sub-components ───
 
-const SignPill = ({ icon, label }: { icon: React.ReactNode; label: string }) => (
-  <span className="pill-tag">
+const SignPill = ({ icon, label, tooltip }: { icon: React.ReactNode; label: string; tooltip?: string }) => (
+  <span className="pill-tag group relative cursor-default">
     {icon}
     <span>{label}</span>
+    {tooltip && (
+      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 rounded-lg bg-card border border-border text-xs font-body text-foreground/80 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50">
+        {tooltip}
+      </span>
+    )}
   </span>
 );
 

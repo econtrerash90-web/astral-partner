@@ -11,9 +11,9 @@ const features = [
 ];
 
 const testimonials = [
-  { text: "Me ayudó a entender por qué soy tan emocional. ¡Mi Luna en Cáncer lo explica todo!", name: "Valentina R.", sign: "♋" },
-  { text: "Las predicciones semanales son sorprendentemente precisas. No puedo empezar la semana sin leerlas.", name: "Carlos M.", sign: "♌" },
-  { text: "El diario astral me ha dado mucha claridad sobre mis patrones emocionales.", name: "Ana L.", sign: "♏" },
+  { text: "Me ayudó a entender por qué soy tan emocional. ¡Ahora sé que mis emociones son mi mayor fortaleza!", name: "Valentina R.", sign: "♋" },
+  { text: "Los consejos semanales son sorprendentemente precisos. No puedo empezar la semana sin leerlos.", name: "Carlos M.", sign: "♌" },
+  { text: "El diario me ha dado mucha claridad sobre mis patrones de comportamiento.", name: "Ana L.", sign: "♏" },
 ];
 
 const Landing = () => {
