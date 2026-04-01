@@ -138,9 +138,9 @@ const Landing = () => {
               <Sun className="w-4 h-4 text-primary/50" />
               <Moon className="w-4 h-4 text-primary/50" />
             </div>
-            <h3 className="font-display text-xl text-foreground tracking-wide mb-3">Tus datos, protegidos</h3>
+            <h3 className="font-display text-xl text-foreground tracking-wide mb-3">Tu información está segura</h3>
             <p className="text-muted-foreground text-sm font-body mb-8 leading-relaxed">
-              Encriptación avanzada y almacenamiento seguro en la nube. Tu información astrológica es privada.
+              Protegemos tus datos con la mejor tecnología. Lo que escribes aquí es solo tuyo.
             </p>
             <Link to="/registro" className="btn-gold inline-flex items-center gap-2 px-8 py-4">
               <Sparkles className="w-4 h-4" />

@@ -372,7 +372,7 @@ const Index = () => {
             <QuickAccessCard to="/diario" icon={<BookOpen className="w-5 h-5" />} label="Diario Astral" color="accent" />
             <QuickAccessCard to="/numero-suerte" icon={<Hash className="w-5 h-5" />} label="Número" color="primary" />
             <QuickAccessCard to="/ritual" icon={<Flame className="w-5 h-5" />} label="Ritual" color="nebula" />
-            <QuickAccessCard to="/sky-map" icon={<Map className="w-5 h-5" />} label="Sky Map" color="accent" badge={isPremium ? "" : "Premium"} locked={!isPremium} />
+            <QuickAccessCard to="/sky-map" icon={<Map className="w-5 h-5" />} label="Mapa Estelar" color="accent" badge={isPremium ? "" : "Premium"} locked={!isPremium} />
           </div>
         </motion.div>
 
