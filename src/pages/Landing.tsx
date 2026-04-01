@@ -39,7 +39,7 @@ const Landing = () => {
               </h1>
 
               <p className="text-foreground/60 text-lg sm:text-xl font-body font-light max-w-xl mx-auto mb-10 leading-relaxed">
-                Tu guía astrológica personal. Descubre los secretos de tu carta natal y recibe predicciones semanales únicas.
+                Tu guía personal basada en las estrellas. Conoce más sobre ti, recibe consejos semanales y explora tu energía.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center gap-3 justify-center">
