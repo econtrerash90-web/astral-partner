@@ -248,11 +248,11 @@ const Index = () => {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
             className="flex items-center gap-2 flex-wrap">
             {horoscope.currentMoonSign && (
-              <span className="pill-tag">🌙 Luna en {horoscope.currentMoonSign}</span>
+             <span className="pill-tag">🌙 Luna en {horoscope.currentMoonSign}</span>
             )}
             {horoscope.mercuryRetrograde && (
               <span className="pill-tag-danger pill-tag">
-                <AlertTriangle className="w-3 h-3" /> Mercurio retrógrado
+                <AlertTriangle className="w-3 h-3" /> Energía en pausa ☿
               </span>
             )}
             {horoscope.luckyColor && (
