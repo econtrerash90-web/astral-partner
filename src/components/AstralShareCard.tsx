@@ -3,6 +3,7 @@ import { toPng } from "html-to-image";
 import { Download, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { QRCodeSVG } from "qrcode.react";
+import { getSignTrait } from "@/lib/sign-descriptions";
 
 interface ShareCardProps {
   sunSign: { name: string; symbol: string; element: string; planet: string };
@@ -53,16 +54,15 @@ const AstralShareCard = ({ sunSign, moonSign, ascendant, name, luckyNumber, ritu
     try {
       const res = await fetch(dataUrl);
       const blob = await res.blob();
-      const file = new File([blob], "astrelle-carta-astral.png", { type: "image/png" });
+      const file = new File([blob], "astrelle-mi-perfil.png", { type: "image/png" });
 
       if (navigator.share && navigator.canShare({ files: [file] })) {
         await navigator.share({
-          title: "Mi Carta Astral - Astrelle",
-          text: `✨ Mi carta astral: Sol en ${sunSign.name}, Luna en ${moonSign}, Ascendente en ${ascendant}`,
+          title: "Mi Perfil en Astrelle",
+          text: `✨ Descubrí mi perfil: ${getSignTrait(sunSign.name, "sun")}`,
           files: [file],
         });
       } else {
-        // Fallback: copy to clipboard
         await navigator.clipboard.write([
           new ClipboardItem({ "image/png": blob }),
         ]);
@@ -104,7 +104,7 @@ const AstralShareCard = ({ sunSign, moonSign, ascendant, name, luckyNumber, ritu
                 ✦ Astrelle ✦
               </p>
               <p style={{ fontSize: 22, fontWeight: 700, color: "#e8e0f0", marginBottom: 4 }}>
-                Carta Astral de {name}
+                Perfil de {name}
               </p>
               <div style={{ width: 60, height: 1, background: "linear-gradient(90deg, transparent, #c8aa50, transparent)", margin: "0 auto" }} />
             </div>
@@ -118,8 +118,8 @@ const AstralShareCard = ({ sunSign, moonSign, ascendant, name, luckyNumber, ritu
               border: "1px solid rgba(200, 170, 80, 0.15)",
             }}>
               <p style={{ fontSize: 48, marginBottom: 4 }}>{sunSign.symbol}</p>
-              <p style={{ fontSize: 20, fontWeight: 600, color: "#c8aa50" }}>Sol en {sunSign.name}</p>
-              <p style={{ fontSize: 12, color: "#9990a8", marginTop: 4 }}>{sunSign.element} · {sunSign.planet}</p>
+              <p style={{ fontSize: 20, fontWeight: 600, color: "#c8aa50" }}>{sunSign.name}</p>
+              <p style={{ fontSize: 12, color: "#9990a8", marginTop: 4 }}>{getSignTrait(sunSign.name, "sun")}</p>
             </div>
 
             {/* Moon & Ascendant */}
@@ -129,7 +129,7 @@ const AstralShareCard = ({ sunSign, moonSign, ascendant, name, luckyNumber, ritu
                 background: "rgba(255,255,255,0.04)", borderRadius: 12,
                 border: "1px solid rgba(255,255,255,0.08)",
               }}>
-                <p style={{ fontSize: 10, color: "#9990a8", textTransform: "uppercase", letterSpacing: 2, marginBottom: 4 }}>🌙 Luna en</p>
+                <p style={{ fontSize: 10, color: "#9990a8", textTransform: "uppercase", letterSpacing: 2, marginBottom: 4 }}>🌙 Emociones</p>
                 <p style={{ fontSize: 16, fontWeight: 600 }}>{moonSign}</p>
               </div>
               <div style={{
@@ -137,7 +137,7 @@ const AstralShareCard = ({ sunSign, moonSign, ascendant, name, luckyNumber, ritu
                 background: "rgba(255,255,255,0.04)", borderRadius: 12,
                 border: "1px solid rgba(255,255,255,0.08)",
               }}>
-                <p style={{ fontSize: 10, color: "#9990a8", textTransform: "uppercase", letterSpacing: 2, marginBottom: 4 }}>⬆️ Ascendente</p>
+                <p style={{ fontSize: 10, color: "#9990a8", textTransform: "uppercase", letterSpacing: 2, marginBottom: 4 }}>⬆️ Imagen</p>
                 <p style={{ fontSize: 16, fontWeight: 600 }}>{ascendant}</p>
               </div>
             </div>
@@ -161,7 +161,7 @@ const AstralShareCard = ({ sunSign, moonSign, ascendant, name, luckyNumber, ritu
                     background: "rgba(200, 170, 80, 0.06)", borderRadius: 12,
                     border: "1px solid rgba(200, 170, 80, 0.12)",
                   }}>
-                    <p style={{ fontSize: 9, color: "#9990a8", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 4 }}>🕯️ Ritual</p>
+                    <p style={{ fontSize: 9, color: "#9990a8", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 4 }}>🕯️ Práctica</p>
                     <p style={{ fontSize: 12, fontWeight: 600, color: "#e8e0f0" }}>{ritual.title}</p>
                     <p style={{ fontSize: 10, color: "#c8aa50", marginTop: 2 }}>Vela {ritual.candleColor}</p>
                   </div>
@@ -172,7 +172,7 @@ const AstralShareCard = ({ sunSign, moonSign, ascendant, name, luckyNumber, ritu
                     background: "rgba(200, 170, 80, 0.06)", borderRadius: 12,
                     border: "1px solid rgba(200, 170, 80, 0.12)",
                   }}>
-                    <p style={{ fontSize: 9, color: "#9990a8", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 4 }}>💎 Amuleto</p>
+                    <p style={{ fontSize: 9, color: "#9990a8", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 4 }}>💎 Piedra</p>
                     <p style={{ fontSize: 14, marginBottom: 2 }}>{amulet.emoji}</p>
                     <p style={{ fontSize: 12, fontWeight: 600, color: "#e8e0f0" }}>{amulet.stone}</p>
                   </div>
@@ -184,7 +184,7 @@ const AstralShareCard = ({ sunSign, moonSign, ascendant, name, luckyNumber, ritu
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
               <div>
                 <p style={{ fontSize: 12, color: "#c8aa50", fontWeight: 600, marginBottom: 2 }}>Astrelle</p>
-                <p style={{ fontSize: 9, color: "#9990a8", letterSpacing: 1.5 }}>Descubre tu carta astral</p>
+                <p style={{ fontSize: 9, color: "#9990a8", letterSpacing: 1.5 }}>Descubre tu perfil personal</p>
                 <p style={{ fontSize: 9, color: "#9990a8", letterSpacing: 1 }}>astrelle-guide.app</p>
               </div>
               <div style={{ background: "#ffffff", padding: 6, borderRadius: 8 }}>

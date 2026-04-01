@@ -462,7 +462,7 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
         ) : isLoading && !isRevealing ? (
           <div className="flex items-center gap-3 py-16 justify-center">
             <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-            <p className="text-muted-foreground text-sm font-body">Consultando los astros...</p>
+            <p className="text-muted-foreground text-sm font-body">Preparando tu lectura...</p>
           </div>
         ) : null}
       </div>
