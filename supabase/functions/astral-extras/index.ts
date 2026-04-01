@@ -8,33 +8,39 @@ const corsHeaders = {
 const prompts: Record<string, (sunSign: string, moonSign: string, ascendant: string, dateStr: string) => string> = {
   luckyNumber: (sunSign, moonSign, ascendant, dateStr) => `Fecha actual: ${dateStr}
 
-Para una persona con Sol en ${sunSign}, Luna en ${moonSign} y Ascendente en ${ascendant}, genera en formato JSON exacto (sin markdown, sin backticks):
+Para una persona con personalidad tipo ${sunSign}, emociones tipo ${moonSign} y que proyecta energía de ${ascendant}, genera en formato JSON exacto (sin markdown, sin backticks):
+
+IMPORTANTE: No uses términos astrológicos técnicos. Explica todo en lenguaje cotidiano.
 
 {
-  "number": <número de la suerte del 1 al 99 basado en la carta astral y la posición actual de los astros>,
-  "reason": "<explicación breve de por qué este número es significativo para esta carta astral hoy, máximo 3 oraciones>"
+  "number": <número de la suerte del 1 al 99 para hoy>,
+  "reason": "<explicación sencilla de por qué este número es especial para esta persona hoy, máximo 3 oraciones, sin jerga técnica>"
 }`,
 
   ritual: (sunSign, moonSign, ascendant, dateStr) => `Fecha actual: ${dateStr}
 
-Para una persona con Sol en ${sunSign}, Luna en ${moonSign} y Ascendente en ${ascendant}, genera un ritual con velas en formato JSON exacto (sin markdown, sin backticks):
+Para una persona con personalidad tipo ${sunSign}, emociones tipo ${moonSign} y que proyecta energía de ${ascendant}, genera un ritual relajante con velas en formato JSON exacto (sin markdown, sin backticks):
+
+IMPORTANTE: No uses términos astrológicos. Describe el ritual como una actividad de bienestar personal.
 
 {
-  "candleColor": "<color de vela recomendado según la carta astral y posición actual de los astros>",
+  "candleColor": "<color de vela recomendado para esta persona hoy>",
   "title": "<nombre corto del ritual, máximo 5 palabras>",
-  "description": "<descripción del ritual paso a paso con la vela del color indicado, considerando la posición actual de los astros y la carta astral, máximo 5 oraciones>",
-  "bestTime": "<mejor momento del día para realizar el ritual>"
+  "description": "<pasos sencillos del ritual con la vela, enfocado en relajación y bienestar, máximo 5 oraciones>",
+  "bestTime": "<mejor momento del día para hacerlo>"
 }`,
 
   amulet: (sunSign, moonSign, ascendant, dateStr) => `Fecha actual: ${dateStr}
 
-Para una persona con Sol en ${sunSign}, Luna en ${moonSign} y Ascendente en ${ascendant}, genera un amuleto de la suerte en formato JSON exacto (sin markdown, sin backticks):
+Para una persona con personalidad tipo ${sunSign}, emociones tipo ${moonSign} y que proyecta energía de ${ascendant}, genera un amuleto de la suerte en formato JSON exacto (sin markdown, sin backticks):
+
+IMPORTANTE: No uses términos astrológicos. Habla de las propiedades de la piedra en términos de bienestar y energía positiva.
 
 {
-  "stone": "<nombre de la piedra o cristal de poder espiritual alineado con la carta astral y el periodo astrológico actual>",
+  "stone": "<nombre de la piedra o cristal recomendado para esta persona>",
   "emoji": "<emoji que represente la piedra>",
-  "properties": "<propiedades espirituales de la piedra, máximo 3 oraciones>",
-  "howToUse": "<cómo usar el amuleto para maximizar su poder, máximo 3 oraciones>"
+  "properties": "<beneficios de la piedra para el bienestar emocional y mental, máximo 3 oraciones>",
+  "howToUse": "<cómo llevar o usar el amuleto en el día a día, máximo 3 oraciones>"
 }`,
 };
 
