@@ -76,18 +76,13 @@ const Journal = () => {
   const generatePrompts = useCallback(async (data: ChartData) => {
     setIsLoadingPrompts(true);
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-      const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
-      if (supabaseUrl && supabaseKey) {
-        const resp = await fetch(`${supabaseUrl}/functions/v1/astral-journal`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${supabaseKey}` },
-          body: JSON.stringify({ type: "prompts", sunSign: data.sun_sign_name, moonSign: data.moon_sign, ascendant: data.ascendant }),
-        });
-        if (resp.ok) {
-          const json = await resp.json();
-          if (json.prompts?.length) { setPrompts(json.prompts); setIsLoadingPrompts(false); return; }
-        }
+      const { data: json, error } = await supabase.functions.invoke("astral-journal", {
+        body: { type: "prompts", sunSign: data.sun_sign_name, moonSign: data.moon_sign, ascendant: data.ascendant },
+      });
+      if (!error && (json as any)?.prompts?.length) {
+        setPrompts((json as any).prompts);
+        setIsLoadingPrompts(false);
+        return;
       }
     } catch { /* fallback */ }
     setPrompts([
