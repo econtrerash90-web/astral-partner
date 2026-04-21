@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,8 +12,27 @@ serve(async (req) => {
   }
 
   try {
+    // --- Auth check ---
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const supabaseAuth = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+    const token = authHeader.replace("Bearer ", "");
+    const { data: userData, error: userErr } = await supabaseAuth.auth.getUser(token);
+    if (userErr || !userData.user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { birthDate, birthTime, birthPlace } = await req.json();
-    
+
     if (!birthDate || !birthTime || !birthPlace) {
       return new Response(JSON.stringify({ error: "Faltan datos de nacimiento" }), {
         status: 400,
@@ -136,8 +156,7 @@ Devuelve SOLO el JSON, sin ningún texto adicional ni markdown.`
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || "";
-    
-    // Parse the JSON response
+
     const cleaned = content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
     const chartData = JSON.parse(cleaned);
 

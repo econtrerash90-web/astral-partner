@@ -94,20 +94,16 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
     setIsRevealing(false);
 
     try {
-      const url = import.meta.env.VITE_SUPABASE_URL;
-      const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-      const res = await fetch(`${url}/functions/v1/astral-readings`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke("astral-readings", {
+        body: {
           type,
           category,
           question: category === "other" ? question : undefined,
           ...chartData,
-        }),
+        },
       });
-      if (!res.ok) throw new Error("Error al generar la lectura");
-      const data = await res.json();
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
       setResult(data);
 
       const today = format(new Date(), "yyyy-MM-dd");

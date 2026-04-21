@@ -47,15 +47,11 @@ const LuckyNumber = () => {
     if (!chartData || !user) return;
     setIsLoading(true);
     try {
-      const url = import.meta.env.VITE_SUPABASE_URL;
-      const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-      const res = await fetch(`${url}/functions/v1/astral-extras`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-        body: JSON.stringify({ type: "luckyNumber", ...chartData }),
+      const { data: result, error } = await supabase.functions.invoke("astral-extras", {
+        body: { type: "luckyNumber", ...chartData },
       });
-      if (!res.ok) throw new Error("Error al generar");
-      const result = await res.json();
+      if (error) throw error;
+      if ((result as any)?.error) throw new Error((result as any).error);
       setData(result);
 
       // Upsert cached result

@@ -97,21 +97,16 @@ const Index = () => {
     if (!user || !chartData) return;
     setIsLoadingHoroscope(true);
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-
-      const response = await fetch(`${supabaseUrl}/functions/v1/daily-horoscope`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${supabaseKey}` },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke("daily-horoscope", {
+        body: {
           sunSign: chartData.sun_sign_name,
           moonSign: chartData.moon_sign,
           ascendant: chartData.ascendant,
-        }),
+        },
       });
 
-      if (!response.ok) throw new Error("Error al generar horóscopo");
-      const data = await response.json();
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
       setHoroscope(data);
 
       const today = format(new Date(), "yyyy-MM-dd");
@@ -146,16 +141,11 @@ const Index = () => {
 
       let analysis = "";
       try {
-        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-        const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-        const res = await fetch(`${supabaseUrl}/functions/v1/astral-analysis`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${supabaseKey}` },
-          body: JSON.stringify({ sunSign: sunSign.name, moonSign, ascendant, birthPlace: formData.birthPlace }),
+        const { data, error } = await supabase.functions.invoke("astral-analysis", {
+          body: { sunSign: sunSign.name, moonSign, ascendant, birthPlace: formData.birthPlace },
         });
-        if (res.ok) {
-          const data = await res.json();
-          analysis = data.analysis || "";
+        if (!error && data) {
+          analysis = (data as any).analysis || "";
         }
       } catch {}
 

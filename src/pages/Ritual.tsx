@@ -53,15 +53,11 @@ const Ritual = () => {
     if (!chartData || !user) return;
     setIsLoading(true);
     try {
-      const url = import.meta.env.VITE_SUPABASE_URL;
-      const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-      const res = await fetch(`${url}/functions/v1/astral-extras`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-        body: JSON.stringify({ type: "ritual", ...chartData }),
+      const { data: result, error } = await supabase.functions.invoke("astral-extras", {
+        body: { type: "ritual", ...chartData },
       });
-      if (!res.ok) throw new Error("Error al generar");
-      const result = await res.json();
+      if (error) throw error;
+      if ((result as any)?.error) throw new Error((result as any).error);
       setData(result);
 
       await supabase.from("astral_extras" as any).upsert(
