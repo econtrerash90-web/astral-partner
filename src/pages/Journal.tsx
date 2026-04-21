@@ -116,22 +116,16 @@ const Journal = () => {
     let moodAnalysis: string | null = null;
     let aiTags: string[] = [];
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-      const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
-      if (supabaseUrl && supabaseKey) {
-        const resp = await fetch(`${supabaseUrl}/functions/v1/astral-journal`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${supabaseKey}` },
-          body: JSON.stringify({ type: "mood", entryText, sunSign: chartData.sun_sign_name }),
-        });
-        if (resp.ok) {
-          const json = await resp.json();
-          if (json.structured) {
-            moodAnalysis = `${json.mood}\n\n${json.insight}\n\n✨ ${json.affirmation}`;
-            aiTags = json.suggested_tags || [];
-          } else {
-            moodAnalysis = json.analysis;
-          }
+      const { data: json, error } = await supabase.functions.invoke("astral-journal", {
+        body: { type: "mood", entryText, sunSign: chartData.sun_sign_name },
+      });
+      if (!error && json) {
+        const j = json as any;
+        if (j.structured) {
+          moodAnalysis = `${j.mood}\n\n${j.insight}\n\n✨ ${j.affirmation}`;
+          aiTags = j.suggested_tags || [];
+        } else {
+          moodAnalysis = j.analysis;
         }
       }
     } catch { /* skip */ }
