@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
+import { AchievementsProvider } from "@/hooks/useAchievements";
 import AppHeader from "@/components/AppHeader";
 import BetaBanner from "@/components/BetaBanner";
 import CookieConsent from "@/components/CookieConsent";
@@ -114,7 +115,9 @@ const App = () => (
         <CookieConsent />
         <AuthProvider>
           <SubscriptionProvider>
-            <AppRoutes />
+            <AchievementsProvider>
+              <AppRoutes />
+            </AchievementsProvider>
           </SubscriptionProvider>
         </AuthProvider>
       </BrowserRouter>
