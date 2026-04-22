@@ -113,6 +113,77 @@ export type Database = {
         }
         Relationships: []
       }
+      chart_audit_log: {
+        Row: {
+          audited_at: string
+          chart_id: string
+          expected_value: string | null
+          field_name: string
+          id: string
+          run_id: string
+          status: string
+          stored_value: string | null
+          user_id: string
+        }
+        Insert: {
+          audited_at?: string
+          chart_id: string
+          expected_value?: string | null
+          field_name: string
+          id?: string
+          run_id: string
+          status: string
+          stored_value?: string | null
+          user_id: string
+        }
+        Update: {
+          audited_at?: string
+          chart_id?: string
+          expected_value?: string | null
+          field_name?: string
+          id?: string
+          run_id?: string
+          status?: string
+          stored_value?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chart_audit_log_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "chart_audit_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chart_audit_runs: {
+        Row: {
+          finished_at: string | null
+          id: string
+          notes: string | null
+          started_at: string
+          total_charts: number
+          total_mismatches: number
+        }
+        Insert: {
+          finished_at?: string | null
+          id?: string
+          notes?: string | null
+          started_at?: string
+          total_charts?: number
+          total_mismatches?: number
+        }
+        Update: {
+          finished_at?: string | null
+          id?: string
+          notes?: string | null
+          started_at?: string
+          total_charts?: number
+          total_mismatches?: number
+        }
+        Relationships: []
+      }
       daily_limits: {
         Row: {
           angels_count: number
