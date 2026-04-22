@@ -62,12 +62,18 @@ const Journal = () => {
   useEffect(() => {
     if (!user) return;
     const load = async () => {
-      const [chartRes, entriesRes] = await Promise.all([
+      const today = new Date().toISOString().split("T")[0];
+      const [chartRes, entriesRes, readingRes] = await Promise.all([
         supabase.from("astral_charts").select("sun_sign_name, moon_sign, ascendant").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
         supabase.from("journal_entries").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(100),
+        supabase.from("daily_readings").select("content").eq("user_id", user.id).eq("reading_date", today).eq("reading_type", "horoscope").maybeSingle(),
       ]);
       if (chartRes.data) setChartData(chartRes.data);
       if (entriesRes.data) setEntries(entriesRes.data as JournalEntry[]);
+      const dailyPrompt = (readingRes.data?.content as any)?.journalPrompt;
+      if (dailyPrompt && typeof dailyPrompt === "string") {
+        setPrompts([dailyPrompt]);
+      }
       setLoading(false);
     };
     load();
@@ -94,6 +100,7 @@ const Journal = () => {
   }, []);
 
   useEffect(() => {
+    // Only generate extra prompts if we couldn't get today's daily prompt
     if (chartData && prompts.length === 0) generatePrompts(chartData);
   }, [chartData, prompts.length, generatePrompts]);
 
