@@ -85,7 +85,7 @@ const Login = () => {
             <div className="w-full border-t border-white/10"></div>
           </div>
           <div className="relative flex justify-center text-xs">
-            <span className="bg-card px-3 text-muted-foreground font-body">o continúa con</span>
+            <span className="bg-card px-3 text-muted-foreground font-body">o accede con Astrelle vía</span>
           </div>
         </div>
 
