@@ -104,6 +104,8 @@ const AppRoutes = () => {
           <span className="text-muted-foreground/40 text-xs font-body">2026</span>
         </div>
       </footer>
+      </div>
+      {user && <BottomTabBar />}
     </>
   );
 };
