@@ -45,7 +45,6 @@ const AppRoutes = () => {
   return (
     <>
       {user && <BetaBanner />}
-      {user && <AppHeader />}
       <div style={user ? { paddingBottom: "calc(4rem + env(safe-area-inset-bottom))" } : undefined}>
       <Routes>
         {/* Public routes */}
