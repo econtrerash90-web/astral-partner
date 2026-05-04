@@ -5,7 +5,6 @@ import {
   Star,
   BookOpen,
   Sparkles,
-  User,
   Layers,
   Crown,
   Feather,
@@ -17,13 +16,13 @@ import {
   X,
 } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useAuth } from "@/hooks/useAuth";
 
 const mainTabs = [
   { to: "/", label: "Inicio", icon: Star },
   { to: "/diario", label: "Diario", icon: BookOpen },
   // center slot reserved
   { to: "/carta-natal", label: "Carta", icon: Sparkles },
-  { to: "/perfil", label: "Perfil", icon: User },
 ];
 
 const spreadOptions = [
@@ -40,7 +39,13 @@ const spreadOptions = [
 const BottomTabBar = () => {
   const { pathname } = useLocation();
   const { isPremium } = useSubscription();
+  const { user } = useAuth();
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Usuario";
+  const initials = displayName.slice(0, 2).toUpperCase();
+  const avatarUrl = (user?.user_metadata?.avatar_url || user?.user_metadata?.picture) as string | undefined;
+  const profileActive = pathname === "/perfil";
 
   const isSpreadRoute = spreadOptions.some((o) => o.to === pathname);
 
@@ -199,7 +204,34 @@ const BottomTabBar = () => {
           </div>
 
           {renderTab(mainTabs[2])}
-          {renderTab(mainTabs[3])}
+
+          <Link
+            to="/perfil"
+            className="flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 transition-colors"
+          >
+            <div
+              className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center text-[10px] font-bold font-display transition-all"
+              style={{
+                background: avatarUrl ? "transparent" : "hsl(var(--primary) / 0.15)",
+                color: "hsl(var(--primary))",
+                border: profileActive ? "1.5px solid hsl(var(--mystic-gold))" : "1.5px solid transparent",
+                filter: profileActive ? "drop-shadow(0 0 6px hsl(var(--mystic-gold) / 0.6))" : undefined,
+              }}
+            >
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
+              ) : (
+                initials
+              )}
+            </div>
+            <span
+              className={`text-[10px] font-body tracking-wide ${
+                profileActive ? "text-foreground font-medium" : "text-muted-foreground"
+              }`}
+            >
+              Perfil
+            </span>
+          </Link>
         </div>
       </nav>
     </>
