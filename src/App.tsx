@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
 import { AchievementsProvider } from "@/hooks/useAchievements";
 import AppHeader from "@/components/AppHeader";
+import BottomTabBar from "@/components/BottomTabBar";
 import BetaBanner from "@/components/BetaBanner";
 import CookieConsent from "@/components/CookieConsent";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -45,6 +46,7 @@ const AppRoutes = () => {
     <>
       {user && <BetaBanner />}
       {user && <AppHeader />}
+      <div style={user ? { paddingBottom: "calc(4rem + env(safe-area-inset-bottom))" } : undefined}>
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
@@ -102,6 +104,8 @@ const AppRoutes = () => {
           <span className="text-muted-foreground/40 text-xs font-body">2026</span>
         </div>
       </footer>
+      </div>
+      {user && <BottomTabBar />}
     </>
   );
 };
