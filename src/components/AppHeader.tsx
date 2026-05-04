@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Star, BookOpen, Menu, X, User, LogOut, ChevronDown, Layers, Crown, Feather, SquareAsterisk, Map } from "lucide-react";
+import { Sparkles, Star, BookOpen, User, LogOut, ChevronDown, Layers, Crown, Feather, SquareAsterisk, Map } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,6 @@ const AppHeader = () => {
   const location = useLocation();
   const { user, signOut } = useAuth();
   const { isPremium } = useSubscription();
-  const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -70,14 +69,9 @@ const AppHeader = () => {
                 key={item.to}
                 to={item.to}
                 className={`relative flex items-center gap-1.5 px-4 py-1.5 rounded-lg font-body text-sm transition-all duration-200 ${
-                  isActive
-                    ? "text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
+                  isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}
-                style={isActive ? {
-                  background: "hsl(var(--card) / 0.6)",
-                  boxShadow: "0 2px 12px hsl(0 0% 0% / 0.2)",
-                } : undefined}
+                style={isActive ? { background: "hsl(var(--card) / 0.6)", boxShadow: "0 2px 12px hsl(0 0% 0% / 0.2)" } : undefined}
               >
                 <item.icon className="w-3.5 h-3.5" />
                 {item.label}
@@ -105,8 +99,8 @@ const AppHeader = () => {
           )}
         </div>
 
-        {/* User avatar dropdown (desktop) */}
-        <div className="hidden md:block relative" ref={userMenuRef}>
+        {/* User avatar dropdown — visible on all sizes */}
+        <div className="relative" ref={userMenuRef}>
           <button
             onClick={() => setUserMenuOpen(!userMenuOpen)}
             className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-xl hover:bg-muted/50 transition-colors"
@@ -152,76 +146,7 @@ const AppHeader = () => {
             )}
           </AnimatePresence>
         </div>
-
-        {/* Mobile hamburger */}
-        <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors" aria-label="Toggle menu">
-          {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
       </div>
-
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.nav
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden overflow-hidden"
-            style={{
-              background: "hsl(var(--background) / 0.92)",
-              backdropFilter: "blur(28px)",
-              borderTop: "1px solid hsl(var(--border) / 0.2)",
-            }}
-          >
-            <div className="px-4 py-3 space-y-1">
-              {navItems.map((item) => {
-                const isActive = location.pathname === item.to;
-                return (
-                  <Link
-                    key={item.to}
-                    to={item.to}
-                    onClick={() => setMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl font-body text-sm transition-all ${
-                      isActive
-                        ? "text-foreground bg-muted/50"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
-                    }`}
-                  >
-                    <item.icon className="w-4 h-4" /> {item.label}
-                  </Link>
-                );
-              })}
-              {isPremium && (
-                <Link
-                  to="/mapa-estelar"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl font-body text-sm text-amber-300 hover:bg-amber-500/10 transition-all"
-                >
-                  <Map className="w-4 h-4" /> Sky Map
-                  <Badge className="ml-auto bg-gradient-to-r from-amber-500 to-yellow-400 text-background border-0 font-display text-[10px] tracking-wider">
-                    <Crown className="w-3 h-3 mr-0.5" /> PRO
-                  </Badge>
-                </Link>
-              )}
-              <div style={{ borderTop: "1px solid hsl(var(--border) / 0.2)" }} className="pt-2 mt-2">
-                <Link
-                  to="/perfil"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl font-body text-sm text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all"
-                >
-                  <User className="w-4 h-4" /> Mi Perfil
-                </Link>
-                <button
-                  onClick={() => { setMenuOpen(false); signOut(); }}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-body text-sm text-destructive/60 hover:text-destructive hover:bg-destructive/10 transition-all"
-                >
-                  <LogOut className="w-4 h-4" /> Cerrar Sesión
-                </button>
-              </div>
-            </div>
-          </motion.nav>
-        )}
-      </AnimatePresence>
     </header>
   );
 };
