@@ -24,13 +24,13 @@ const TAROT_CARDS = [
   "El Sol", "El Juicio", "El Mundo"
 ];
 
-// Server-side daily limits — must match client constants
+// Server-side daily limits — premium lock temporarily disabled
 const DAILY_LIMITS = {
-  free: { tarot: 1, secret: 0, angels: 0, oracle: 0 },
+  free: { tarot: 99, secret: 99, angels: 99, oracle: 99 },
   premium: { tarot: 99, secret: 99, angels: 99, oracle: 99 },
 } as const;
 
-const PREMIUM_TYPES = new Set(["secret", "angels", "oracle"]);
+const PREMIUM_TYPES = new Set<string>([]);
 
 const buildPrompt = (req: ReadingRequest, dateStr: string): string => {
   const base = `Fecha actual: ${dateStr}\nPersona con personalidad tipo ${req.sun_sign_name}, emociones tipo ${req.moon_sign}, que proyecta energía de ${req.ascendant}.\nTema: ${req.category}${req.question ? `\nPregunta: ${req.question}` : ""}\n\nIMPORTANTE: No uses NINGÚN término astrológico técnico. Habla en lenguaje cotidiano sobre emociones, decisiones y situaciones de la vida real.`;
