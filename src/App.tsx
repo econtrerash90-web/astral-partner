@@ -10,7 +10,7 @@ import { AchievementsProvider } from "@/hooks/useAchievements";
 import AppHeader from "@/components/AppHeader";
 import BottomTabBar from "@/components/BottomTabBar";
 import BetaBanner from "@/components/BetaBanner";
-import CookieConsent from "@/components/CookieConsent";
+
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -116,7 +116,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <CookieConsent />
+        
         <AuthProvider>
           <SubscriptionProvider>
             <AchievementsProvider>
