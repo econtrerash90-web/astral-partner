@@ -73,15 +73,29 @@ const Profile = () => {
     if (!chart) return;
     setEditDate(chart.birth_date);
     setEditTime(chart.birth_time);
-    setEditPlace(chart.birth_place);
+    // Try to split saved birth_place "City, State, Country"
+    const parts = (chart.birth_place || "").split(",").map((p) => p.trim());
+    setEditCity(parts[0] || "");
+    setEditState(parts[1] || "");
+    setEditCountry(parts[2] || parts[1] || "");
     setConfirmStep(false);
     setEditOpen(true);
   };
 
-  const hasChanges = chart && (editDate !== chart.birth_date || editTime !== chart.birth_time || editPlace !== chart.birth_place);
+  const composedPlace = `${editCity.trim()}, ${editState.trim()}, ${editCountry.trim()}`;
+  const hasChanges = chart && (
+    editDate !== chart.birth_date ||
+    editTime !== chart.birth_time ||
+    composedPlace !== chart.birth_place
+  );
+  const placeComplete = editCity.trim() && editState.trim() && editCountry.trim();
 
   const handleSaveChart = async () => {
     if (!chart || !hasChanges) return;
+    if (!placeComplete) {
+      toast.error("Debes ingresar Ciudad, Estado y País");
+      return;
+    }
 
     if (!confirmStep) {
       setConfirmStep(true);
@@ -91,7 +105,7 @@ const Profile = () => {
     setSaving(true);
     const { error } = await supabase
       .from("astral_charts")
-      .update({ birth_date: editDate, birth_time: editTime, birth_place: editPlace })
+      .update({ birth_date: editDate, birth_time: editTime, birth_place: composedPlace })
       .eq("id", chart.id);
 
     if (error) {
