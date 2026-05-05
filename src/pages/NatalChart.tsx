@@ -62,6 +62,25 @@ const NatalChart = () => {
           { user_id: user.id, type: "natalChart", result: data, created_at: new Date().toISOString() },
           { onConflict: "user_id,type" }
         );
+
+        // Sync moon_sign and ascendant in astral_charts with the precise
+        // Swiss Ephemeris values (DB trigger uses a simplified estimation).
+        try {
+          const moonPlanet = (data as NatalChartData).planets?.find((p) => p.name === "Luna");
+          const ascSign = (data as NatalChartData).ascendant?.sign;
+          const moonSign = moonPlanet?.sign;
+          if (moonSign || ascSign) {
+            const updates: Record<string, string> = {};
+            if (moonSign && moonSign !== chart.moon_sign) updates.moon_sign = moonSign;
+            if (ascSign && ascSign !== chart.ascendant) updates.ascendant = ascSign;
+            if (Object.keys(updates).length > 0) {
+              await supabase.from("astral_charts").update(updates).eq("user_id", user.id);
+              setAstralChart((prev) => (prev ? { ...prev, ...updates } as AstralChartRow : prev));
+            }
+          }
+        } catch (syncErr) {
+          console.warn("Could not sync chart signs:", syncErr);
+        }
       }
       return true;
     } catch (e: any) {
