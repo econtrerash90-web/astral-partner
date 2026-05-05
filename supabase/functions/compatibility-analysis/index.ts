@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { getUserLanguage, languageInstruction } from "../_shared/language.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -52,6 +53,9 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    const __LANG_CODE__ = await getUserLanguage(supabaseAuth, userData.user.id, "es");
+    const __LANG_INSTRUCTION__ = languageInstruction(__LANG_CODE__);
 
     const body = (await req.json()) as Body;
     if (!body?.userSign || !body?.partnerName || !body?.partnerBirthDate || !body?.type) {
@@ -111,6 +115,7 @@ Devuelve SOLO JSON exacto (sin markdown, sin backticks):
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
+          { role: "system", content: __LANG_INSTRUCTION__ },
           {
             role: "system",
             content:

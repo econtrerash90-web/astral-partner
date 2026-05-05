@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { getUserLanguage, languageInstruction } from "../_shared/language.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
@@ -148,6 +149,9 @@ serve(async (req) => {
         status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    const __LANG_CODE__ = await getUserLanguage(supabaseAuth, userData.user.id, "es");
+    const __LANG_INSTRUCTION__ = languageInstruction(__LANG_CODE__);
     const user = userData.user;
 
     const body: ReadingRequest = await req.json();
@@ -221,6 +225,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
+          { role: "system", content: __LANG_INSTRUCTION__ },
           {
             role: "system",
             content: "Eres un guía de bienestar emocional y coach de vida. Respondes en español con tono cálido, cercano y motivador. NUNCA uses términos astrológicos técnicos como tránsitos, aspectos, casas, conjunciones, retornos, nodos, etc. Habla como un amigo sabio que da consejos prácticos sobre la vida. Debes responder SOLO en el formato JSON solicitado, sin texto adicional, sin markdown, sin backticks.",

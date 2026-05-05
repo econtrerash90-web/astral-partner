@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { User, Mail, BookOpen, TrendingUp, Lock, LogOut, Pencil, Calendar, Clock, MapPin, AlertTriangle, Loader2, Download, Trash2, Shield, ChevronRight, Building2, Map, Globe } from "lucide-react";
+import { User, Mail, BookOpen, TrendingUp, Lock, LogOut, Pencil, Calendar, Clock, MapPin, AlertTriangle, Loader2, Download, Trash2, Shield, ChevronRight, Building2, Map, Globe, Languages } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
+import { useI18n } from "@/hooks/useI18n";
+import { LanguageCode } from "@/lib/i18n/languages";
 import { supabase } from "@/integrations/supabase/client";
 import { normalizeBirthFields } from "@/lib/normalize-text";
 import elfawaLogo from "@/assets/elfawa-logo.png";
@@ -31,6 +33,7 @@ interface ChartData {
 
 const Profile = () => {
   const { user, signOut, updatePassword, session } = useAuth();
+  const { language, setLanguage, supported, t } = useI18n();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<{ full_name: string; created_at: string } | null>(null);
   const [chart, setChart] = useState<ChartData | null>(null);
@@ -171,7 +174,36 @@ const Profile = () => {
             </div>
           </motion.div>
 
-          {/* Chart summary */}
+          {/* Preferred language */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+            className="glass-card p-5">
+            <h2 className="font-body text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
+              <Languages className="w-4 h-4" />
+              {t("profile.language")}
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {supported.map((lng) => (
+                <button
+                  key={lng.code}
+                  onClick={async () => {
+                    await setLanguage(lng.code as LanguageCode);
+                    toast.success(t("profile.languageSaved"));
+                  }}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-xl border transition-all font-body text-sm ${
+                    language === lng.code
+                      ? "border-primary bg-primary/10 text-foreground"
+                      : "border-border/40 bg-muted/20 text-muted-foreground hover:border-primary/40"
+                  }`}
+                >
+                  <span className="text-lg">{lng.flag}</span>
+                  <span>{lng.nativeLabel}</span>
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mt-3 font-body">{t("profile.languageHelp")}</p>
+          </motion.div>
+
+
           {chart && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
               className="glass-card p-5">

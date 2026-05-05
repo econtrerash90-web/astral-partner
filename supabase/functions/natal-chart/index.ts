@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { getUserLanguage, languageInstruction } from "../_shared/language.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -30,6 +31,9 @@ serve(async (req) => {
         status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    const __LANG_CODE__ = await getUserLanguage(supabaseAuth, userData.user.id, "es");
+    const __LANG_INSTRUCTION__ = languageInstruction(__LANG_CODE__);
 
     const { birthDate, birthTime, birthPlace } = await req.json();
 
@@ -72,6 +76,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
+          { role: "system", content: __LANG_INSTRUCTION__ },
           {
             role: "system",
             content: `Eres un sistema de cálculo astronómico. Dada una fecha, hora y coordenadas de nacimiento, debes generar las posiciones planetarias aproximadas para una carta natal. Responde SOLO con un JSON válido, sin markdown ni texto adicional.
@@ -170,6 +175,7 @@ Devuelve SOLO el JSON, sin ningún texto adicional ni markdown.`
       body: JSON.stringify({
         model: "google/gemini-2.5-flash-lite",
         messages: [
+          { role: "system", content: __LANG_INSTRUCTION__ },
           {
             role: "system",
             content: "Eres un coach de vida. Explica conceptos de personalidad en lenguaje simple y cotidiano. NUNCA uses jerga astrológica. Responde SOLO con JSON válido sin markdown."
