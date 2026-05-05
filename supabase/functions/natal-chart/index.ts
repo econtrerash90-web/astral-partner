@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getUserLanguage, languageInstruction } from "../_shared/language.ts";
+import { resolveTimezone, localToUTC } from "../_shared/timezone.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -35,24 +36,34 @@ serve(async (req) => {
     const __LANG_CODE__ = await getUserLanguage(supabaseAuth, userData.user.id, "es");
     const __LANG_INSTRUCTION__ = languageInstruction(__LANG_CODE__);
 
-    const { birthDate, birthTime, birthPlace } = await req.json();
+    const body = await req.json();
+    const { birthDate, birthPlace } = body;
+    let { birthTime } = body;
+    let timeEstimated = false;
 
-    if (!birthDate || !birthTime || !birthPlace) {
+    if (!birthDate || !birthPlace) {
       return new Response(JSON.stringify({ error: "Faltan datos de nacimiento" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    // Default to noon when birth time is missing.
+    if (!birthTime || typeof birthTime !== "string" || !/^\d{2}:\d{2}/.test(birthTime)) {
+      birthTime = "12:00";
+      timeEstimated = true;
+    }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    // Step 1: Geocode birth place using Nominatim
+    // Step 1: Geocode birth place using Nominatim (decimal coords).
     let latitude = 40.4168;
     let longitude = -3.7038;
+    let country: string | undefined;
+    let displayName: string | undefined;
     try {
       const geoRes = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(birthPlace)}&format=json&limit=1`,
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(birthPlace)}&format=json&limit=1&addressdetails=1`,
         { headers: { "User-Agent": "AstrelleGuide/1.0" } }
       );
       if (geoRes.ok) {
@@ -60,11 +71,22 @@ serve(async (req) => {
         if (geoData.length > 0) {
           latitude = parseFloat(geoData[0].lat);
           longitude = parseFloat(geoData[0].lon);
+          country = geoData[0]?.address?.country;
+          displayName = geoData[0]?.display_name;
         }
       }
     } catch (e) {
       console.error("Geocoding error:", e);
     }
+    // Validate decimal ranges and round to 4-decimal precision.
+    latitude = Math.max(-90, Math.min(90, Math.round(latitude * 10000) / 10000));
+    longitude = Math.max(-180, Math.min(180, Math.round(longitude * 10000) / 10000));
+
+    // Step 1b: Resolve IANA timezone (with historical DST) and convert to UTC.
+    const timezone = resolveTimezone({ latitude, longitude, country, displayName });
+    const { utcISO, offsetMinutes } = localToUTC({ date: birthDate, time: birthTime, timezone });
+    const offsetHours = offsetMinutes / 60;
+    const offsetLabel = `UTC${offsetHours >= 0 ? "+" : ""}${offsetHours}`;
 
     // Step 2: Use AI to generate planetary positions
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
