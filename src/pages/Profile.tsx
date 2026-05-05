@@ -486,15 +486,48 @@ const Profile = () => {
               </div>
               <div>
                 <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
-                  <MapPin className="w-3.5 h-3.5 text-primary" />
-                  Lugar de Nacimiento
+                  <Building2 className="w-3.5 h-3.5 text-primary" />
+                  Ciudad <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="text"
-                  value={editPlace}
-                  onChange={(e) => setEditPlace(e.target.value)}
+                  value={editCity}
+                  onChange={(e) => setEditCity(e.target.value)}
+                  required
+                  maxLength={80}
                   className="input-modern"
-                  placeholder="Ciudad, País"
+                  placeholder="Ciudad de México"
+                />
+              </div>
+              <div>
+                <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
+                  <Map className="w-3.5 h-3.5 text-primary" />
+                  Estado o Provincia <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={editState}
+                  onChange={(e) => setEditState(e.target.value)}
+                  required
+                  maxLength={80}
+                  className="input-modern"
+                  placeholder="CDMX"
+                />
+              </div>
+              <div>
+                <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
+                  <Globe className="w-3.5 h-3.5 text-primary" />
+                  País <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={editCountry}
+                  onChange={(e) => setEditCountry(e.target.value)}
+                  required
+                  maxLength={80}
+                  autoComplete="country-name"
+                  className="input-modern"
+                  placeholder="México"
                 />
               </div>
             </div>
