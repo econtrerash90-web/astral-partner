@@ -102,15 +102,45 @@ const ResultShareButtons = ({ captureRef, filename, shareText, buttons }: Result
     const blob = await generateImage();
     if (!blob) return;
     const file = new File([blob], `astrelle-${filename}.png`, { type: "image/png" });
-    if (navigator.share && navigator.canShare({ files: [file] })) {
+
+    // Try native share with file (mobile)
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
       try {
         await navigator.share({ files: [file], title: "Astrelle", text: fullShareText });
+        return;
       } catch (e) {
-        if ((e as Error).name !== "AbortError") toast.error("No se pudo compartir");
+        if ((e as Error).name === "AbortError") return;
+        // fall through to fallback
       }
-    } else {
-      await navigator.clipboard.writeText(fullShareText);
-      toast.success("Texto copiado al portapapeles ✨");
+    }
+
+    // Try native share with text only
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "Astrelle", text: fullShareText });
+        return;
+      } catch (e) {
+        if ((e as Error).name === "AbortError") return;
+      }
+    }
+
+    // Desktop fallback: download image + copy text
+    try {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.download = `astrelle-${filename}.png`;
+      link.href = url;
+      link.click();
+      URL.revokeObjectURL(url);
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(fullShareText);
+        toast.success("Imagen descargada y texto copiado ✨");
+      } else {
+        toast.success("Imagen descargada ✨");
+      }
+    } catch (e) {
+      console.error("Share fallback failed:", e);
+      toast.error("No se pudo compartir");
     }
   };
 
