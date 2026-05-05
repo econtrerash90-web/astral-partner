@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Sparkles, BookOpen, Hash, Flame, Gem, Sun, Moon, ArrowUp, Heart, Briefcase, Activity, Palette, Clock, AlertTriangle, ChevronRight, RefreshCw, Layers, Crown, Feather, SquareAsterisk, Lock, Map, ChevronDown } from "lucide-react";
+import { Star, Sparkles, BookOpen, Hash, Flame, Gem, Sun, Moon, ArrowUp, Heart, Briefcase, Activity, Palette, Clock, AlertTriangle, ChevronRight, RefreshCw, Layers, Crown, Feather, SquareAsterisk, Lock, Map, ChevronDown, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import AstralForm from "@/components/AstralForm";
 import AstralLoading from "@/components/AstralLoading";
+import DailyShareCard from "@/components/DailyShareCard";
+import ResultShareButtons from "@/components/ResultShareButtons";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -63,6 +65,8 @@ const Index = () => {
   const [isLoadingHoroscope, setIsLoadingHoroscope] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const [showShareCard, setShowShareCard] = useState(false);
+  const shareCardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!user) return;
