@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { User, Mail, BookOpen, TrendingUp, Lock, LogOut, Pencil, Calendar, Clock, MapPin, AlertTriangle, Loader2, Download, Trash2, Shield, ChevronRight } from "lucide-react";
+import { User, Mail, BookOpen, TrendingUp, Lock, LogOut, Pencil, Calendar, Clock, MapPin, AlertTriangle, Loader2, Download, Trash2, Shield, ChevronRight, Building2, Map, Globe } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
@@ -42,7 +42,9 @@ const Profile = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [editDate, setEditDate] = useState("");
   const [editTime, setEditTime] = useState("");
-  const [editPlace, setEditPlace] = useState("");
+  const [editCity, setEditCity] = useState("");
+  const [editState, setEditState] = useState("");
+  const [editCountry, setEditCountry] = useState("");
   const [saving, setSaving] = useState(false);
   const [confirmStep, setConfirmStep] = useState(false);
 
@@ -71,15 +73,29 @@ const Profile = () => {
     if (!chart) return;
     setEditDate(chart.birth_date);
     setEditTime(chart.birth_time);
-    setEditPlace(chart.birth_place);
+    // Try to split saved birth_place "City, State, Country"
+    const parts = (chart.birth_place || "").split(",").map((p) => p.trim());
+    setEditCity(parts[0] || "");
+    setEditState(parts[1] || "");
+    setEditCountry(parts[2] || parts[1] || "");
     setConfirmStep(false);
     setEditOpen(true);
   };
 
-  const hasChanges = chart && (editDate !== chart.birth_date || editTime !== chart.birth_time || editPlace !== chart.birth_place);
+  const composedPlace = `${editCity.trim()}, ${editState.trim()}, ${editCountry.trim()}`;
+  const hasChanges = chart && (
+    editDate !== chart.birth_date ||
+    editTime !== chart.birth_time ||
+    composedPlace !== chart.birth_place
+  );
+  const placeComplete = editCity.trim() && editState.trim() && editCountry.trim();
 
   const handleSaveChart = async () => {
     if (!chart || !hasChanges) return;
+    if (!placeComplete) {
+      toast.error("Debes ingresar Ciudad, Estado y País");
+      return;
+    }
 
     if (!confirmStep) {
       setConfirmStep(true);
@@ -89,7 +105,7 @@ const Profile = () => {
     setSaving(true);
     const { error } = await supabase
       .from("astral_charts")
-      .update({ birth_date: editDate, birth_time: editTime, birth_place: editPlace })
+      .update({ birth_date: editDate, birth_time: editTime, birth_place: composedPlace })
       .eq("id", chart.id);
 
     if (error) {
@@ -470,15 +486,48 @@ const Profile = () => {
               </div>
               <div>
                 <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
-                  <MapPin className="w-3.5 h-3.5 text-primary" />
-                  Lugar de Nacimiento
+                  <Building2 className="w-3.5 h-3.5 text-primary" />
+                  Ciudad <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="text"
-                  value={editPlace}
-                  onChange={(e) => setEditPlace(e.target.value)}
+                  value={editCity}
+                  onChange={(e) => setEditCity(e.target.value)}
+                  required
+                  maxLength={80}
                   className="input-modern"
-                  placeholder="Ciudad, País"
+                  placeholder="Ciudad de México"
+                />
+              </div>
+              <div>
+                <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
+                  <Map className="w-3.5 h-3.5 text-primary" />
+                  Estado o Provincia <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={editState}
+                  onChange={(e) => setEditState(e.target.value)}
+                  required
+                  maxLength={80}
+                  className="input-modern"
+                  placeholder="CDMX"
+                />
+              </div>
+              <div>
+                <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
+                  <Globe className="w-3.5 h-3.5 text-primary" />
+                  País <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={editCountry}
+                  onChange={(e) => setEditCountry(e.target.value)}
+                  required
+                  maxLength={80}
+                  autoComplete="country-name"
+                  className="input-modern"
+                  placeholder="México"
                 />
               </div>
             </div>
