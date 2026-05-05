@@ -174,7 +174,36 @@ const Profile = () => {
             </div>
           </motion.div>
 
-          {/* Chart summary */}
+          {/* Preferred language */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+            className="glass-card p-5">
+            <h2 className="font-body text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
+              <Languages className="w-4 h-4" />
+              {t("profile.language")}
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {supported.map((lng) => (
+                <button
+                  key={lng.code}
+                  onClick={async () => {
+                    await setLanguage(lng.code as LanguageCode);
+                    toast.success(t("profile.languageSaved"));
+                  }}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-xl border transition-all font-body text-sm ${
+                    language === lng.code
+                      ? "border-primary bg-primary/10 text-foreground"
+                      : "border-border/40 bg-muted/20 text-muted-foreground hover:border-primary/40"
+                  }`}
+                >
+                  <span className="text-lg">{lng.flag}</span>
+                  <span>{lng.nativeLabel}</span>
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mt-3 font-body">{t("profile.languageHelp")}</p>
+          </motion.div>
+
+
           {chart && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
               className="glass-card p-5">
