@@ -292,7 +292,7 @@ const Index = () => {
             )}
             {horoscope.mercuryRetrograde && (
               <span className="pill-tag-danger pill-tag">
-                <AlertTriangle className="w-3 h-3" /> Energía en pausa ☿
+                <AlertTriangle className="w-3 h-3" /> {t("home.energyPause")} ☿
               </span>
             )}
             {horoscope.luckyColor && (
@@ -302,7 +302,7 @@ const Index = () => {
               <span className="pill-tag"><Clock className="w-3 h-3" /> {horoscope.luckyHour}</span>
             )}
             {luckyNumber !== null && (
-              <span className="pill-tag"><Hash className="w-3 h-3" /> Número de la suerte hoy: {luckyNumber}</span>
+              <span className="pill-tag"><Hash className="w-3 h-3" /> {t("home.luckyNumberToday")}: {luckyNumber}</span>
             )}
           </motion.div>
         )}
@@ -316,11 +316,11 @@ const Index = () => {
                 <Sparkles className="w-4 h-4 text-primary" />
               </div>
               <h2 className="font-display text-base text-foreground tracking-wide">
-                Tu Día de Hoy
+                {t("home.todaysReading")}
               </h2>
             </div>
             <button onClick={generateHoroscope} disabled={isLoadingHoroscope}
-              className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all" title="Regenerar">
+              className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all" title={t("home.regenerate")}>
               <RefreshCw className={`w-4 h-4 ${isLoadingHoroscope ? "animate-spin" : ""}`} />
             </button>
           </div>
@@ -328,7 +328,7 @@ const Index = () => {
           {isLoadingHoroscope && !horoscope ? (
             <div className="flex items-center gap-3 py-8 justify-center">
               <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              <p className="text-muted-foreground text-sm font-body">Preparando tu lectura...</p>
+              <p className="text-muted-foreground text-sm font-body">{t("home.preparingReading")}</p>
             </div>
           ) : horoscope ? (
             <div className="space-y-5">
@@ -338,18 +338,18 @@ const Index = () => {
 
               {/* Energy meters */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <EnergyBar icon={<Sparkles className="w-3.5 h-3.5" />} label="Energía" value={horoscope.energy} />
-                <EnergyBar icon={<Heart className="w-3.5 h-3.5" />} label="Amor" value={horoscope.love} />
-                <EnergyBar icon={<Briefcase className="w-3.5 h-3.5" />} label="Trabajo" value={horoscope.work} />
-                <EnergyBar icon={<Activity className="w-3.5 h-3.5" />} label="Salud" value={horoscope.health} />
+                <EnergyBar icon={<Sparkles className="w-3.5 h-3.5" />} label={t("home.energy")} value={horoscope.energy} />
+                <EnergyBar icon={<Heart className="w-3.5 h-3.5" />} label={t("home.love")} value={horoscope.love} />
+                <EnergyBar icon={<Briefcase className="w-3.5 h-3.5" />} label={t("home.work")} value={horoscope.work} />
+                <EnergyBar icon={<Activity className="w-3.5 h-3.5" />} label={t("home.health")} value={horoscope.health} />
               </div>
 
               {/* Expandable details */}
               <div className="space-y-1.5">
-                <DetailRow label="✨ Energía" text={horoscope.energyDetail || horoscope.general} id="energy" expanded={expandedSection} toggle={setExpandedSection} />
-                <DetailRow label="💕 Amor" text={horoscope.loveDetail} id="love" expanded={expandedSection} toggle={setExpandedSection} />
-                <DetailRow label="💼 Trabajo" text={horoscope.workDetail} id="work" expanded={expandedSection} toggle={setExpandedSection} />
-                <DetailRow label="🌿 Salud" text={horoscope.healthDetail} id="health" expanded={expandedSection} toggle={setExpandedSection} />
+                <DetailRow label={`✨ ${t("home.energy")}`} text={horoscope.energyDetail || horoscope.general} id="energy" expanded={expandedSection} toggle={setExpandedSection} />
+                <DetailRow label={`💕 ${t("home.love")}`} text={horoscope.loveDetail} id="love" expanded={expandedSection} toggle={setExpandedSection} />
+                <DetailRow label={`💼 ${t("home.work")}`} text={horoscope.workDetail} id="work" expanded={expandedSection} toggle={setExpandedSection} />
+                <DetailRow label={`🌿 ${t("home.health")}`} text={horoscope.healthDetail} id="health" expanded={expandedSection} toggle={setExpandedSection} />
               </div>
 
               {/* Advice */}
@@ -373,24 +373,24 @@ const Index = () => {
                 className="w-full glass-card p-4 flex items-center justify-center gap-2 hover:border-primary/30 transition-all text-foreground/85 hover:text-foreground"
               >
                 <Share2 className="w-4 h-4 text-primary" />
-                <span className="font-body text-sm">Compartir Mi Día en Stories</span>
+                <span className="font-body text-sm">{t("home.shareDay")}</span>
               </button>
             ) : (
               <div className="glass-card p-4 space-y-4">
                 <p className="font-body text-xs text-muted-foreground text-center">
-                  Tu tarjeta del día está lista para Instagram Stories ✨
+                  {t("home.shareCardReady")}
                 </p>
                 <ResultShareButtons
                   captureRef={shareCardRef}
                   filename={`dia-${format(today, "yyyy-MM-dd")}`}
-                  shareText={`Mi energía de hoy según Astrelle ✨ ${chartData.sun_sign_name}`}
+                  shareText={`${t("home.shareCardCaption")} ✨ ${chartData.sun_sign_name}`}
                   buttons={["download", "more"]}
                 />
                 <button
                   onClick={() => setShowShareCard(false)}
                   className="w-full text-xs text-muted-foreground/60 hover:text-muted-foreground font-body"
                 >
-                  Cerrar
+                  {t("common.close")}
                 </button>
               </div>
             )}
@@ -414,7 +414,7 @@ const Index = () => {
         )}
 
         <p className="text-center text-muted-foreground/30 text-[11px] mt-4 font-body">
-          Las lecturas son para entretenimiento y reflexión personal, no sustituyen asesoría profesional.
+          {t("home.disclaimer")}
         </p>
       </div>
     </div>
