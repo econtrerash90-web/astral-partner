@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { User, Calendar, Clock, MapPin, Lock, Sparkles, Building2, Map, Globe } from "lucide-react";
+import { normalizeBirthFields } from "@/lib/normalize-text";
 
 interface FormData {
   fullName: string;
