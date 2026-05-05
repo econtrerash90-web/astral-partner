@@ -32,6 +32,7 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
   const [usedToday, setUsedToday] = useState(0);
   const [showShare, setShowShare] = useState(false);
   const [isRevealing, setIsRevealing] = useState(false);
+  const [zoomedCard, setZoomedCard] = useState<{ name: string; image: string; position?: string; meaning?: string } | null>(null);
 
   const limit = getLimit(type, isPremium);
   const locked = isLocked(type, isPremium);
