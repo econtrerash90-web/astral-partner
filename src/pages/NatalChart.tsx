@@ -10,10 +10,8 @@ import { supabase } from "@/integrations/supabase/client";
 import type { NatalChartData } from "@/lib/natal-chart-types";
 import { getSignTrait, ELEMENT_FRIENDLY, PLANET_FRIENDLY } from "@/lib/sign-descriptions";
 import { formatAIText } from "@/lib/format-ai-text";
-import CompatibilitySection from "@/components/CompatibilitySection";
 import ZodiacKnightCard from "@/components/ZodiacKnightCard";
 import ResultShareButtons from "@/components/ResultShareButtons";
-import type { SignName } from "@/lib/compatibility";
 
 interface AstralChartRow {
   full_name: string;

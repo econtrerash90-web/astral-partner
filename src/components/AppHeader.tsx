@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Star, BookOpen, User, LogOut, ChevronDown, Layers, Crown, Feather, SquareAsterisk, Map } from "lucide-react";
+import { Sparkles, Star, BookOpen, User, LogOut, ChevronDown, Layers, Crown, Feather, SquareAsterisk, Heart } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { Badge } from "@/components/ui/badge";
