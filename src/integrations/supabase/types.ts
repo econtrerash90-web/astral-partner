@@ -396,6 +396,7 @@ export type Database = {
         Args: { p_date: string; p_type: string; p_user_id: string }
         Returns: undefined
       }
+      invalidate_user_ai_cache: { Args: never; Returns: undefined }
       title_case_es: { Args: { p_input: string }; Returns: string }
     }
     Enums: {
