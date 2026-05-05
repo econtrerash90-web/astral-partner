@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getUserLanguage, languageInstruction } from "../_shared/language.ts";
 import { resolveTimezone, localToUTC } from "../_shared/timezone.ts";
+import { computeNatalChart, computeAspects } from "../_shared/swiss-ephemeris.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -103,114 +104,38 @@ serve(async (req) => {
     const offsetHours = offsetMinutes / 60;
     const offsetLabel = `UTC${offsetHours >= 0 ? "+" : ""}${offsetHours}`;
 
-    // Step 2: Use AI to generate planetary positions
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: __LANG_INSTRUCTION__ },
-          {
-            role: "system",
-            content: `Eres un sistema de cálculo astronómico. Dada una fecha, hora y coordenadas de nacimiento, debes generar las posiciones planetarias aproximadas para una carta natal. Responde SOLO con un JSON válido, sin markdown ni texto adicional.
-
-Las posiciones deben ser realistas basadas en las efemérides astronómicas conocidas. Calcula las posiciones usando el conocimiento astronómico de la fecha dada.
-
-El formato de respuesta debe ser exactamente:
-{
-  "planets": [
-    {"name": "Sol", "symbol": "☉", "sign": "Aries", "degree": 15, "minute": 23, "house": 1, "retrograde": false},
-    {"name": "Luna", "symbol": "☽", "sign": "Tauro", "degree": 8, "minute": 45, "house": 2, "retrograde": false},
-    {"name": "Mercurio", "symbol": "☿", "sign": "Piscis", "degree": 28, "minute": 12, "house": 12, "retrograde": true},
-    {"name": "Venus", "symbol": "♀", "sign": "Aries", "degree": 3, "minute": 56, "house": 1, "retrograde": false},
-    {"name": "Marte", "symbol": "♂", "sign": "Géminis", "degree": 20, "minute": 8, "house": 3, "retrograde": false},
-    {"name": "Júpiter", "symbol": "♃", "sign": "Leo", "degree": 12, "minute": 34, "house": 5, "retrograde": false},
-    {"name": "Saturno", "symbol": "♄", "sign": "Capricornio", "degree": 5, "minute": 17, "house": 10, "retrograde": true},
-    {"name": "Urano", "symbol": "♅", "sign": "Escorpio", "degree": 18, "minute": 42, "house": 8, "retrograde": false},
-    {"name": "Neptuno", "symbol": "♆", "sign": "Sagitario", "degree": 1, "minute": 5, "house": 9, "retrograde": false},
-    {"name": "Plutón", "symbol": "♇", "sign": "Libra", "degree": 27, "minute": 33, "house": 7, "retrograde": true},
-    {"name": "Nodo Norte", "symbol": "☊", "sign": "Virgo", "degree": 14, "minute": 20, "house": 6, "retrograde": false},
-    {"name": "Quirón", "symbol": "⚷", "sign": "Tauro", "degree": 9, "minute": 15, "house": 2, "retrograde": false}
-  ],
-  "houses": [
-    {"number": 1, "sign": "Aries", "degree": 0, "minute": 0},
-    {"number": 2, "sign": "Tauro", "degree": 2, "minute": 15},
-    {"number": 3, "sign": "Géminis", "degree": 5, "minute": 30},
-    {"number": 4, "sign": "Cáncer", "degree": 8, "minute": 45},
-    {"number": 5, "sign": "Leo", "degree": 6, "minute": 20},
-    {"number": 6, "sign": "Virgo", "degree": 3, "minute": 10},
-    {"number": 7, "sign": "Libra", "degree": 0, "minute": 0},
-    {"number": 8, "sign": "Escorpio", "degree": 2, "minute": 15},
-    {"number": 9, "sign": "Sagitario", "degree": 5, "minute": 30},
-    {"number": 10, "sign": "Capricornio", "degree": 8, "minute": 45},
-    {"number": 11, "sign": "Acuario", "degree": 6, "minute": 20},
-    {"number": 12, "sign": "Piscis", "degree": 3, "minute": 10}
-  ],
-  "ascendant": {"sign": "Aries", "degree": 0, "minute": 0},
-  "midheaven": {"sign": "Capricornio", "degree": 8, "minute": 45},
-  "aspects": [
-    {"planet1": "Sol", "planet2": "Luna", "type": "sextil", "orb": 2.3},
-    {"planet1": "Sol", "planet2": "Marte", "type": "trígono", "orb": 1.5},
-    {"planet1": "Luna", "planet2": "Venus", "type": "cuadratura", "orb": 3.1},
-    {"planet1": "Mercurio", "planet2": "Saturno", "type": "oposición", "orb": 0.8}
-  ]
-}
-
-Los tipos de aspectos son: conjunción, sextil, cuadratura, trígono, oposición, quincuncio, semisextil.
-Los signos zodiacales son: Aries, Tauro, Géminis, Cáncer, Leo, Virgo, Libra, Escorpio, Sagitario, Capricornio, Acuario, Piscis.
-Los grados van de 0 a 29. Los minutos van de 0 a 59.
-Las casas van de 1 a 12.
-
-REQUISITOS OBLIGATORIOS:
-- Sistema de casas: PLACIDUS (P).
-- Planetas obligatorios: Sol, Luna, Mercurio, Venus, Marte, Júpiter, Saturno, Urano, Neptuno, Plutón, Nodo Norte (medio).
-- Marca retrograde=true cuando la velocidad eclíptica sea negativa.
-- El Ascendente debe calcularse desde las cúspides de casas (NO derivado de un planeta), considerando la latitud exacta.
-- Usa el INSTANTE UTC dado para el cálculo (ya incluye ajuste de DST histórico).
-
-Genera posiciones REALISTAS basadas en la astronomía real para la fecha dada. No inventes posiciones aleatorias.`
-          },
-          {
-            role: "user",
-            content: `Calcula las posiciones planetarias para:
-- Fecha local de nacimiento: ${birthDate}
-- Hora local de nacimiento: ${birthTime}${timeEstimated ? " (estimada al mediodía)" : ""}
-- Zona horaria: ${timezone} (${offsetLabel}, DST aplicado si corresponde a la fecha)
-- Instante UTC equivalente: ${utcISO}
-- Latitud: ${latitude} (decimal, 4 decimales)
-- Longitud: ${longitude} (decimal, 4 decimales)
-- Lugar: ${birthPlace}
-- Sistema de casas: PLACIDUS
-
-Devuelve SOLO el JSON, sin ningún texto adicional ni markdown.`
-          }
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Límite de consultas excedido, intenta de nuevo en un momento." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "Créditos agotados." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      throw new Error(`AI gateway error: ${response.status}`);
+    // Step 2: Compute the natal chart with Swiss Ephemeris (Moshier mode).
+    let chartData: {
+      planets: Array<{ name:string; symbol:string; sign:string; degree:number; minute:number; house:number; retrograde:boolean }>;
+      houses: Array<{ number:number; sign:string; degree:number; minute:number }>;
+      ascendant: { sign:string; degree:number; minute:number };
+      midheaven: { sign:string; degree:number; minute:number };
+      aspects: Array<{ planet1:string; planet2:string; type:string; orb:number }>;
+      ephemerisVersion?: string;
+      julianDay?: number;
+    };
+    try {
+      const calc = await computeNatalChart({ utcISO, latitude, longitude });
+      chartData = {
+        planets: calc.planets.map((p) => ({
+          name: p.name, symbol: p.symbol, sign: p.sign,
+          degree: p.degree, minute: p.minute, house: p.house, retrograde: p.retrograde,
+        })),
+        houses: calc.houses.map((h) => ({
+          number: h.number, sign: h.sign, degree: h.degree, minute: h.minute,
+        })),
+        ascendant: { sign: calc.ascendant.sign, degree: calc.ascendant.degree, minute: calc.ascendant.minute },
+        midheaven: { sign: calc.midheaven.sign, degree: calc.midheaven.degree, minute: calc.midheaven.minute },
+        aspects: computeAspects(calc.planets),
+        ephemerisVersion: calc.ephemerisVersion,
+        julianDay: calc.julianDay,
+      };
+    } catch (e) {
+      console.error("Swiss Ephemeris error:", e);
+      return new Response(JSON.stringify({ error: "No se pudo calcular la carta natal." }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
-
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content || "";
-
-    const cleaned = content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-    const chartData = JSON.parse(cleaned);
 
     // Step 3: Generate interpretations for each planet
     const interpretResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
