@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Loader2, Star, RefreshCw } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Loader2, Star, RefreshCw, Sparkles, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import NatalChartWheel from "@/components/NatalChartWheel";
@@ -8,21 +8,37 @@ import NatalChartTable from "@/components/NatalChartTable";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import type { NatalChartData } from "@/lib/natal-chart-types";
+import { getSignTrait, ELEMENT_FRIENDLY, PLANET_FRIENDLY } from "@/lib/sign-descriptions";
+import { formatAIText } from "@/lib/format-ai-text";
+
+interface AstralChartRow {
+  full_name: string;
+  birth_date: string;
+  birth_time: string;
+  birth_place: string;
+  sun_sign_name: string;
+  sun_sign_element: string;
+  sun_sign_planet: string;
+  sun_sign_symbol: string;
+  moon_sign: string;
+  ascendant: string;
+  analysis: string | null;
+}
 
 const NatalChart = () => {
   const { user } = useAuth();
   const [chartData, setChartData] = useState<NatalChartData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [birthInfo, setBirthInfo] = useState<{ date: string; time: string; place: string } | null>(null);
+  const [astralChart, setAstralChart] = useState<AstralChartRow | null>(null);
+  const [analysisExpanded, setAnalysisExpanded] = useState(false);
 
   const loadChart = async () => {
     if (!user) return;
     setLoading(true);
 
-    // Get birth data from astral_charts
     const { data: chart } = await supabase
       .from("astral_charts")
-      .select("birth_date, birth_time, birth_place")
+      .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(1)
@@ -33,7 +49,7 @@ const NatalChart = () => {
       return;
     }
 
-    setBirthInfo({ date: chart.birth_date, time: chart.birth_time, place: chart.birth_place });
+    setAstralChart(chart as AstralChartRow);
 
     try {
       const { data, error } = await supabase.functions.invoke("natal-chart", {
@@ -74,9 +90,9 @@ const NatalChart = () => {
               <Star className="w-5 h-5 text-primary" />
               Tu Carta Natal
             </h1>
-            {birthInfo && (
+            {astralChart && (
               <p className="text-muted-foreground text-xs font-body mt-1">
-                {birthInfo.date} · {birthInfo.time} · {birthInfo.place}
+                {astralChart.birth_date} · {astralChart.birth_time} · {astralChart.birth_place}
               </p>
             )}
           </div>
@@ -86,7 +102,7 @@ const NatalChart = () => {
               <Loader2 className="w-8 h-8 text-primary animate-spin" />
               <p className="text-muted-foreground text-sm font-body">Calculando tu carta natal...</p>
             </div>
-          ) : !birthInfo ? (
+          ) : !astralChart ? (
             <div className="glass-card p-8 text-center">
               <p className="text-muted-foreground font-body">
                 Necesitas completar tus datos de nacimiento para ver tu carta natal.
@@ -101,6 +117,81 @@ const NatalChart = () => {
 
               {/* Positions table */}
               <NatalChartTable data={chartData} />
+
+              {/* ─── Tu Perfil Astral ─── */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="glass-card p-5 sm:p-6"
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="feature-icon w-8 h-8 rounded-xl">
+                    <Star className="w-4 h-4 text-primary" />
+                  </div>
+                  <h2 className="font-display text-base text-foreground tracking-wide">Tu Perfil Astral</h2>
+                </div>
+
+                <div className="glass-card-elevated p-4 rounded-xl mb-3 border-primary/10">
+                  <p className="section-label mb-1">Tu signo</p>
+                  <p className="text-foreground text-xl font-display font-semibold flex items-center gap-2">
+                    <span className="text-2xl">{astralChart.sun_sign_symbol}</span>
+                    {astralChart.sun_sign_name}
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 mt-3">
+                    <div className="flex justify-between items-center p-2.5 bg-muted/20 rounded-lg">
+                      <span className="text-muted-foreground text-xs font-body">Tu energía</span>
+                      <span className="text-primary font-medium text-xs font-body">{ELEMENT_FRIENDLY[astralChart.sun_sign_element] || astralChart.sun_sign_element}</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2.5 bg-muted/20 rounded-lg">
+                      <span className="text-muted-foreground text-xs font-body">Tu impulso</span>
+                      <span className="text-primary font-medium text-xs font-body">{PLANET_FRIENDLY[astralChart.sun_sign_planet] || astralChart.sun_sign_planet}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                  <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
+                    <p className="section-label mb-1">Tus emociones</p>
+                    <p className="text-foreground font-display font-semibold">{astralChart.moon_sign}</p>
+                    <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(astralChart.moon_sign, "moon")}</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
+                    <p className="section-label mb-1">Cómo te ven</p>
+                    <p className="text-foreground font-display font-semibold">{astralChart.ascendant}</p>
+                    <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(astralChart.ascendant, "asc")}</p>
+                  </div>
+                </div>
+
+                {astralChart.analysis && (
+                  <div className="mt-4">
+                    <button
+                      onClick={() => setAnalysisExpanded((v) => !v)}
+                      className="w-full flex items-center justify-between p-3 rounded-xl bg-muted/10 border border-border/15 hover:bg-muted/20 transition-all"
+                    >
+                      <span className="text-sm font-body font-medium text-foreground/90 flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-primary" />
+                        Tu personalidad según las estrellas
+                      </span>
+                      <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-300 ${analysisExpanded ? "rotate-180" : ""}`} />
+                    </button>
+                    <AnimatePresence>
+                      {analysisExpanded && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="pt-3 px-1 text-foreground/80 text-sm font-body leading-relaxed">
+                            {formatAIText(astralChart.analysis)}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                )}
+              </motion.div>
 
               {/* Recalculate */}
               <div className="text-center">
