@@ -148,22 +148,44 @@ const NatalChart = () => {
           ) : chartData ? (
             <>
               {/* Chart wheel */}
-              <div className="glass-card p-4 rounded-2xl">
-                <NatalChartWheel data={chartData} size={380} />
+              <div>
+                <div ref={wheelRef} className="glass-card p-4 rounded-2xl">
+                  <NatalChartWheel data={chartData} size={380} />
+                </div>
+                <div className="mt-3">
+                  <ResultShareButtons
+                    captureRef={wheelRef}
+                    filename="carta-natal-rueda"
+                    shareText={`Mi carta natal ✨ ${astralChart.sun_sign_name}`}
+                  />
+                </div>
               </div>
 
               {/* Zodiac Knight (above profile) */}
-              <ZodiacKnightCard
-                sign={astralChart.sun_sign_name}
-                signSymbol={astralChart.sun_sign_symbol}
-              />
+              <div>
+                <div ref={knightRef}>
+                  <ZodiacKnightCard
+                    sign={astralChart.sun_sign_name}
+                    signSymbol={astralChart.sun_sign_symbol}
+                  />
+                </div>
+                <div className="mt-3">
+                  <ResultShareButtons
+                    captureRef={knightRef}
+                    filename="caballero-zodiacal"
+                    shareText={`Mi Caballero del Zodiaco ⚔️ ${astralChart.sun_sign_name}`}
+                  />
+                </div>
+              </div>
 
               {/* ─── Tu Perfil Astral ─── */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="glass-card p-5 sm:p-6"
-              >
+              <div>
+                <motion.div
+                  ref={profileRef}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="glass-card p-5 sm:p-6"
+                >
                 <div className="flex items-center gap-2 mb-4">
                   <div className="feature-icon w-8 h-8 rounded-xl">
                     <Star className="w-4 h-4 text-primary" />
@@ -231,7 +253,15 @@ const NatalChart = () => {
                     </AnimatePresence>
                   </div>
                 )}
-              </motion.div>
+                </motion.div>
+                <div className="mt-3">
+                  <ResultShareButtons
+                    captureRef={profileRef}
+                    filename="perfil-astral"
+                    shareText={`Mi Perfil Astral ✨ ${astralChart.sun_sign_name} · Luna en ${astralChart.moon_sign} · Asc. ${astralChart.ascendant}`}
+                  />
+                </div>
+              </div>
 
               {/* Positions table */}
               <NatalChartTable data={chartData} />
