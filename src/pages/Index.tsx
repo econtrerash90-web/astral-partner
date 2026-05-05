@@ -58,6 +58,7 @@ const Index = () => {
   const { isPremium } = useSubscription();
   const [chartData, setChartData] = useState<ChartRow | null>(null);
   const [horoscope, setHoroscope] = useState<DailyHoroscope | null>(null);
+  const [luckyNumber, setLuckyNumber] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingHoroscope, setIsLoadingHoroscope] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -87,6 +88,36 @@ const Index = () => {
 
         if (reading?.content) {
           setHoroscope(reading.content as unknown as DailyHoroscope);
+        }
+
+        // Load cached lucky number
+        const { data: cached } = await supabase
+          .from("astral_extras" as any)
+          .select("result")
+          .eq("user_id", user.id)
+          .eq("type", "luckyNumber")
+          .maybeSingle();
+        if (cached && (cached as any).result?.number) {
+          setLuckyNumber((cached as any).result.number);
+        } else {
+          // Generate silently
+          try {
+            const { data: result } = await supabase.functions.invoke("astral-extras", {
+              body: {
+                type: "luckyNumber",
+                sun_sign_name: chart.sun_sign_name,
+                moon_sign: chart.moon_sign,
+                ascendant: chart.ascendant,
+              },
+            });
+            if ((result as any)?.number) {
+              setLuckyNumber((result as any).number);
+              await supabase.from("astral_extras" as any).upsert(
+                { user_id: user.id, type: "luckyNumber", result, created_at: new Date().toISOString() },
+                { onConflict: "user_id,type" }
+              );
+            }
+          } catch {}
         }
       }
       setIsLoading(false);
@@ -252,6 +283,9 @@ const Index = () => {
             )}
             {horoscope.luckyHour && (
               <span className="pill-tag"><Clock className="w-3 h-3" /> {horoscope.luckyHour}</span>
+            )}
+            {luckyNumber !== null && (
+              <span className="pill-tag"><Hash className="w-3 h-3" /> Número de la suerte hoy: {luckyNumber}</span>
             )}
           </motion.div>
         )}

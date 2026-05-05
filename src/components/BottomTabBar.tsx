@@ -22,17 +22,16 @@ import { useAuth } from "@/hooks/useAuth";
 const mainTabs = [
   { to: "/", label: "Inicio", icon: Star },
   { to: "/diario", label: "Diario", icon: BookOpen },
+  { to: "/tarot", label: "Tarot", icon: Layers },
   // center slot reserved
   { to: "/logros", label: "Logros", icon: Trophy },
   { to: "/carta-natal", label: "Carta", icon: Sparkles },
 ];
 
 const spreadOptions = [
-  { to: "/tarot", label: "Tarot", icon: Layers },
   { to: "/el-secreto", label: "Secreto", icon: Crown },
   { to: "/angeles", label: "Ángeles", icon: Feather },
   { to: "/oraculo", label: "Oráculo", icon: SquareAsterisk },
-  { to: "/numero-suerte", label: "Suerte", icon: Hash },
   { to: "/ritual", label: "Ritual", icon: Flame },
   { to: "/amuleto", label: "Amuleto", icon: Gem },
   { to: "/mapa-estelar", label: "Mapa", icon: Map },
@@ -180,9 +179,10 @@ const BottomTabBar = () => {
           paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
-        <div className="relative max-w-2xl mx-auto flex items-stretch h-16 px-2">
+        <div className="relative max-w-2xl mx-auto flex items-stretch h-16 px-1">
           {renderTab(mainTabs[0])}
           {renderTab(mainTabs[1])}
+          {renderTab(mainTabs[2])}
 
           {/* Center FAB */}
           <div className="flex-1 flex items-start justify-center relative">
@@ -205,8 +205,8 @@ const BottomTabBar = () => {
             </span>
           </div>
 
-          {renderTab(mainTabs[2])}
           {renderTab(mainTabs[3])}
+          {renderTab(mainTabs[4])}
 
           <Link
             to="/perfil"
