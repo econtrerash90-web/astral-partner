@@ -42,7 +42,9 @@ const Profile = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [editDate, setEditDate] = useState("");
   const [editTime, setEditTime] = useState("");
-  const [editPlace, setEditPlace] = useState("");
+  const [editCity, setEditCity] = useState("");
+  const [editState, setEditState] = useState("");
+  const [editCountry, setEditCountry] = useState("");
   const [saving, setSaving] = useState(false);
   const [confirmStep, setConfirmStep] = useState(false);
 
