@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { getUserLanguage, languageInstruction } from "../_shared/language.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -29,6 +30,9 @@ serve(async (req) => {
       });
     }
 
+    const __LANG_CODE__ = await getUserLanguage(supabaseAuth, userData.user.id, "es");
+    const __LANG_INSTRUCTION__ = languageInstruction(__LANG_CODE__);
+
     const { type, sunSign, moonSign, ascendant, entryText } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
@@ -48,6 +52,7 @@ serve(async (req) => {
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
           messages: [
+          { role: "system", content: __LANG_INSTRUCTION__ },
             { role: "system", content: "Eres un coach de bienestar que genera preguntas de reflexión personal. NUNCA uses términos astrológicos técnicos. Responde SOLO con las 3 preguntas, una por línea, sin numeración, sin introducción, sin conclusión." },
             { role: "user", content: `Genera 3 preguntas de reflexión para alguien con personalidad tipo ${sunSign}, emociones tipo ${moonSign} y que proyecta energía de ${ascendant}. Las preguntas deben ayudarle a entenderse mejor, reflexionar sobre su crecimiento personal y explorar sus emociones. No uses jerga astrológica, habla en lenguaje cotidiano.` },
           ],
@@ -67,6 +72,7 @@ serve(async (req) => {
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
           messages: [
+          { role: "system", content: __LANG_INSTRUCTION__ },
             { role: "system", content: "Eres un coach emocional experto. NUNCA uses términos astrológicos técnicos. Responde en español con lenguaje cotidiano." },
             { role: "user", content: `Analiza esta entrada de diario de alguien con personalidad tipo ${sunSign}. Proporciona: 1) Estado emocional predominante (1-2 palabras), 2) Un mensaje breve y alentador (2-3 líneas, sin jerga astrológica), 3) Una afirmación positiva personalizada, 4) Sugiere 2-3 tags temáticos relevantes (una palabra cada uno, ej: gratitud, ansiedad, amor). Entrada: "${entryText?.slice(0, 500)}"` },
           ],

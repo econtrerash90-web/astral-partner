@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { getUserLanguage, languageInstruction } from "../_shared/language.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -31,6 +32,9 @@ serve(async (req) => {
       });
     }
 
+    const __LANG_CODE__ = await getUserLanguage(supabaseAuth, userData.user.id, "es");
+    const __LANG_INSTRUCTION__ = languageInstruction(__LANG_CODE__);
+
     const { sunSign, moonSign, ascendant } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
@@ -57,6 +61,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
+          { role: "system", content: __LANG_INSTRUCTION__ },
           {
             role: "system",
             content: "Eres un guía de bienestar personal que usa la sabiduría de los astros para dar consejos prácticos. NUNCA uses términos técnicos como 'tránsito', 'aspecto', 'casa astrológica', 'conjunción', 'oposición', 'trígono', 'cuadratura', 'retorno solar', 'nodo lunar' ni ningún otro término astrológico complejo. Habla como si le explicaras a un amigo cómo será su día, enfocándote en emociones, relaciones, trabajo y salud. Respondes SOLO en formato JSON válido sin markdown ni backticks. En español latino."
