@@ -21,7 +21,7 @@ import { useAuth } from "@/hooks/useAuth";
 const mainTabs = [
   { to: "/", label: "Inicio", icon: Star },
   { to: "/diario", label: "Diario", icon: BookOpen },
-  { to: "/compatibilidad", label: "Compatibilidad", icon: Heart },
+  { to: "/compatibilidad", label: "Compat.", icon: Heart },
   // center slot reserved
   { to: "/logros", label: "Logros", icon: Trophy },
   { to: "/carta-natal", label: "Carta", icon: Sparkles },
