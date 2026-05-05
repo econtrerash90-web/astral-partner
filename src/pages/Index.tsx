@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Star, Sparkles, BookOpen, Hash, Flame, Gem, Sun, Moon, ArrowUp, Heart, Briefcase, Activity, Palette, Clock, AlertTriangle, ChevronRight, RefreshCw, Layers, Crown, Feather, SquareAsterisk, Lock, Map, ChevronDown, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { es as esLocale, enUS, de as deLocale, pl as plLocale, pt as ptLocale } from "date-fns/locale";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import AstralForm from "@/components/AstralForm";
@@ -11,6 +11,7 @@ import AstralLoading from "@/components/AstralLoading";
 import DailyShareCard from "@/components/DailyShareCard";
 import ResultShareButtons from "@/components/ResultShareButtons";
 import { useAuth } from "@/hooks/useAuth";
+import { useI18n } from "@/hooks/useI18n";
 import { supabase } from "@/integrations/supabase/client";
 import { useSubscription } from "@/hooks/useSubscription";
 import {
@@ -21,6 +22,15 @@ import {
 } from "@/lib/astral-calculations";
 import { formatAIText } from "@/lib/format-ai-text";
 import { getSignTrait, getMoonTransitLabel, ELEMENT_FRIENDLY, PLANET_FRIENDLY } from "@/lib/sign-descriptions";
+
+const dateLocales: Record<string, any> = { es: esLocale, en: enUS, de: deLocale, pl: plLocale, pt: ptLocale };
+const dateFormatByLang: Record<string, string> = {
+  es: "EEEE, d 'de' MMMM",
+  en: "EEEE, MMMM d",
+  de: "EEEE, d. MMMM",
+  pl: "EEEE, d MMMM",
+  pt: "EEEE, d 'de' MMMM",
+};
 
 interface DailyHoroscope {
   general: string;
@@ -57,6 +67,7 @@ interface ChartRow {
 
 const Index = () => {
   const { user } = useAuth();
+  const { t, language } = useI18n();
   const { isPremium } = useSubscription();
   const [chartData, setChartData] = useState<ChartRow | null>(null);
   const [horoscope, setHoroscope] = useState<DailyHoroscope | null>(null);
