@@ -284,6 +284,9 @@ const Index = () => {
             {horoscope.luckyHour && (
               <span className="pill-tag"><Clock className="w-3 h-3" /> {horoscope.luckyHour}</span>
             )}
+            {luckyNumber !== null && (
+              <span className="pill-tag"><Hash className="w-3 h-3" /> Número de la suerte hoy: {luckyNumber}</span>
+            )}
           </motion.div>
         )}
 
