@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useI18n } from "@/hooks/useI18n";
 import { supabase } from "@/integrations/supabase/client";
 import type { NatalChartData } from "@/lib/natal-chart-types";
+import { ZODIAC_GLYPHS } from "@/lib/natal-chart-types";
 import { getSignTrait, ELEMENT_FRIENDLY, PLANET_FRIENDLY } from "@/lib/sign-descriptions";
 import { formatAIText } from "@/lib/format-ai-text";
 import ZodiacKnightCard from "@/components/ZodiacKnightCard";
@@ -61,6 +62,25 @@ const NatalChart = () => {
           { user_id: user.id, type: "natalChart", result: data, created_at: new Date().toISOString() },
           { onConflict: "user_id,type" }
         );
+
+        // Sync moon_sign and ascendant in astral_charts with the precise
+        // Swiss Ephemeris values (DB trigger uses a simplified estimation).
+        try {
+          const moonPlanet = (data as NatalChartData).planets?.find((p) => p.name === "Luna");
+          const ascSign = (data as NatalChartData).ascendant?.sign;
+          const moonSign = moonPlanet?.sign;
+          if (moonSign || ascSign) {
+            const updates: Record<string, string> = {};
+            if (moonSign && moonSign !== chart.moon_sign) updates.moon_sign = moonSign;
+            if (ascSign && ascSign !== chart.ascendant) updates.ascendant = ascSign;
+            if (Object.keys(updates).length > 0) {
+              await supabase.from("astral_charts").update(updates).eq("user_id", user.id);
+              setAstralChart((prev) => (prev ? { ...prev, ...updates } as AstralChartRow : prev));
+            }
+          }
+        } catch (syncErr) {
+          console.warn("Could not sync chart signs:", syncErr);
+        }
       }
       return true;
     } catch (e: any) {
@@ -195,55 +215,79 @@ const NatalChart = () => {
                   <h2 className="font-display text-base text-foreground tracking-wide">{t("natal.profile")}</h2>
                 </div>
 
-                <div className="glass-card-elevated p-4 rounded-xl mb-3 border-primary/10">
-                  <p className="section-label mb-1">{t("natal.yourSign")}</p>
-                  <p className="text-foreground text-xl font-display font-semibold flex items-center gap-2">
-                    <span className="text-2xl">{astralChart.sun_sign_symbol}</span>
-                    {astralChart.sun_sign_name}
-                  </p>
-                  <div className="grid grid-cols-2 gap-2 mt-3">
-                    <div className="flex justify-between items-center p-2.5 bg-muted/20 rounded-lg">
-                      <span className="text-muted-foreground text-xs font-body">{t("natal.yourEnergy")}</span>
-                      <span className="text-primary font-medium text-xs font-body">{ELEMENT_FRIENDLY[astralChart.sun_sign_element] || astralChart.sun_sign_element}</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2.5 bg-muted/20 rounded-lg">
-                      <span className="text-muted-foreground text-xs font-body">{t("natal.yourDrive")}</span>
-                      <span className="text-primary font-medium text-xs font-body">{PLANET_FRIENDLY[astralChart.sun_sign_planet] || astralChart.sun_sign_planet}</span>
-                    </div>
-                  </div>
-                </div>
+                {(() => {
+                  const sun = chartData?.planets?.find((p) => p.name === "Sol");
+                  const moon = chartData?.planets?.find((p) => p.name === "Luna");
+                  const sunSign = sun?.sign ?? astralChart.sun_sign_name;
+                  const sunSymbol = sun ? (ZODIAC_GLYPHS[sun.sign] ?? astralChart.sun_sign_symbol) : astralChart.sun_sign_symbol;
+                  const moonSign = moon?.sign ?? astralChart.moon_sign;
+                  const ascSign = chartData?.ascendant?.sign ?? astralChart.ascendant;
+                  return (
+                    <>
+                      <div className="glass-card-elevated p-4 rounded-xl mb-3 border-primary/10">
+                        <p className="section-label mb-1">{t("natal.yourSign")}</p>
+                        <p className="text-foreground text-xl font-display font-semibold flex items-center gap-2">
+                          <span className="text-2xl">{sunSymbol}</span>
+                          {sunSign}
+                          {sun && (
+                            <span className="text-muted-foreground/70 text-xs font-body ml-1">
+                              {sun.degree}°{String(sun.minute).padStart(2, "0")}′
+                            </span>
+                          )}
+                        </p>
+                        <div className="grid grid-cols-2 gap-2 mt-3">
+                          <div className="flex justify-between items-center p-2.5 bg-muted/20 rounded-lg">
+                            <span className="text-muted-foreground text-xs font-body">{t("natal.yourEnergy")}</span>
+                            <span className="text-primary font-medium text-xs font-body">{ELEMENT_FRIENDLY[astralChart.sun_sign_element] || astralChart.sun_sign_element}</span>
+                          </div>
+                          <div className="flex justify-between items-center p-2.5 bg-muted/20 rounded-lg">
+                            <span className="text-muted-foreground text-xs font-body">{t("natal.yourDrive")}</span>
+                            <span className="text-primary font-medium text-xs font-body">{PLANET_FRIENDLY[astralChart.sun_sign_planet] || astralChart.sun_sign_planet}</span>
+                          </div>
+                        </div>
+                      </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
-                  <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
-                    <p className="section-label mb-1">{t("natal.yourEmotions")}</p>
-                    <p className="text-foreground font-display font-semibold">{astralChart.moon_sign}</p>
-                    <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(astralChart.moon_sign, "moon")}</p>
-                  </div>
-                  <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
-                    <p className="section-label mb-1">{t("natal.howOthersSee")}</p>
-                    <p className="text-foreground font-display font-semibold">
-                      {chartData?.ascendant?.sign ?? astralChart.ascendant}
-                      {chartData?.ascendant && (
-                        <span className="text-muted-foreground/70 text-xs font-body ml-1">
-                          {chartData.ascendant.degree}°{String(chartData.ascendant.minute).padStart(2, "0")}′
-                        </span>
-                      )}
-                    </p>
-                    <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(chartData?.ascendant?.sign ?? astralChart.ascendant, "asc")}</p>
-                  </div>
-                  {chartData?.midheaven && (
-                    <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
-                      <p className="section-label mb-1">{t("natal.yourPath")}</p>
-                      <p className="text-foreground font-display font-semibold">
-                        {chartData.midheaven.sign}
-                        <span className="text-muted-foreground/70 text-xs font-body ml-1">
-                          {chartData.midheaven.degree}°{String(chartData.midheaven.minute).padStart(2, "0")}′
-                        </span>
-                      </p>
-                      <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(chartData.midheaven.sign, "mc")}</p>
-                    </div>
-                  )}
-                </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+                        <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
+                          <p className="section-label mb-1">{t("natal.yourEmotions")}</p>
+                          <p className="text-foreground font-display font-semibold">
+                            {moonSign}
+                            {moon && (
+                              <span className="text-muted-foreground/70 text-xs font-body ml-1">
+                                {moon.degree}°{String(moon.minute).padStart(2, "0")}′
+                              </span>
+                            )}
+                          </p>
+                          <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(moonSign, "moon")}</p>
+                        </div>
+                        <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
+                          <p className="section-label mb-1">{t("natal.howOthersSee")}</p>
+                          <p className="text-foreground font-display font-semibold">
+                            {ascSign}
+                            {chartData?.ascendant && (
+                              <span className="text-muted-foreground/70 text-xs font-body ml-1">
+                                {chartData.ascendant.degree}°{String(chartData.ascendant.minute).padStart(2, "0")}′
+                              </span>
+                            )}
+                          </p>
+                          <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(ascSign, "asc")}</p>
+                        </div>
+                        {chartData?.midheaven && (
+                          <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
+                            <p className="section-label mb-1">{t("natal.yourPath")}</p>
+                            <p className="text-foreground font-display font-semibold">
+                              {chartData.midheaven.sign}
+                              <span className="text-muted-foreground/70 text-xs font-body ml-1">
+                                {chartData.midheaven.degree}°{String(chartData.midheaven.minute).padStart(2, "0")}′
+                              </span>
+                            </p>
+                            <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(chartData.midheaven.sign, "mc")}</p>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  );
+                })()}
 
                 {astralChart.analysis && (
                   <div className="mt-4">
