@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { normalizeBirthFields } from "@/lib/normalize-text";
 import elfawaLogo from "@/assets/elfawa-logo.png";
 import {
   Dialog,
