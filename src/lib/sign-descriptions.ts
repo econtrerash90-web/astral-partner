@@ -51,6 +51,22 @@ export const ASC_TRAITS: Record<string, string> = {
   Piscis: "Proyectas sensibilidad, empatía y creatividad",
 };
 
+/** What your Midheaven (MC) says about your public image, vocation and life direction */
+export const MC_TRAITS: Record<string, string> = {
+  Aries: "Te realizas liderando y abriendo nuevos caminos",
+  Tauro: "Buscas una vocación estable y duradera",
+  Géminis: "Brillas comunicando, enseñando o conectando ideas",
+  Cáncer: "Te realizas cuidando y construyendo un legado familiar",
+  Leo: "Naciste para destacar y ser reconocido/a por tu talento",
+  Virgo: "Tu camino es el servicio, el detalle y la mejora continua",
+  Libra: "Te realizas creando armonía, belleza y acuerdos",
+  Escorpio: "Tu vocación implica transformar y profundizar",
+  Sagitario: "Buscas una misión amplia, libre y con propósito",
+  Capricornio: "Naciste para construir una carrera sólida y respetada",
+  Acuario: "Te realizas innovando y aportando algo único al mundo",
+  Piscis: "Tu camino es creativo, espiritual o de ayuda a otros",
+};
+
 /** Friendly labels for elements */
 export const ELEMENT_FRIENDLY: Record<string, string> = {
   Fuego: "🔥 Energía activa",
@@ -75,8 +91,8 @@ export const PLANET_FRIENDLY: Record<string, string> = {
 };
 
 /** Get a short personality summary from a sign name */
-export function getSignTrait(sign: string, type: "sun" | "moon" | "asc"): string {
-  const map = type === "sun" ? SUN_TRAITS : type === "moon" ? MOON_TRAITS : ASC_TRAITS;
+export function getSignTrait(sign: string, type: "sun" | "moon" | "asc" | "mc"): string {
+  const map = type === "sun" ? SUN_TRAITS : type === "moon" ? MOON_TRAITS : type === "asc" ? ASC_TRAITS : MC_TRAITS;
   return map[sign] || sign;
 }
 

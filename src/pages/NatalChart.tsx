@@ -213,7 +213,7 @@ const NatalChart = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 mb-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
                   <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
                     <p className="section-label mb-1">{t("natal.yourEmotions")}</p>
                     <p className="text-foreground font-display font-semibold">{astralChart.moon_sign}</p>
@@ -221,9 +221,28 @@ const NatalChart = () => {
                   </div>
                   <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
                     <p className="section-label mb-1">{t("natal.howOthersSee")}</p>
-                    <p className="text-foreground font-display font-semibold">{astralChart.ascendant}</p>
-                    <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(astralChart.ascendant, "asc")}</p>
+                    <p className="text-foreground font-display font-semibold">
+                      {chartData?.ascendant?.sign ?? astralChart.ascendant}
+                      {chartData?.ascendant && (
+                        <span className="text-muted-foreground/70 text-xs font-body ml-1">
+                          {chartData.ascendant.degree}°{String(chartData.ascendant.minute).padStart(2, "0")}′
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(chartData?.ascendant?.sign ?? astralChart.ascendant, "asc")}</p>
                   </div>
+                  {chartData?.midheaven && (
+                    <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
+                      <p className="section-label mb-1">{t("natal.yourPath")}</p>
+                      <p className="text-foreground font-display font-semibold">
+                        {chartData.midheaven.sign}
+                        <span className="text-muted-foreground/70 text-xs font-body ml-1">
+                          {chartData.midheaven.degree}°{String(chartData.midheaven.minute).padStart(2, "0")}′
+                        </span>
+                      </p>
+                      <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(chartData.midheaven.sign, "mc")}</p>
+                    </div>
+                  )}
                 </div>
 
                 {astralChart.analysis && (
