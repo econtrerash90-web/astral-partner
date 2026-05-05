@@ -4,7 +4,6 @@ import { User, Mail, BookOpen, TrendingUp, Lock, LogOut, Pencil, Calendar, Clock
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
-import AchievementsSection from "@/components/AchievementsSection";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -213,9 +212,6 @@ const Profile = () => {
               </div>
             </div>
           </motion.div>
-
-          {/* Achievements */}
-          <AchievementsSection />
 
           {/* Change password */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}

@@ -13,6 +13,7 @@ import {
   Hash,
   Flame,
   Gem,
+  Trophy,
   X,
 } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -22,6 +23,7 @@ const mainTabs = [
   { to: "/", label: "Inicio", icon: Star },
   { to: "/diario", label: "Diario", icon: BookOpen },
   // center slot reserved
+  { to: "/logros", label: "Logros", icon: Trophy },
   { to: "/carta-natal", label: "Carta", icon: Sparkles },
 ];
 
@@ -204,6 +206,7 @@ const BottomTabBar = () => {
           </div>
 
           {renderTab(mainTabs[2])}
+          {renderTab(mainTabs[3])}
 
           <Link
             to="/perfil"
