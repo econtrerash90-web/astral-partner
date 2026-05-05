@@ -5,13 +5,17 @@ import { toast } from "sonner";
 
 const APP_URL = "https://astrelle-guide.app";
 
+type ShareButtonKey = "download" | "instagram" | "whatsapp" | "more";
+
 interface ResultShareButtonsProps {
   captureRef: RefObject<HTMLDivElement>;
   filename: string;
   shareText: string;
+  buttons?: ShareButtonKey[];
 }
 
-const ResultShareButtons = ({ captureRef, filename, shareText }: ResultShareButtonsProps) => {
+const ResultShareButtons = ({ captureRef, filename, shareText, buttons }: ResultShareButtonsProps) => {
+  const visible = new Set<ShareButtonKey>(buttons ?? ["download", "instagram", "whatsapp", "more"]);
   const [generating, setGenerating] = useState(false);
 
   const generateImage = async (): Promise<Blob | null> => {
