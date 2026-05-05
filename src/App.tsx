@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import elfawaLogo from "@/assets/elfawa-logo.png";
+
 import { BrowserRouter, Route, Routes, Navigate, Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
