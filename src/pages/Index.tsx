@@ -351,6 +351,53 @@ const Index = () => {
           ) : null}
         </motion.div>
 
+        {/* ─── Share My Day ─── */}
+        {horoscope && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="space-y-3">
+            {!showShareCard ? (
+              <button
+                onClick={() => setShowShareCard(true)}
+                className="w-full glass-card p-4 flex items-center justify-center gap-2 hover:border-primary/30 transition-all text-foreground/85 hover:text-foreground"
+              >
+                <Share2 className="w-4 h-4 text-primary" />
+                <span className="font-body text-sm">Compartir Mi Día en Stories</span>
+              </button>
+            ) : (
+              <div className="glass-card p-4 space-y-4">
+                <p className="font-body text-xs text-muted-foreground text-center">
+                  Tu tarjeta del día está lista para Instagram Stories ✨
+                </p>
+                <ResultShareButtons
+                  captureRef={shareCardRef}
+                  filename={`dia-${format(today, "yyyy-MM-dd")}`}
+                  shareText={`Mi energía de hoy según Astrelle ✨ ${chartData.sun_sign_name}`}
+                />
+                <button
+                  onClick={() => setShowShareCard(false)}
+                  className="w-full text-xs text-muted-foreground/60 hover:text-muted-foreground font-body"
+                >
+                  Cerrar
+                </button>
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {/* Hidden share card for image generation */}
+        {horoscope && (
+          <div style={{ position: "fixed", left: "-9999px", top: 0, pointerEvents: "none" }} aria-hidden>
+            <DailyShareCard
+              ref={shareCardRef}
+              name={displayName}
+              sunSign={chartData.sun_sign_name}
+              sunSymbol={chartData.sun_sign_symbol}
+              general={horoscope.general}
+              luckyNumber={luckyNumber}
+              luckyColor={horoscope.luckyColor}
+              advice={horoscope.advice}
+            />
+          </div>
+        )}
 
         <p className="text-center text-muted-foreground/30 text-[11px] mt-4 font-body">
           Las lecturas son para entretenimiento y reflexión personal, no sustituyen asesoría profesional.
