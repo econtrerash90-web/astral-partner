@@ -145,9 +145,6 @@ const NatalChart = () => {
                 <NatalChartWheel data={chartData} size={380} />
               </div>
 
-              {/* Positions table */}
-              <NatalChartTable data={chartData} />
-
               {/* ─── Tu Perfil Astral ─── */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
