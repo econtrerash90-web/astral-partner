@@ -2,8 +2,8 @@ export type ReadingType = "tarot" | "secret" | "angels" | "oracle";
 
 const DAILY_LIMITS: Record<string, Record<ReadingType, number>> = {
   // Premium lock temporarily disabled — all reading types open to free users
-  free: { tarot: 99, secret: 99, angels: 99, oracle: 99 },
-  premium: { tarot: 99, secret: 99, angels: 99, oracle: 99 },
+  free: { tarot: 3, secret: 3, angels: 3, oracle: 3 },
+  premium: { tarot: 3, secret: 3, angels: 3, oracle: 3 },
 };
 
 export const getLimit = (type: ReadingType, isPremium: boolean): number =>
