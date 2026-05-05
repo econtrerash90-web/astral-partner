@@ -16,6 +16,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
 import { AchievementsProvider } from "@/hooks/useAchievements";
+import { I18nProvider } from "@/hooks/useI18n";
 import AppHeader from "@/components/AppHeader";
 import BottomTabBar from "@/components/BottomTabBar";
 import BetaBanner from "@/components/BetaBanner";
