@@ -81,6 +81,40 @@ const NatalChart = () => {
         } catch (syncErr) {
           console.warn("Could not sync chart signs:", syncErr);
         }
+
+        // Regenerate the personality analysis using the precise Swiss Ephemeris
+        // signs (Sun/Moon/Ascendant + Midheaven) when missing or when stored
+        // signs differ from the precise ones.
+        try {
+          const cd = data as NatalChartData;
+          const sunPlanet = cd.planets?.find((p) => p.name === "Sol");
+          const moonPlanet = cd.planets?.find((p) => p.name === "Luna");
+          const sunSign = sunPlanet?.sign ?? chart.sun_sign_name;
+          const moonSign = moonPlanet?.sign ?? chart.moon_sign;
+          const ascSign = cd.ascendant?.sign ?? chart.ascendant;
+          const mcSign = cd.midheaven?.sign;
+
+          const needsRegen = !chart.analysis
+            || (sunPlanet && sunPlanet.sign !== chart.sun_sign_name)
+            || (moonPlanet && moonPlanet.sign !== chart.moon_sign)
+            || (cd.ascendant && cd.ascendant.sign !== chart.ascendant);
+
+          if (needsRegen) {
+            const { data: ana } = await supabase.functions.invoke("astral-analysis", {
+              body: {
+                sunSign, moonSign, ascendant: ascSign, midheaven: mcSign,
+                birthPlace: chart.birth_place,
+              },
+            });
+            const newAnalysis = (ana as any)?.analysis;
+            if (newAnalysis) {
+              await supabase.from("astral_charts").update({ analysis: newAnalysis }).eq("user_id", user.id);
+              setAstralChart((prev) => (prev ? { ...prev, analysis: newAnalysis } as AstralChartRow : prev));
+            }
+          }
+        } catch (anaErr) {
+          console.warn("Could not regenerate analysis:", anaErr);
+        }
       }
       return true;
     } catch (e: any) {
