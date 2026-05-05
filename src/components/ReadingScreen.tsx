@@ -504,23 +504,27 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
 
             <button
               onClick={performReading}
-              disabled={!category || isLoading || remaining <= 0}
-              className="w-full btn-gold flex items-center justify-center gap-2 py-4"
+              disabled={!category || isLoading}
+              className="w-full btn-gold flex items-center justify-center gap-2 py-4 disabled:opacity-50"
             >
               <span className="text-lg">{meta.emoji}</span>
-              {remaining <= 0 ? "Sin tiradas disponibles" : `Revelar ${meta.label}`}
+              {remaining <= 0
+                ? (category ? "Ver mi última tirada de esta categoría" : "Elige una categoría para ver tu última tirada")
+                : `Revelar ${meta.label}`}
             </button>
 
-            {remaining <= 0 && !isPremium && (
+            {remaining <= 0 && (
               <div className="glass-card p-5 text-center">
                 <Crown className="w-8 h-8 text-primary mx-auto mb-2" />
-                <p className="text-sm font-body text-foreground/80 mb-1">¡Ya usaste tu tirada de hoy!</p>
+                <p className="text-sm font-body text-foreground/80 mb-1">Ya usaste tus tiradas de hoy</p>
                 <p className="text-xs font-body text-muted-foreground mb-3">
-                  Con Premium+ obtienes hasta {getLimit(type, true)} tiradas diarias
+                  Puedes consultar la última tirada que hiciste por categoría. Mañana podrás generar nuevas ✨
                 </p>
-                <Link to="/premium" className="text-primary text-sm font-body underline underline-offset-2 hover:text-primary/80">
-                  Conoce los planes y elige el tuyo →
-                </Link>
+                {!isPremium && (
+                  <Link to="/premium" className="text-primary text-sm font-body underline underline-offset-2 hover:text-primary/80">
+                    Conoce los planes Premium+ →
+                  </Link>
+                )}
               </div>
             )}
           </motion.div>
