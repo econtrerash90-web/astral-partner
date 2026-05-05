@@ -271,10 +271,10 @@ const Index = () => {
         {/* ─── Greeting ─── */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
           <p className="text-muted-foreground text-xs font-body mb-1 tracking-wide">
-            {format(today, "EEEE, d 'de' MMMM", { locale: es })}
+            {format(today, dateFormatByLang[language] ?? dateFormatByLang.es, { locale: dateLocales[language] ?? esLocale })}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent" style={{ backgroundImage: "var(--gradient-title)" }}>
-            Hola, {displayName}
+            {t("home.hello")}, {displayName}
           </h1>
           <div className="flex items-center gap-4 mt-3">
             <SignPill icon={<Sun className="w-3 h-3 text-primary" />} label={chartData.sun_sign_name} tooltip={getSignTrait(chartData.sun_sign_name, "sun")} />
