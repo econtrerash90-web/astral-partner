@@ -327,6 +327,20 @@ const Profile = () => {
             <LogOut className="w-4 h-4" />
             Cerrar Sesión
           </button>
+
+          {/* Powered by Elfawa AI Technologies */}
+          <div className="pt-4 pb-2 text-center">
+            <a
+              href="https://elfawa-ai-technologies.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 text-muted-foreground/60 hover:text-primary transition-colors"
+            >
+              <span className="text-xs font-body">Powered by</span>
+              <span className="text-xs font-body font-medium">Elfawa AI Technologies</span>
+              <span className="text-xs font-body opacity-70">2026</span>
+            </a>
+          </div>
         </div>
       </div>
 
