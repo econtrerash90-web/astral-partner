@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, Star, RefreshCw, Sparkles, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
@@ -12,6 +12,7 @@ import { getSignTrait, ELEMENT_FRIENDLY, PLANET_FRIENDLY } from "@/lib/sign-desc
 import { formatAIText } from "@/lib/format-ai-text";
 import CompatibilitySection from "@/components/CompatibilitySection";
 import ZodiacKnightCard from "@/components/ZodiacKnightCard";
+import ResultShareButtons from "@/components/ResultShareButtons";
 import type { SignName } from "@/lib/compatibility";
 
 interface AstralChartRow {
