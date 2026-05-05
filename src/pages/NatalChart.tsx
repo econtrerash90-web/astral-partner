@@ -102,6 +102,10 @@ const NatalChart = () => {
     }
   };
 
+  useEffect(() => {
+    loadChart();
+  }, [user]);
+
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       <StarField />
