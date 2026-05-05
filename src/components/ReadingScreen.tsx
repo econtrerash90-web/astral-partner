@@ -82,10 +82,36 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
     load();
   }, [user, type]);
 
+  const loadPreviousByCategory = useCallback(async (cat: string) => {
+    if (!user) return false;
+    setIsLoading(true);
+    try {
+      const { data: rows } = await supabase
+        .from("daily_readings")
+        .select("content, created_at")
+        .eq("user_id", user.id)
+        .eq("reading_type", type)
+        .order("created_at", { ascending: false })
+        .limit(50);
+      const match = (rows || []).find((r: any) => r?.content?._category === cat);
+      if (match) {
+        setResult(match.content);
+        toast.success("Mostrando tu última tirada de esta categoría ✨");
+        return true;
+      }
+      toast.info("Aún no tienes una tirada guardada para esta categoría");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user, type]);
+
   const performReading = useCallback(async () => {
     if (!chartData || !user || !category) return;
+
+    // Sin tiradas disponibles → mostrar última guardada de esta categoría
     if (remaining <= 0) {
-      toast.error("Has alcanzado tu límite de tiradas para hoy");
+      await loadPreviousByCategory(category);
       return;
     }
 
@@ -106,14 +132,15 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
-      setResult(data);
+      const enriched = { ...(data as any), _category: category };
+      setResult(enriched);
 
       const today = format(new Date(), "yyyy-MM-dd");
       await supabase.from("daily_readings").insert({
         user_id: user.id,
         reading_date: today,
         reading_type: type,
-        content: data,
+        content: enriched,
       });
 
       await supabase.rpc("increment_reading_count", {
@@ -129,7 +156,7 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
     } finally {
       setIsLoading(false);
     }
-  }, [chartData, user, category, question, type, remaining]);
+  }, [chartData, user, category, question, type, remaining, loadPreviousByCategory]);
 
   const newReading = () => {
     setResult(null);
@@ -319,7 +346,20 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
             {/* Secret */}
             {type === "secret" && (
               <div className="glass-card p-6 text-center">
-                <span className="text-4xl block mb-3">{result.emoji || "🌟"}</span>
+                {/* Carta alusiva */}
+                <div
+                  className="mx-auto mb-5 rounded-2xl flex flex-col items-center justify-center"
+                  style={{
+                    width: 140,
+                    height: 220,
+                    background: "linear-gradient(160deg, hsl(var(--primary) / 0.25), hsl(var(--accent) / 0.18))",
+                    border: "1.5px solid hsl(var(--primary) / 0.4)",
+                    boxShadow: "0 0 50px hsl(var(--primary) / 0.25), inset 0 0 30px hsl(var(--accent) / 0.1)",
+                  }}
+                >
+                  <span className="text-5xl mb-2">{result.emoji || "🌟"}</span>
+                  <p className="font-display text-[11px] tracking-[0.2em] text-primary/90 uppercase">El Secreto</p>
+                </div>
                 <h2 className="font-display text-xl text-foreground font-semibold mb-4">{result.title}</h2>
                 <div className="glass-card-elevated p-4 mb-4 border-primary/15">
                   <p className="text-sm font-body text-primary italic">"{result.affirmation}"</p>
@@ -341,8 +381,20 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
             {/* Angels */}
             {type === "angels" && (
               <div className="glass-card p-6 text-center">
-                <span className="text-4xl block mb-3">{result.emoji || "👼"}</span>
-                <p className="section-label mb-1">{result.angelName}</p>
+                {/* Carta alusiva */}
+                <div
+                  className="mx-auto mb-5 rounded-2xl flex flex-col items-center justify-center"
+                  style={{
+                    width: 140,
+                    height: 220,
+                    background: "linear-gradient(160deg, hsl(var(--nebula-pink, var(--accent)) / 0.25), hsl(var(--primary) / 0.15))",
+                    border: "1.5px solid hsl(var(--accent) / 0.4)",
+                    boxShadow: "0 0 50px hsl(var(--accent) / 0.25), inset 0 0 30px hsl(var(--primary) / 0.1)",
+                  }}
+                >
+                  <span className="text-5xl mb-2">{result.emoji || "👼"}</span>
+                  <p className="font-display text-[11px] tracking-[0.2em] text-accent uppercase">{result.angelName || "Ángel"}</p>
+                </div>
                 <h2 className="font-display text-xl text-foreground font-semibold mb-4">{result.title}</h2>
                 <p className="text-foreground/80 text-sm font-body leading-relaxed mb-4">{result.message}</p>
                 <div className="bg-accent/8 border border-accent/15 rounded-xl p-4 mb-3">
@@ -452,23 +504,27 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
 
             <button
               onClick={performReading}
-              disabled={!category || isLoading || remaining <= 0}
-              className="w-full btn-gold flex items-center justify-center gap-2 py-4"
+              disabled={!category || isLoading}
+              className="w-full btn-gold flex items-center justify-center gap-2 py-4 disabled:opacity-50"
             >
               <span className="text-lg">{meta.emoji}</span>
-              {remaining <= 0 ? "Sin tiradas disponibles" : `Revelar ${meta.label}`}
+              {remaining <= 0
+                ? (category ? "Ver mi última tirada de esta categoría" : "Elige una categoría para ver tu última tirada")
+                : `Revelar ${meta.label}`}
             </button>
 
-            {remaining <= 0 && !isPremium && (
+            {remaining <= 0 && (
               <div className="glass-card p-5 text-center">
                 <Crown className="w-8 h-8 text-primary mx-auto mb-2" />
-                <p className="text-sm font-body text-foreground/80 mb-1">¡Ya usaste tu tirada de hoy!</p>
+                <p className="text-sm font-body text-foreground/80 mb-1">Ya usaste tus tiradas de hoy</p>
                 <p className="text-xs font-body text-muted-foreground mb-3">
-                  Con Premium+ obtienes hasta {getLimit(type, true)} tiradas diarias
+                  Puedes consultar la última tirada que hiciste por categoría. Mañana podrás generar nuevas ✨
                 </p>
-                <Link to="/premium" className="text-primary text-sm font-body underline underline-offset-2 hover:text-primary/80">
-                  Conoce los planes y elige el tuyo →
-                </Link>
+                {!isPremium && (
+                  <Link to="/premium" className="text-primary text-sm font-body underline underline-offset-2 hover:text-primary/80">
+                    Conoce los planes Premium+ →
+                  </Link>
+                )}
               </div>
             )}
           </motion.div>

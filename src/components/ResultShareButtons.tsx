@@ -15,7 +15,7 @@ interface ResultShareButtonsProps {
 }
 
 const ResultShareButtons = ({ captureRef, filename, shareText, buttons }: ResultShareButtonsProps) => {
-  const visible = new Set<ShareButtonKey>(buttons ?? ["download", "instagram", "whatsapp", "more"]);
+  const visible = new Set<ShareButtonKey>(buttons ?? ["download", "more"]);
   const [generating, setGenerating] = useState(false);
 
   const generateImage = async (): Promise<Blob | null> => {
