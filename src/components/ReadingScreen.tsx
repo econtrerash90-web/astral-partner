@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, RefreshCw, Lock, Crown, Share2 } from "lucide-react";
+import { ArrowLeft, RefreshCw, Lock, Crown, Share2, X } from "lucide-react";
+import { getTarotImage } from "@/lib/tarot-images";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { format } from "date-fns";
