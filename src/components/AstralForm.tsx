@@ -135,7 +135,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
       <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/10 mb-6">
         <Lock className="w-4 h-4 text-primary flex-shrink-0" />
         <p className="text-muted-foreground text-xs font-body">
-          Tus datos están protegidos y nunca se comparten sin tu consentimiento.
+          {t("form.privacy")}
         </p>
       </div>
 
@@ -194,7 +194,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
           >
             <span className="flex items-center gap-2 text-sm font-body">
               <Settings2 className="w-4 h-4 text-primary" />
-              Modo experto: zona horaria y UTC
+              {t("form.expertMode")}
             </span>
             <ChevronDown className={`w-4 h-4 transition-transform ${expertOpen ? "rotate-180" : ""}`} />
           </button>
@@ -211,7 +211,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                   {/* Timezone select */}
                   <div>
                     <label className="block text-xs font-body text-muted-foreground mb-1.5">
-                      Zona horaria IANA
+                      {t("form.timezone")}
                     </label>
                     <select
                       value={tzOverride || resolvedTz}
@@ -227,8 +227,8 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                     </select>
                     <p className="mt-1 text-[11px] text-muted-foreground/70 font-body">
                       {tzOverride
-                        ? "Zona horaria definida manualmente."
-                        : "Detectada a partir del país. Cambia si necesitas otra."}
+                        ? t("form.timezoneManual")
+                        : t("form.timezoneAuto")}
                     </p>
                   </div>
 
@@ -236,7 +236,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                   <div className="grid grid-cols-2 gap-3">
                     <div className="p-3 rounded-lg bg-background/40 border border-border/15">
                       <p className="text-[10px] uppercase tracking-wide text-muted-foreground/70 font-body mb-1">
-                        Desfase
+                        {t("form.offset")}
                       </p>
                       <p className="text-sm font-body text-foreground">
                         {computed ? formatOffset(computed.offsetMinutes) : "—"}
@@ -244,7 +244,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                     </div>
                     <div className="p-3 rounded-lg bg-background/40 border border-border/15">
                       <p className="text-[10px] uppercase tracking-wide text-muted-foreground/70 font-body mb-1">
-                        Hora local
+                        {t("form.localTime")}
                       </p>
                       <p className="text-sm font-body text-foreground">
                         {formData.birthDate || "—"} {effectiveTime}
@@ -255,7 +255,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                   {/* UTC override */}
                   <div>
                     <label className="block text-xs font-body text-muted-foreground mb-1.5">
-                      Instante UTC (ISO 8601)
+                      {t("form.utcInstant")}
                     </label>
                     <input
                       type="text"
@@ -269,7 +269,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                     />
                     <div className="mt-1.5 flex items-center justify-between gap-3">
                       <p className="text-[11px] text-muted-foreground/70 font-body">
-                        Calculado automáticamente; edítalo solo si conoces el UTC exacto.
+                        {t("form.utcHint")}
                       </p>
                       {utcEdited && (
                         <button
@@ -277,7 +277,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                           onClick={() => { setUtcEdited(false); setUtcOverride(""); }}
                           className="text-[11px] text-primary hover:text-primary/80 font-body"
                         >
-                          Restablecer
+                          {t("form.reset")}
                         </button>
                       )}
                     </div>
@@ -294,7 +294,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
           className="btn-gold w-full py-4 flex items-center justify-center gap-3 text-base"
         >
           <Sparkles className="w-5 h-5" />
-          Descubrir Mi Perfil
+          {t("form.submit")}
         </button>
       </form>
     </motion.div>
