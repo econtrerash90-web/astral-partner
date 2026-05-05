@@ -165,7 +165,7 @@ const Index = () => {
       }, { onConflict: "user_id,reading_date,reading_type" });
     } catch (e) {
       console.error("Horoscope error:", e);
-      toast.error("No se pudo generar tu lectura del día. Intenta de nuevo.");
+      toast.error(t("home.errorHoroscope"));
     } finally {
       setIsLoadingHoroscope(false);
     }
@@ -223,10 +223,10 @@ const Index = () => {
 
       if (chart) setChartData(chart);
       setShowForm(false);
-      toast.success("¡Tu perfil personal está listo!");
+      toast.success(t("home.profileReady"));
     } catch (err) {
       console.error(err);
-      toast.error("No pudimos crear tu perfil. Intenta de nuevo.");
+      toast.error(t("home.errorProfile"));
     } finally {
       setIsLoading(false);
     }
@@ -250,9 +250,9 @@ const Index = () => {
         <div className="relative z-10 px-4 py-8 sm:py-12 max-w-2xl mx-auto">
           <motion.header initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
             <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent mb-2" style={{ backgroundImage: "var(--gradient-title)" }}>
-              Crea Tu Perfil Personal
+              {t("home.createProfileTitle")}
             </h1>
-            <p className="text-muted-foreground text-sm font-body">Cuéntanos cuándo y dónde naciste para conocer más sobre ti</p>
+            <p className="text-muted-foreground text-sm font-body">{t("home.createProfileSub")}</p>
           </motion.header>
           <AstralForm onSubmit={handleSubmit} isLoading={isLoading} />
         </div>
