@@ -311,61 +311,6 @@ const Index = () => {
           ) : null}
         </motion.div>
 
-        {/* ─── Journal Prompt ─── */}
-        {horoscope?.journalPrompt && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <Link to="/diario" className="glass-card p-4 flex items-center gap-4 group hover:border-primary/20 transition-all block">
-              <div className="feature-icon feature-icon-accent rounded-2xl">
-                <BookOpen className="w-5 h-5 text-accent" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="section-label mb-1">Prompt del día</p>
-                <p className="text-sm font-body text-foreground/80 leading-relaxed line-clamp-2">
-                  "{horoscope.journalPrompt}"
-                </p>
-              </div>
-              <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
-            </Link>
-          </motion.div>
-        )}
-
-        {/* ─── Premium Banner ─── */}
-        {!isPremium && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }}>
-            <Link to="/premium" className="glass-card-elevated p-4 flex items-center gap-4 group hover:border-primary/25 transition-all block border-primary/15">
-              <div className="feature-icon rounded-2xl">
-                <Crown className="w-5 h-5 text-primary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-foreground font-body text-sm font-semibold">Astrelle Premium+</p>
-                <p className="text-muted-foreground text-xs font-body">Lecturas sin límites, mapa estelar y más desde $4.99/mes</p>
-              </div>
-              <ChevronRight className="w-4 h-4 text-primary shrink-0" />
-            </Link>
-          </motion.div>
-        )}
-
-        {/* ─── Tiradas ─── */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <QuickAccessCard to="/tarot" icon={<Layers className="w-5 h-5" />} label="Tarot" color="primary" badge={isPremium ? "Sin límites" : "1/día"} />
-            <QuickAccessCard to="/el-secreto" icon={<Crown className="w-5 h-5" />} label="El Secreto" color="accent" badge={isPremium ? "Sin límites" : "Premium"} locked={!isPremium} />
-            <QuickAccessCard to="/angeles" icon={<Feather className="w-5 h-5" />} label="Ángeles" color="nebula" badge={isPremium ? "Sin límites" : "Premium"} locked={!isPremium} />
-            <QuickAccessCard to="/oraculo" icon={<SquareAsterisk className="w-5 h-5" />} label="Oráculo" color="primary" badge={isPremium ? "Sin límites" : "Premium"} locked={!isPremium} />
-          </div>
-        </motion.div>
-
-        {/* ─── Consultas ─── */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <QuickAccessCard to="/diario" icon={<BookOpen className="w-5 h-5" />} label="Diario" color="accent" />
-            <QuickAccessCard to="/numero-suerte" icon={<Hash className="w-5 h-5" />} label="Número" color="primary" />
-            <QuickAccessCard to="/ritual" icon={<Flame className="w-5 h-5" />} label="Ritual" color="nebula" />
-            <QuickAccessCard to="/carta-natal" icon={<Star className="w-5 h-5" />} label="Carta Natal" color="primary" />
-            <QuickAccessCard to="/sky-map" icon={<Map className="w-5 h-5" />} label="Mapa Estelar" color="accent" badge={isPremium ? "" : "Premium"} locked={!isPremium} />
-          </div>
-        </motion.div>
-
         {/* ─── Natal Chart Summary ─── */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
           className="glass-card p-5 sm:p-6">
