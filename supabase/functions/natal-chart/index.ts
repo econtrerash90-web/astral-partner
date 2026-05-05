@@ -150,16 +150,26 @@ Los signos zodiacales son: Aries, Tauro, Géminis, Cáncer, Leo, Virgo, Libra, E
 Los grados van de 0 a 29. Los minutos van de 0 a 59.
 Las casas van de 1 a 12.
 
+REQUISITOS OBLIGATORIOS:
+- Sistema de casas: PLACIDUS (P).
+- Planetas obligatorios: Sol, Luna, Mercurio, Venus, Marte, Júpiter, Saturno, Urano, Neptuno, Plutón, Nodo Norte (medio).
+- Marca retrograde=true cuando la velocidad eclíptica sea negativa.
+- El Ascendente debe calcularse desde las cúspides de casas (NO derivado de un planeta), considerando la latitud exacta.
+- Usa el INSTANTE UTC dado para el cálculo (ya incluye ajuste de DST histórico).
+
 Genera posiciones REALISTAS basadas en la astronomía real para la fecha dada. No inventes posiciones aleatorias.`
           },
           {
             role: "user",
             content: `Calcula las posiciones planetarias para:
-- Fecha de nacimiento: ${birthDate}
-- Hora de nacimiento: ${birthTime}
-- Latitud: ${latitude}
-- Longitud: ${longitude}
+- Fecha local de nacimiento: ${birthDate}
+- Hora local de nacimiento: ${birthTime}${timeEstimated ? " (estimada al mediodía)" : ""}
+- Zona horaria: ${timezone} (${offsetLabel}, DST aplicado si corresponde a la fecha)
+- Instante UTC equivalente: ${utcISO}
+- Latitud: ${latitude} (decimal, 4 decimales)
+- Longitud: ${longitude} (decimal, 4 decimales)
 - Lugar: ${birthPlace}
+- Sistema de casas: PLACIDUS
 
 Devuelve SOLO el JSON, sin ningún texto adicional ni markdown.`
           }
@@ -238,6 +248,11 @@ Formato de respuesta (JSON, sin markdown):
       ...chartData,
       interpretations,
       coordinates: { latitude, longitude },
+      timezone,
+      utc: utcISO,
+      offsetMinutes,
+      timeEstimated,
+      houseSystem: "Placidus",
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
