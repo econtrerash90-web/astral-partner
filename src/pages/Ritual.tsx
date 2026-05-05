@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Flame, RefreshCw, Star, Share2 } from "lucide-react";
+import { Flame, Loader2, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { format } from "date-fns";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
@@ -13,6 +14,7 @@ interface RitualData {
   title: string;
   description: string;
   bestTime: string;
+  _date?: string;
 }
 
 const Ritual = () => {
@@ -20,12 +22,14 @@ const Ritual = () => {
   const resultRef = useRef<HTMLDivElement>(null);
   const [chartData, setChartData] = useState<{ sun_sign_name: string; moon_sign: string; ascendant: string } | null>(null);
   const [data, setData] = useState<RitualData | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
   const [showShare, setShowShare] = useState(false);
 
   useEffect(() => {
     if (!user) return;
+    const today = format(new Date(), "yyyy-MM-dd");
+
     const load = async () => {
       const { data: chart } = await supabase
         .from("astral_charts")
@@ -34,7 +38,11 @@ const Ritual = () => {
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
-      if (chart) setChartData(chart);
+      if (!chart) {
+        setPageLoading(false);
+        return;
+      }
+      setChartData(chart);
 
       const { data: cached } = await supabase
         .from("astral_extras" as any)
@@ -42,34 +50,36 @@ const Ritual = () => {
         .eq("user_id", user.id)
         .eq("type", "ritual")
         .maybeSingle();
-      if (cached) setData((cached as any).result);
 
+      const cachedResult = (cached as any)?.result as RitualData | undefined;
+      if (cachedResult && cachedResult._date === today) {
+        setData(cachedResult);
+        setPageLoading(false);
+        return;
+      }
+
+      setGenerating(true);
       setPageLoading(false);
+      try {
+        const { data: result, error } = await supabase.functions.invoke("astral-extras", {
+          body: { type: "ritual", ...chart },
+        });
+        if (error) throw error;
+        if ((result as any)?.error) throw new Error((result as any).error);
+        const stamped = { ...(result as RitualData), _date: today };
+        setData(stamped);
+        await supabase.from("astral_extras" as any).upsert(
+          { user_id: user.id, type: "ritual", result: stamped, created_at: new Date().toISOString() },
+          { onConflict: "user_id,type" }
+        );
+      } catch {
+        toast.error("No se pudo generar tu ritual de hoy");
+      } finally {
+        setGenerating(false);
+      }
     };
     load();
   }, [user]);
-
-  const generate = async () => {
-    if (!chartData || !user) return;
-    setIsLoading(true);
-    try {
-      const { data: result, error } = await supabase.functions.invoke("astral-extras", {
-        body: { type: "ritual", ...chartData },
-      });
-      if (error) throw error;
-      if ((result as any)?.error) throw new Error((result as any).error);
-      setData(result);
-
-      await supabase.from("astral_extras" as any).upsert(
-        { user_id: user.id, type: "ritual", result, created_at: new Date().toISOString() },
-        { onConflict: "user_id,type" }
-      );
-    } catch {
-      toast.error("No se pudo generar tu ritual sugerido");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   if (pageLoading) {
     return (
@@ -104,11 +114,16 @@ const Ritual = () => {
           <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent mb-2" style={{ backgroundImage: "var(--gradient-title)" }}>
             Ritual Sugerido
           </h1>
-          <p className="text-muted-foreground text-sm font-body">Ritual con velas alineado a tu carta astral y los astros actuales</p>
+          <p className="text-muted-foreground text-sm font-body">Tu ritual con velas de hoy, alineado a tu carta astral</p>
         </motion.header>
 
-        {data ? (
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="space-y-5">
+        {generating && !data ? (
+          <div className="glass-card p-8 text-center flex flex-col items-center gap-3">
+            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+            <p className="text-muted-foreground font-body text-sm">Preparando tu ritual de hoy...</p>
+          </div>
+        ) : data ? (
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-5">
             <div ref={resultRef} className="glass-card p-8">
               <div className="text-center mb-6">
                 <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
@@ -121,33 +136,25 @@ const Ritual = () => {
                 <p className="text-foreground/80 text-base font-body leading-relaxed">{data.description}</p>
               </div>
             </div>
-            <div className="flex gap-3">
-              <button onClick={generate} disabled={isLoading} className="flex-1 py-3.5 rounded-xl font-body text-sm font-medium bg-primary/15 text-primary border border-primary/20 hover:bg-primary/25 transition-all flex items-center justify-center gap-2 disabled:opacity-50">
-                <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
-                {isLoading ? "Generando..." : "Nuevo Ritual"}
-              </button>
-              <button onClick={() => setShowShare(!showShare)} className="flex-1 py-3.5 rounded-xl font-body text-sm font-medium bg-accent/15 text-accent border border-accent/20 hover:bg-accent/25 transition-all flex items-center justify-center gap-2">
-                <Share2 className="w-4 h-4" />
-                Compartir
-              </button>
-            </div>
+            <button onClick={() => setShowShare(!showShare)} className="w-full py-3.5 rounded-xl font-body text-sm font-medium bg-accent/15 text-accent border border-accent/20 hover:bg-accent/25 transition-all flex items-center justify-center gap-2">
+              <Share2 className="w-4 h-4" />
+              Compartir
+            </button>
             {showShare && (
               <ResultShareButtons
                 captureRef={resultRef}
                 filename="ritual"
-                shareText={`✨ Mi ritual del día: ${data.title}`}
+                shareText={`✨ Mi ritual de hoy: ${data.title}`}
               />
             )}
+            <p className="text-center text-muted-foreground/50 text-[11px] font-body">
+              Tu ritual se renueva automáticamente cada día.
+            </p>
           </motion.div>
         ) : (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="glass-card p-8 text-center">
-            <Star className="w-12 h-12 text-primary/40 mx-auto mb-4" />
-            <p className="text-muted-foreground font-body mb-6">Recibe un ritual personalizado con velas según tu energía astral</p>
-            <button onClick={generate} disabled={isLoading} className="px-8 py-3.5 rounded-xl font-body text-sm font-medium bg-primary text-primary-foreground hover:opacity-90 transition-opacity flex items-center justify-center gap-2 mx-auto disabled:opacity-50">
-              <Flame className="w-4 h-4" />
-              {isLoading ? "Preparando tu ritual..." : "Revelar Mi Ritual"}
-            </button>
-          </motion.div>
+          <div className="glass-card p-8 text-center">
+            <p className="text-muted-foreground font-body">No pudimos generar tu ritual. Intenta más tarde.</p>
+          </div>
         )}
       </div>
     </div>

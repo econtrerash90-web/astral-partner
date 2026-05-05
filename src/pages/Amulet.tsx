@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Gem, RefreshCw, Star, Share2 } from "lucide-react";
+import { Gem, Loader2, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { format } from "date-fns";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
@@ -13,6 +14,7 @@ interface AmuletData {
   emoji: string;
   properties: string;
   howToUse: string;
+  _date?: string;
 }
 
 const Amulet = () => {
@@ -20,12 +22,14 @@ const Amulet = () => {
   const resultRef = useRef<HTMLDivElement>(null);
   const [chartData, setChartData] = useState<{ sun_sign_name: string; moon_sign: string; ascendant: string } | null>(null);
   const [data, setData] = useState<AmuletData | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
   const [showShare, setShowShare] = useState(false);
 
   useEffect(() => {
     if (!user) return;
+    const today = format(new Date(), "yyyy-MM-dd");
+
     const load = async () => {
       const { data: chart } = await supabase
         .from("astral_charts")
@@ -34,7 +38,12 @@ const Amulet = () => {
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
-      if (chart) setChartData(chart);
+
+      if (!chart) {
+        setPageLoading(false);
+        return;
+      }
+      setChartData(chart);
 
       const { data: cached } = await supabase
         .from("astral_extras" as any)
@@ -42,34 +51,37 @@ const Amulet = () => {
         .eq("user_id", user.id)
         .eq("type", "amulet")
         .maybeSingle();
-      if (cached) setData((cached as any).result);
 
+      const cachedResult = (cached as any)?.result as AmuletData | undefined;
+      if (cachedResult && cachedResult._date === today) {
+        setData(cachedResult);
+        setPageLoading(false);
+        return;
+      }
+
+      // Auto-generate for today
+      setGenerating(true);
       setPageLoading(false);
+      try {
+        const { data: result, error } = await supabase.functions.invoke("astral-extras", {
+          body: { type: "amulet", ...chart },
+        });
+        if (error) throw error;
+        if ((result as any)?.error) throw new Error((result as any).error);
+        const stamped = { ...(result as AmuletData), _date: today };
+        setData(stamped);
+        await supabase.from("astral_extras" as any).upsert(
+          { user_id: user.id, type: "amulet", result: stamped, created_at: new Date().toISOString() },
+          { onConflict: "user_id,type" }
+        );
+      } catch {
+        toast.error("No se pudo generar tu amuleto de hoy");
+      } finally {
+        setGenerating(false);
+      }
     };
     load();
   }, [user]);
-
-  const generate = async () => {
-    if (!chartData || !user) return;
-    setIsLoading(true);
-    try {
-      const { data: result, error } = await supabase.functions.invoke("astral-extras", {
-        body: { type: "amulet", ...chartData },
-      });
-      if (error) throw error;
-      if ((result as any)?.error) throw new Error((result as any).error);
-      setData(result);
-
-      await supabase.from("astral_extras" as any).upsert(
-        { user_id: user.id, type: "amulet", result, created_at: new Date().toISOString() },
-        { onConflict: "user_id,type" }
-      );
-    } catch {
-      toast.error("No se pudo generar tu amuleto de la suerte");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   if (pageLoading) {
     return (
@@ -104,11 +116,16 @@ const Amulet = () => {
           <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent mb-2" style={{ backgroundImage: "var(--gradient-title)" }}>
             Amuleto de la Suerte
           </h1>
-          <p className="text-muted-foreground text-sm font-body">Piedra de poder alineada con tu carta astral y el periodo astrológico</p>
+          <p className="text-muted-foreground text-sm font-body">Tu piedra de poder de hoy, alineada con tu carta astral</p>
         </motion.header>
 
-        {data ? (
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="space-y-5">
+        {generating && !data ? (
+          <div className="glass-card p-8 text-center flex flex-col items-center gap-3">
+            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+            <p className="text-muted-foreground font-body text-sm">Buscando tu piedra de poder de hoy...</p>
+          </div>
+        ) : data ? (
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-5">
             <div ref={resultRef} className="glass-card p-8 text-center">
               <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">{data.emoji}</span>
@@ -123,33 +140,25 @@ const Amulet = () => {
                 <p className="text-primary/80 text-base font-body leading-relaxed italic">{data.howToUse}</p>
               </div>
             </div>
-            <div className="flex gap-3">
-              <button onClick={generate} disabled={isLoading} className="flex-1 py-3.5 rounded-xl font-body text-sm font-medium bg-primary/15 text-primary border border-primary/20 hover:bg-primary/25 transition-all flex items-center justify-center gap-2 disabled:opacity-50">
-                <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
-                {isLoading ? "Generando..." : "Otro Amuleto"}
-              </button>
-              <button onClick={() => setShowShare(!showShare)} className="flex-1 py-3.5 rounded-xl font-body text-sm font-medium bg-accent/15 text-accent border border-accent/20 hover:bg-accent/25 transition-all flex items-center justify-center gap-2">
-                <Share2 className="w-4 h-4" />
-                Compartir
-              </button>
-            </div>
+            <button onClick={() => setShowShare(!showShare)} className="w-full py-3.5 rounded-xl font-body text-sm font-medium bg-accent/15 text-accent border border-accent/20 hover:bg-accent/25 transition-all flex items-center justify-center gap-2">
+              <Share2 className="w-4 h-4" />
+              Compartir
+            </button>
             {showShare && (
               <ResultShareButtons
                 captureRef={resultRef}
                 filename="amuleto"
-                shareText={`✨ Mi amuleto: ${data.emoji} ${data.stone}`}
+                shareText={`✨ Mi amuleto de hoy: ${data.emoji} ${data.stone}`}
               />
             )}
+            <p className="text-center text-muted-foreground/50 text-[11px] font-body">
+              Tu amuleto se renueva automáticamente cada día.
+            </p>
           </motion.div>
         ) : (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="glass-card p-8 text-center">
-            <Star className="w-12 h-12 text-primary/40 mx-auto mb-4" />
-            <p className="text-muted-foreground font-body mb-6">Encuentra la piedra que potenciará tu energía espiritual</p>
-            <button onClick={generate} disabled={isLoading} className="px-8 py-3.5 rounded-xl font-body text-sm font-medium bg-primary text-primary-foreground hover:opacity-90 transition-opacity flex items-center justify-center gap-2 mx-auto disabled:opacity-50">
-              <Gem className="w-4 h-4" />
-              {isLoading ? "Buscando tu piedra..." : "Revelar Mi Amuleto"}
-            </button>
-          </motion.div>
+          <div className="glass-card p-8 text-center">
+            <p className="text-muted-foreground font-body">No pudimos generar tu amuleto. Intenta más tarde.</p>
+          </div>
         )}
       </div>
     </div>
