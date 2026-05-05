@@ -116,11 +116,13 @@ const App = () => (
       <BrowserRouter>
         
         <AuthProvider>
-          <SubscriptionProvider>
-            <AchievementsProvider>
-              <AppRoutes />
-            </AchievementsProvider>
-          </SubscriptionProvider>
+          <I18nProvider>
+            <SubscriptionProvider>
+              <AchievementsProvider>
+                <AppRoutes />
+              </AchievementsProvider>
+            </SubscriptionProvider>
+          </I18nProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
