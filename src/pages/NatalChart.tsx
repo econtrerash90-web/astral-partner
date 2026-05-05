@@ -35,6 +35,9 @@ const NatalChart = () => {
   const [loading, setLoading] = useState(true);
   const [astralChart, setAstralChart] = useState<AstralChartRow | null>(null);
   const [analysisExpanded, setAnalysisExpanded] = useState(false);
+  const wheelRef = useRef<HTMLDivElement>(null);
+  const knightRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
 
   const fetchAndCache = async (chart: AstralChartRow) => {
     try {
