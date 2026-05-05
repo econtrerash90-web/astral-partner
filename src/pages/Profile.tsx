@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { User, Mail, BookOpen, TrendingUp, Lock, LogOut, Pencil, Calendar, Clock, MapPin, AlertTriangle, Loader2, Download, Trash2, Shield, ChevronRight, Building2, Map, Globe } from "lucide-react";
+import { User, Mail, BookOpen, TrendingUp, Lock, LogOut, Pencil, Calendar, Clock, MapPin, AlertTriangle, Loader2, Download, Trash2, Shield, ChevronRight, Building2, Map, Globe, Languages } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
+import { useI18n } from "@/hooks/useI18n";
+import { LanguageCode } from "@/lib/i18n/languages";
 import { supabase } from "@/integrations/supabase/client";
 import { normalizeBirthFields } from "@/lib/normalize-text";
 import elfawaLogo from "@/assets/elfawa-logo.png";
