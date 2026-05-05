@@ -80,22 +80,13 @@ const AppHeader = () => {
           })}
         </nav>
 
-        {/* Premium badge + Sky Map (desktop) */}
+        {/* Premium badge (desktop) */}
         <div className="hidden md:flex items-center gap-2">
           {isPremium && (
-            <>
-              <Link
-                to="/mapa-estelar"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-body text-amber-300 hover:bg-amber-500/10 transition-colors"
-              >
-                <Map className="w-3.5 h-3.5" />
-                Sky Map
-              </Link>
-              <Badge className="bg-gradient-to-r from-amber-500 to-yellow-400 text-background border-0 font-display text-[10px] tracking-wider shadow-[0_0_8px_hsl(var(--primary)/0.3)]">
-                <Crown className="w-3 h-3 mr-1" />
-                PREMIUM
-              </Badge>
-            </>
+            <Badge className="bg-gradient-to-r from-amber-500 to-yellow-400 text-background border-0 font-display text-[10px] tracking-wider shadow-[0_0_8px_hsl(var(--primary)/0.3)]">
+              <Crown className="w-3 h-3 mr-1" />
+              PREMIUM
+            </Badge>
           )}
         </div>
 

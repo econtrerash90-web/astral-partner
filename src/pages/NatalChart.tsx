@@ -266,8 +266,7 @@ const NatalChart = () => {
               {/* Positions table */}
               <NatalChartTable data={chartData} />
 
-              {/* Compatibility */}
-              <CompatibilitySection userSign={astralChart.sun_sign_name as SignName} />
+
 
 
               {/* Recalculate */}
