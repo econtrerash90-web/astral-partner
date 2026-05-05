@@ -371,6 +371,7 @@ const Index = () => {
                   captureRef={shareCardRef}
                   filename={`dia-${format(today, "yyyy-MM-dd")}`}
                   shareText={`Mi energía de hoy según Astrelle ✨ ${chartData.sun_sign_name}`}
+                  buttons={["download", "more"]}
                 />
                 <button
                   onClick={() => setShowShareCard(false)}
