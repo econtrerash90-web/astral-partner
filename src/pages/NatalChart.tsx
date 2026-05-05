@@ -220,6 +220,9 @@ const NatalChart = () => {
                 )}
               </motion.div>
 
+              {/* Positions table */}
+              <NatalChartTable data={chartData} />
+
               {/* Recalculate */}
               <div className="text-center">
                 <button
