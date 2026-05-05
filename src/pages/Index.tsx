@@ -166,7 +166,7 @@ const Index = () => {
     }
   }, [chartData, horoscope, isLoading]);
 
-  const handleSubmit = async (formData: { fullName: string; birthDate: string; birthTime: string; birthPlace: string }) => {
+  const handleSubmit = async (formData: { fullName: string; birthDate: string; birthTime: string; birthPlace: string; birthTimezone?: string; birthUtc?: string }) => {
     if (!user) return;
     setIsLoading(true);
     try {
@@ -191,6 +191,8 @@ const Index = () => {
         birth_date: formData.birthDate,
         birth_time: formData.birthTime,
         birth_place: formData.birthPlace,
+        birth_timezone: formData.birthTimezone ?? null,
+        birth_utc: formData.birthUtc ?? null,
         sun_sign_name: sunSign.name,
         sun_sign_element: sunSign.element,
         sun_sign_planet: sunSign.planet,
@@ -198,7 +200,7 @@ const Index = () => {
         moon_sign: moonSign,
         ascendant,
         analysis,
-      });
+      } as any);
 
       const { data: chart } = await supabase
         .from("astral_charts")
