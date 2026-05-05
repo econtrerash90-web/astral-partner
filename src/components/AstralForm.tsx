@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Calendar, Clock, Lock, Sparkles, Building2, Map, Globe, Settings2, ChevronDown } from "lucide-react";
 import { normalizeBirthFields } from "@/lib/normalize-text";
+import { useI18n } from "@/hooks/useI18n";
 import {
   guessTimezoneFromCountry,
   listCommonTimezones,
