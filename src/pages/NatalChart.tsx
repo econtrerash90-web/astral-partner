@@ -216,7 +216,7 @@ const NatalChart = () => {
               {/* Recalculate */}
               <div className="text-center">
                 <button
-                  onClick={loadChart}
+                  onClick={() => loadChart(true)}
                   className="text-primary/60 text-xs font-body hover:text-primary transition-colors flex items-center gap-1 mx-auto"
                 >
                   <RefreshCw className="w-3 h-3" />
@@ -230,7 +230,7 @@ const NatalChart = () => {
                 No pudimos generar tu carta natal.
               </p>
               <button
-                onClick={loadChart}
+                onClick={() => loadChart(true)}
                 className="mt-3 text-primary text-sm font-body hover:underline"
               >
                 Intentar de nuevo
