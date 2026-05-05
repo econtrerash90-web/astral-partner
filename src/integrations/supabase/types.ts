@@ -42,6 +42,8 @@ export type Database = {
           birth_date: string
           birth_place: string
           birth_time: string
+          birth_timezone: string | null
+          birth_utc: string | null
           created_at: string
           full_name: string
           id: string
@@ -59,6 +61,8 @@ export type Database = {
           birth_date: string
           birth_place: string
           birth_time: string
+          birth_timezone?: string | null
+          birth_utc?: string | null
           created_at?: string
           full_name: string
           id?: string
@@ -76,6 +80,8 @@ export type Database = {
           birth_date?: string
           birth_place?: string
           birth_time?: string
+          birth_timezone?: string | null
+          birth_utc?: string | null
           created_at?: string
           full_name?: string
           id?: string
