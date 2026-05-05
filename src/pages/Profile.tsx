@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { User, Mail, BookOpen, TrendingUp, Lock, LogOut, Pencil, Calendar, Clock, MapPin, AlertTriangle, Loader2, Download, Trash2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { User, Mail, BookOpen, TrendingUp, Lock, LogOut, Pencil, Calendar, Clock, MapPin, AlertTriangle, Loader2, Download, Trash2, Shield, ChevronRight } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
@@ -291,7 +291,35 @@ const Profile = () => {
             </div>
           </motion.div>
 
-          {/* Logout */}
+          {/* Seguridad / Legal */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
+            className="glass-card p-5">
+            <h2 className="font-body text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
+              <Shield className="w-4 h-4 text-primary/70" /> Seguridad y Legal
+            </h2>
+            <div className="space-y-1">
+              {[
+                { to: "/terminos", label: "Términos y Condiciones" },
+                { to: "/privacidad", label: "Política de Privacidad" },
+                { to: "/cookies", label: "Política de Cookies" },
+                { to: "/descargo", label: "Descargo de Responsabilidad" },
+                { to: "/reembolso", label: "Política de Reembolso" },
+              ].map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/30 transition-colors group"
+                >
+                  <span className="text-sm font-body text-foreground/80 group-hover:text-foreground">
+                    {link.label}
+                  </span>
+                  <ChevronRight className="w-4 h-4 text-muted-foreground/50 group-hover:text-primary transition-colors" />
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+
+
           <button
             onClick={signOut}
             className="w-full btn-glass flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground"
