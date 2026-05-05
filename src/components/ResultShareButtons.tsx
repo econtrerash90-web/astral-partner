@@ -1,6 +1,6 @@
 import { useState, type RefObject } from "react";
 import { toPng } from "html-to-image";
-import { Download } from "lucide-react";
+import { Download, Instagram } from "lucide-react";
 import { toast } from "sonner";
 
 const APP_URL = "https://astrelle-guide.app";
@@ -18,7 +18,6 @@ const ResultShareButtons = ({ captureRef, filename, shareText }: ResultShareButt
     if (!captureRef.current) return null;
     setGenerating(true);
     try {
-      // Add watermark element temporarily
       const watermark = document.createElement("div");
       watermark.style.cssText =
         "position:absolute;bottom:12px;right:16px;display:flex;align-items:center;gap:4px;opacity:0.5;font-size:13px;font-family:sans-serif;color:#c4b5fd;pointer-events:none;z-index:9999;";
@@ -35,7 +34,6 @@ const ResultShareButtons = ({ captureRef, filename, shareText }: ResultShareButt
         style: { borderRadius: "0" },
       });
 
-      // Remove watermark
       container.removeChild(watermark);
       container.style.position = prevPosition;
 
@@ -68,6 +66,34 @@ const ResultShareButtons = ({ captureRef, filename, shareText }: ResultShareButt
     window.open(`https://wa.me/?text=${encodeURIComponent(fullShareText)}`, "_blank");
   };
 
+  const handleInstagram = async () => {
+    const blob = await generateImage();
+    if (!blob) return;
+    const file = new File([blob], `astrelle-${filename}.png`, { type: "image/png" });
+
+    // Try native share with file (works on iOS/Android — user can pick Instagram Stories)
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: "Astrelle", text: fullShareText });
+        return;
+      } catch (e) {
+        if ((e as Error).name === "AbortError") return;
+      }
+    }
+
+    // Desktop / fallback: download image and open Instagram
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.download = `astrelle-${filename}.png`;
+    link.href = url;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast.success("Imagen lista. Súbela a tu story de Instagram ✨", { duration: 5000 });
+    setTimeout(() => {
+      window.open("https://www.instagram.com", "_blank");
+    }, 800);
+  };
+
   const handleNativeShare = async () => {
     const blob = await generateImage();
     if (!blob) return;
@@ -85,7 +111,7 @@ const ResultShareButtons = ({ captureRef, filename, shareText }: ResultShareButt
   };
 
   return (
-    <div className="grid grid-cols-3 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
       <button
         onClick={handleDownload}
         disabled={generating}
@@ -93,6 +119,18 @@ const ResultShareButtons = ({ captureRef, filename, shareText }: ResultShareButt
       >
         <Download className="w-4 h-4" />
         {generating ? "..." : "Descargar"}
+      </button>
+      <button
+        onClick={handleInstagram}
+        disabled={generating}
+        className="py-3 rounded-xl font-body text-xs font-medium text-white border transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+        style={{
+          background: "linear-gradient(135deg, rgba(225,48,108,0.2), rgba(131,58,180,0.2))",
+          borderColor: "rgba(225,48,108,0.3)",
+        }}
+      >
+        <Instagram className="w-4 h-4" />
+        Story
       </button>
       <button
         onClick={handleWhatsApp}
@@ -113,7 +151,7 @@ const ResultShareButtons = ({ captureRef, filename, shareText }: ResultShareButt
           <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
           <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
         </svg>
-        Compartir
+        Más
       </button>
     </div>
   );

@@ -10,6 +10,8 @@ import { supabase } from "@/integrations/supabase/client";
 import type { NatalChartData } from "@/lib/natal-chart-types";
 import { getSignTrait, ELEMENT_FRIENDLY, PLANET_FRIENDLY } from "@/lib/sign-descriptions";
 import { formatAIText } from "@/lib/format-ai-text";
+import CompatibilitySection from "@/components/CompatibilitySection";
+import type { SignName } from "@/lib/compatibility";
 
 interface AstralChartRow {
   full_name: string;
@@ -222,6 +224,10 @@ const NatalChart = () => {
 
               {/* Positions table */}
               <NatalChartTable data={chartData} />
+
+              {/* Compatibility */}
+              <CompatibilitySection userSign={astralChart.sun_sign_name as SignName} />
+
 
               {/* Recalculate */}
               <div className="text-center">
