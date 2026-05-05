@@ -33,6 +33,7 @@ interface ChartData {
 
 const Profile = () => {
   const { user, signOut, updatePassword, session } = useAuth();
+  const { language, setLanguage, supported, t } = useI18n();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<{ full_name: string; created_at: string } | null>(null);
   const [chart, setChart] = useState<ChartData | null>(null);
