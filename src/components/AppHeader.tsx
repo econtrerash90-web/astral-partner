@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 
 const navItems = [
   { to: "/", label: "Inicio", icon: Star },
-  { to: "/tarot", label: "Tarot", icon: Layers },
+  { to: "/compatibilidad", label: "Compatibilidad", icon: Heart },
   { to: "/el-secreto", label: "Secreto", icon: Crown },
   { to: "/angeles", label: "Ángeles", icon: Feather },
   { to: "/oraculo", label: "Oráculo", icon: SquareAsterisk },
