@@ -37,7 +37,7 @@ serve(async (req) => {
     const __LANG_INSTRUCTION__ = languageInstruction(__LANG_CODE__);
 
     const body = await req.json();
-    const { birthDate, birthPlace } = body;
+    const { birthDate, birthPlace, birthTimezone: tzOverride, birthUtc: utcOverride } = body;
     let { birthTime } = body;
     let timeEstimated = false;
 
@@ -83,8 +83,23 @@ serve(async (req) => {
     longitude = Math.max(-180, Math.min(180, Math.round(longitude * 10000) / 10000));
 
     // Step 1b: Resolve IANA timezone (with historical DST) and convert to UTC.
-    const timezone = resolveTimezone({ latitude, longitude, country, displayName });
-    const { utcISO, offsetMinutes } = localToUTC({ date: birthDate, time: birthTime, timezone });
+    // Expert mode: honor client-provided timezone and UTC overrides when present.
+    const timezone = (typeof tzOverride === "string" && tzOverride.trim())
+      ? tzOverride.trim()
+      : resolveTimezone({ latitude, longitude, country, displayName });
+
+    let utcISO: string;
+    let offsetMinutes: number;
+    if (typeof utcOverride === "string" && /Z$/.test(utcOverride) && !Number.isNaN(Date.parse(utcOverride))) {
+      utcISO = new Date(utcOverride).toISOString();
+      // Recompute the offset for the given UTC instant in the resolved zone.
+      const local = localToUTC({ date: birthDate, time: birthTime, timezone });
+      offsetMinutes = local.offsetMinutes;
+    } else {
+      const calc = localToUTC({ date: birthDate, time: birthTime, timezone });
+      utcISO = calc.utcISO;
+      offsetMinutes = calc.offsetMinutes;
+    }
     const offsetHours = offsetMinutes / 60;
     const offsetLabel = `UTC${offsetHours >= 0 ? "+" : ""}${offsetHours}`;
 
