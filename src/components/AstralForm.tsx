@@ -37,6 +37,7 @@ interface InternalFormData {
 }
 
 const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
+  const { t } = useI18n();
   const [formData, setFormData] = useState<InternalFormData>({
     fullName: "",
     birthDate: "",
