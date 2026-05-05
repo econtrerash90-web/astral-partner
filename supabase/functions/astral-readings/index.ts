@@ -26,8 +26,8 @@ const TAROT_CARDS = [
 
 // Server-side daily limits — premium lock temporarily disabled
 const DAILY_LIMITS = {
-  free: { tarot: 99, secret: 99, angels: 99, oracle: 99 },
-  premium: { tarot: 99, secret: 99, angels: 99, oracle: 99 },
+  free: { tarot: 3, secret: 3, angels: 3, oracle: 3 },
+  premium: { tarot: 3, secret: 3, angels: 3, oracle: 3 },
 } as const;
 
 const PREMIUM_TYPES = new Set<string>([]);
