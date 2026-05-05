@@ -99,15 +99,6 @@ const AppRoutes = () => {
         <Route path="*" element={<NotFound />} />
       </Routes>
 
-      {/* Powered by Elfawa footer */}
-      <footer className="relative z-10 py-4 text-center border-t border-border/30 space-y-2">
-        <div className="flex items-center justify-center gap-2">
-          <span className="text-muted-foreground/50 text-xs font-body">Powered by</span>
-          <img src={elfawaLogo} alt="Elfawa" className="h-5 w-5 opacity-60" />
-          <span className="text-muted-foreground/60 text-xs font-body font-medium">Elfawa</span>
-          <span className="text-muted-foreground/40 text-xs font-body">2026</span>
-        </div>
-      </footer>
       </div>
       {user && <BottomTabBar />}
     </>
