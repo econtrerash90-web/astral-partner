@@ -86,16 +86,16 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.fullName.trim()) return setError("Por favor ingresa tu nombre completo");
-    if (!formData.birthDate) return setError("Por favor ingresa tu fecha de nacimiento");
-    if (!formData.birthCity.trim()) return setError("Por favor ingresa tu ciudad de nacimiento");
-    if (!formData.birthState.trim()) return setError("Por favor ingresa tu estado o provincia");
-    if (!formData.birthCountry.trim()) return setError("Por favor ingresa tu país de nacimiento");
+    if (!formData.fullName.trim()) return setError(t("form.errName"));
+    if (!formData.birthDate) return setError(t("form.errDate"));
+    if (!formData.birthCity.trim()) return setError(t("form.errCity"));
+    if (!formData.birthState.trim()) return setError(t("form.errState"));
+    if (!formData.birthCountry.trim()) return setError(t("form.errCountry"));
 
     // Validate manual UTC if user edited it.
     if (utcEdited && utcOverride.trim()) {
       if (!isValidUtcISO(utcOverride.trim())) {
-        return setError("El UTC manual no es válido. Usa formato ISO 8601 terminado en Z (ej: 2020-03-15T20:30:00Z).");
+        return setError(t("form.errUtc"));
       }
     }
 
@@ -117,12 +117,12 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
   };
 
   const fields = [
-    { name: "fullName", label: "Nombre Completo", icon: User, type: "text", placeholder: "María Elena García López", autoComplete: "name", maxLength: 100 },
-    { name: "birthDate", label: "Fecha de Nacimiento", icon: Calendar, type: "date", max: new Date().toISOString().split("T")[0] },
-    { name: "birthTime", label: "Hora de Nacimiento (opcional)", icon: Clock, type: "time", hint: "Si no la conoces, usaremos 12:00 PM (mediodía). Puedes ajustarla luego en tu perfil para mayor precisión." },
-    { name: "birthCity", label: "Ciudad", icon: Building2, type: "text", placeholder: "Ciudad de México", maxLength: 80 },
-    { name: "birthState", label: "Estado o Provincia", icon: Map, type: "text", placeholder: "CDMX", maxLength: 80 },
-    { name: "birthCountry", label: "País", icon: Globe, type: "text", placeholder: "México", autoComplete: "country-name", maxLength: 80 },
+    { name: "fullName", label: t("form.fullName"), icon: User, type: "text", placeholder: "María Elena García López", autoComplete: "name", maxLength: 100 },
+    { name: "birthDate", label: t("form.birthDate"), icon: Calendar, type: "date", max: new Date().toISOString().split("T")[0] },
+    { name: "birthTime", label: `${t("form.birthTime")} (${t("common.optional")})`, icon: Clock, type: "time", hint: t("form.birthTimeHint") },
+    { name: "birthCity", label: t("form.city"), icon: Building2, type: "text", placeholder: "Ciudad de México", maxLength: 80 },
+    { name: "birthState", label: t("form.state"), icon: Map, type: "text", placeholder: "CDMX", maxLength: 80 },
+    { name: "birthCountry", label: t("form.country"), icon: Globe, type: "text", placeholder: "México", autoComplete: "country-name", maxLength: 80 },
   ] as const;
 
   return (
