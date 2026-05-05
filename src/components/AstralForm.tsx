@@ -44,7 +44,6 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
     e.preventDefault();
     if (!formData.fullName.trim()) return setError("Por favor ingresa tu nombre completo");
     if (!formData.birthDate) return setError("Por favor ingresa tu fecha de nacimiento");
-    if (!formData.birthTime) return setError("Por favor ingresa tu hora de nacimiento");
     if (!formData.birthCity.trim()) return setError("Por favor ingresa tu ciudad de nacimiento");
     if (!formData.birthState.trim()) return setError("Por favor ingresa tu estado o provincia");
     if (!formData.birthCountry.trim()) return setError("Por favor ingresa tu país de nacimiento");
@@ -55,10 +54,12 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
       birthState: formData.birthState,
       birthCountry: formData.birthCountry,
     });
+    // Default to noon when birth time is missing.
+    const effectiveTime = formData.birthTime?.trim() ? formData.birthTime : "12:00";
     onSubmit({
       fullName: normalized.fullName,
       birthDate: formData.birthDate,
-      birthTime: formData.birthTime,
+      birthTime: effectiveTime,
       birthPlace: normalized.birthPlace,
     });
   };
@@ -66,7 +67,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
   const fields = [
     { name: "fullName", label: "Nombre Completo", icon: User, type: "text", placeholder: "María Elena García López", autoComplete: "name", maxLength: 100 },
     { name: "birthDate", label: "Fecha de Nacimiento", icon: Calendar, type: "date", max: new Date().toISOString().split("T")[0] },
-    { name: "birthTime", label: "Hora de Nacimiento", icon: Clock, type: "time" },
+    { name: "birthTime", label: "Hora de Nacimiento (opcional)", icon: Clock, type: "time", hint: "Si no la conoces, usaremos 12:00 PM (mediodía). Puedes ajustarla luego en tu perfil para mayor precisión." },
     { name: "birthCity", label: "Ciudad", icon: Building2, type: "text", placeholder: "Ciudad de México", maxLength: 80 },
     { name: "birthState", label: "Estado o Provincia", icon: Map, type: "text", placeholder: "CDMX", maxLength: 80 },
     { name: "birthCountry", label: "País", icon: Globe, type: "text", placeholder: "México", autoComplete: "country-name", maxLength: 80 },
@@ -98,7 +99,10 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-        {fields.map((field, i) => (
+        {fields.map((field, i) => {
+          const optional = field.name === "birthTime";
+          const hint = "hint" in field ? (field as { hint?: string }).hint : undefined;
+          return (
           <motion.div
             key={field.name}
             initial={{ opacity: 0, y: 10 }}
@@ -107,22 +111,28 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
           >
             <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
               <field.icon className="w-3.5 h-3.5 text-primary" />
-              {field.label} <span className="text-destructive">*</span>
+              {field.label} {!optional && <span className="text-destructive">*</span>}
             </label>
             <input
               type={field.type}
               name={field.name}
               value={formData[field.name as keyof InternalFormData]}
               onChange={handleChange}
-              required
+              required={!optional}
               className="input-modern"
               {...("placeholder" in field ? { placeholder: field.placeholder } : {})}
               {...("autoComplete" in field ? { autoComplete: field.autoComplete } : {})}
               {...("max" in field ? { max: field.max } : {})}
               {...("maxLength" in field ? { maxLength: field.maxLength } : {})}
             />
+            {hint && (
+              <p className="mt-1.5 text-xs text-muted-foreground/80 font-body italic">
+                {hint}
+              </p>
+            )}
           </motion.div>
-        ))}
+          );
+        })}
 
         <button
           type="submit"
