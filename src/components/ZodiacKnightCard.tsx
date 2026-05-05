@@ -1,15 +1,16 @@
 import { motion } from "framer-motion";
 import { Shield, Sparkles } from "lucide-react";
 import { getKnightForSign } from "@/lib/zodiac-knights";
-import { KNIGHT_IMAGES } from "@/lib/knight-images";
+import { getKnightImage } from "@/lib/knight-images";
 
 interface ZodiacKnightCardProps {
   sign: string;
+  signSymbol?: string;
 }
 
-const ZodiacKnightCard = ({ sign }: ZodiacKnightCardProps) => {
+const ZodiacKnightCard = ({ sign, signSymbol }: ZodiacKnightCardProps) => {
   const knight = getKnightForSign(sign);
-  const image = KNIGHT_IMAGES[sign];
+  const image = getKnightImage(sign);
   if (!knight) return null;
 
   return (
@@ -44,12 +45,13 @@ const ZodiacKnightCard = ({ sign }: ZodiacKnightCardProps) => {
                 src={image}
                 alt={`${knight.name} - ${knight.cloth}`}
                 loading="lazy"
+                decoding="async"
                 width={512}
                 height={512}
                 className="relative w-full h-full object-cover rounded-full border-2 border-primary/40 shadow-[0_0_24px_hsl(var(--primary)/0.45)]"
               />
-              <div className="absolute -bottom-1 -right-1 w-9 h-9 rounded-full bg-background/80 backdrop-blur border border-primary/40 flex items-center justify-center text-lg">
-                {knight.emoji}
+              <div className="absolute -bottom-1 -right-1 w-9 h-9 rounded-full bg-background/80 backdrop-blur border border-primary/40 flex items-center justify-center text-lg font-display">
+                {signSymbol || knight.emoji}
               </div>
             </div>
           )}

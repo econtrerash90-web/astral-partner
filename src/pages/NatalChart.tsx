@@ -148,6 +148,12 @@ const NatalChart = () => {
                 <NatalChartWheel data={chartData} size={380} />
               </div>
 
+              {/* Zodiac Knight (above profile) */}
+              <ZodiacKnightCard
+                sign={astralChart.sun_sign_name}
+                signSymbol={astralChart.sun_sign_symbol}
+              />
+
               {/* ─── Tu Perfil Astral ─── */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -225,9 +231,6 @@ const NatalChart = () => {
 
               {/* Positions table */}
               <NatalChartTable data={chartData} />
-
-              {/* Zodiac Knight */}
-              <ZodiacKnightCard sign={astralChart.sun_sign_name} />
 
               {/* Compatibility */}
               <CompatibilitySection userSign={astralChart.sun_sign_name as SignName} />

@@ -4,6 +4,8 @@ import { Download, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { QRCodeSVG } from "qrcode.react";
 import { getSignTrait } from "@/lib/sign-descriptions";
+import { getKnightForSign } from "@/lib/zodiac-knights";
+import { getKnightImage } from "@/lib/knight-images";
 
 interface ShareCardProps {
   sunSign: { name: string; symbol: string; element: string; planet: string };
@@ -18,6 +20,8 @@ interface ShareCardProps {
 const AstralShareCard = ({ sunSign, moonSign, ascendant, name, luckyNumber, ritual, amulet }: ShareCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [generating, setGenerating] = useState(false);
+  const knight = getKnightForSign(sunSign.name);
+  const knightImage = getKnightImage(sunSign.name);
 
   const generateImage = async (): Promise<string | null> => {
     if (!cardRef.current) return null;
@@ -121,6 +125,44 @@ const AstralShareCard = ({ sunSign, moonSign, ascendant, name, luckyNumber, ritu
               <p style={{ fontSize: 20, fontWeight: 600, color: "#c8aa50" }}>{sunSign.name}</p>
               <p style={{ fontSize: 12, color: "#9990a8", marginTop: 4 }}>{getSignTrait(sunSign.name, "sun")}</p>
             </div>
+
+            {/* Zodiac Knight */}
+            {knight && (
+              <div style={{
+                display: "flex", alignItems: "center", gap: 14,
+                padding: 14, marginBottom: 20,
+                background: "rgba(200, 170, 80, 0.06)",
+                border: "1px solid rgba(200, 170, 80, 0.18)",
+                borderRadius: 14,
+              }}>
+                {knightImage && (
+                  <div style={{
+                    width: 76, height: 76, flexShrink: 0,
+                    borderRadius: "50%", overflow: "hidden",
+                    border: "2px solid rgba(200, 170, 80, 0.5)",
+                    boxShadow: "0 0 16px rgba(200, 170, 80, 0.35)",
+                  }}>
+                    <img
+                      src={knightImage}
+                      alt={knight.name}
+                      crossOrigin="anonymous"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  </div>
+                )}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: 9, color: "#9990a8", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 2 }}>
+                    Tu Caballero del Zodíaco
+                  </p>
+                  <p style={{ fontSize: 15, fontWeight: 700, color: "#c8aa50", marginBottom: 2 }}>
+                    {sunSign.symbol} {knight.name}
+                  </p>
+                  <p style={{ fontSize: 10, color: "#e8e0f0", opacity: 0.85 }}>
+                    ✨ {knight.signature}
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Moon & Ascendant */}
             <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
