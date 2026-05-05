@@ -278,28 +278,41 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
             {/* Tarot: 3 cards */}
             {type === "tarot" && result.cards && (
               <div className="space-y-3">
-                {result.cards.map((card: any, i: number) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.15 }}
-                    className="glass-card p-5"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="feature-icon rounded-2xl shrink-0">
-                        <span className="text-xl">{card.emoji || "🃏"}</span>
+                {result.cards.map((card: any, i: number) => {
+                  const img = getTarotImage(card.name);
+                  return (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.15 }}
+                      className="glass-card p-5"
+                    >
+                      <div className="flex items-start gap-4">
+                        <button
+                          type="button"
+                          onClick={() => img && setZoomedCard({ name: card.name, image: img, position: card.position, meaning: card.meaning })}
+                          className="shrink-0 rounded-xl overflow-hidden border border-primary/25 hover:border-primary/60 transition-all hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-primary/50"
+                          style={{ width: 72, height: 120, background: "hsl(var(--muted) / 0.2)" }}
+                          aria-label={`Ampliar carta ${card.name}`}
+                        >
+                          {img ? (
+                            <img src={img} alt={card.name} className="w-full h-full object-cover" loading="lazy" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-2xl">🃏</div>
+                          )}
+                        </button>
+                        <div className="flex-1">
+                          <p className="section-label mb-1">
+                            {card.position === "Pasado" ? "🌙" : card.position === "Presente" ? "✨" : "☀️"} {card.position}
+                          </p>
+                          <h3 className="font-display text-base text-foreground font-semibold mb-2">{card.name}</h3>
+                          <p className="text-foreground/70 text-sm font-body leading-relaxed">{card.meaning}</p>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <p className="section-label mb-1">
-                          {card.position === "Pasado" ? "🌙" : card.position === "Presente" ? "✨" : "☀️"} {card.position}
-                        </p>
-                        <h3 className="font-display text-base text-foreground font-semibold mb-2">{card.name}</h3>
-                        <p className="text-foreground/70 text-sm font-body leading-relaxed">{card.meaning}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  );
+                })}
               </div>
             )}
 
