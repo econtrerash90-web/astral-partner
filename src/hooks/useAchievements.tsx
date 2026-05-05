@@ -22,10 +22,15 @@ interface AchievementsContextValue {
 const Ctx = createContext<AchievementsContextValue | undefined>(undefined);
 
 const showUnlockToast = (def: AchievementDef) => {
-  toast.success(`¡Logro desbloqueado!`, {
+  const id = toast.success(`¡Logro desbloqueado!`, {
     description: `${def.icon}  ${def.title} — ${def.description}`,
     duration: 5000,
-    className: "achievement-toast",
+    className: "achievement-toast cursor-pointer",
+    onAutoClose: () => {},
+    action: {
+      label: "✕",
+      onClick: () => toast.dismiss(id),
+    },
   });
 };
 
