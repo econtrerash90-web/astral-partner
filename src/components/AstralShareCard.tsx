@@ -4,6 +4,8 @@ import { Download, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { QRCodeSVG } from "qrcode.react";
 import { getSignTrait } from "@/lib/sign-descriptions";
+import { getKnightForSign } from "@/lib/zodiac-knights";
+import { getKnightImage } from "@/lib/knight-images";
 
 interface ShareCardProps {
   sunSign: { name: string; symbol: string; element: string; planet: string };
@@ -18,6 +20,8 @@ interface ShareCardProps {
 const AstralShareCard = ({ sunSign, moonSign, ascendant, name, luckyNumber, ritual, amulet }: ShareCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [generating, setGenerating] = useState(false);
+  const knight = getKnightForSign(sunSign.name);
+  const knightImage = getKnightImage(sunSign.name);
 
   const generateImage = async (): Promise<string | null> => {
     if (!cardRef.current) return null;
