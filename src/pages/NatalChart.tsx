@@ -32,9 +32,36 @@ const NatalChart = () => {
   const [astralChart, setAstralChart] = useState<AstralChartRow | null>(null);
   const [analysisExpanded, setAnalysisExpanded] = useState(false);
 
+  const fetchAndCache = async (chart: AstralChartRow) => {
+    try {
+      const { data, error } = await supabase.functions.invoke("natal-chart", {
+        body: {
+          birthDate: chart.birth_date,
+          birthTime: chart.birth_time,
+          birthPlace: chart.birth_place,
+        },
+      });
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      setChartData(data as NatalChartData);
+
+      if (user) {
+        await supabase.from("astral_extras" as any).upsert(
+          { user_id: user.id, type: "natalChart", result: data, created_at: new Date().toISOString() },
+          { onConflict: "user_id,type" }
+        );
+      }
+      return true;
+    } catch (e: any) {
+      console.error("Error loading natal chart:", e);
+      return false;
+    }
+  };
+
   const loadChart = async (forceRegenerate = false) => {
     if (!user) return;
-    setLoading(true);
 
     const { data: chart } = await supabase
       .from("astral_charts")
@@ -51,7 +78,8 @@ const NatalChart = () => {
 
     setAstralChart(chart as AstralChartRow);
 
-    // Use cached natal chart unless forced (trigger clears cache when birth data changes)
+    // Try cached first — show immediately, then refresh in background
+    let hasCached = false;
     if (!forceRegenerate) {
       const { data: cached } = await supabase
         .from("astral_extras" as any)
@@ -62,32 +90,14 @@ const NatalChart = () => {
       if (cached && (cached as any).result) {
         setChartData((cached as any).result as NatalChartData);
         setLoading(false);
-        return;
+        hasCached = true;
+        return; // cache is valid (trigger clears it on birth data change)
       }
     }
 
-    try {
-      const { data, error } = await supabase.functions.invoke("natal-chart", {
-        body: {
-          birthDate: chart.birth_date,
-          birthTime: chart.birth_time,
-          birthPlace: chart.birth_place,
-        },
-      });
-
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-
-      setChartData(data as NatalChartData);
-
-      await supabase.from("astral_extras" as any).upsert(
-        { user_id: user.id, type: "natalChart", result: data, created_at: new Date().toISOString() },
-        { onConflict: "user_id,type" }
-      );
-    } catch (e: any) {
-      console.error("Error loading natal chart:", e);
-      toast.error("No pudimos generar tu carta natal. Intenta de nuevo.");
-    } finally {
+    if (!hasCached) {
+      const ok = await fetchAndCache(chart as AstralChartRow);
+      if (!ok) toast.error("No pudimos generar tu carta natal. Intenta de nuevo.");
       setLoading(false);
     }
   };
