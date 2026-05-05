@@ -35,7 +35,7 @@ serve(async (req) => {
     const __LANG_CODE__ = await getUserLanguage(supabaseAuth, userData.user.id, "es");
     const __LANG_INSTRUCTION__ = languageInstruction(__LANG_CODE__);
 
-    const { sunSign, moonSign, ascendant, birthPlace } = await req.json();
+    const { sunSign, moonSign, ascendant, midheaven, birthPlace } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
@@ -62,14 +62,14 @@ serve(async (req) => {
             content: `Haz un análisis de personalidad para alguien con estas características:
 - Personalidad tipo: ${sunSign} (su esencia)
 - Mundo emocional tipo: ${moonSign} (cómo siente)
-- Imagen que proyecta: ${ascendant} (cómo lo ven los demás)
+- Imagen que proyecta: ${ascendant} (cómo lo ven los demás)${midheaven ? `\n- Camino de vida y vocación tipo: ${midheaven} (hacia dónde va)` : ""}
 - Lugar de origen: ${birthPlace}
 
 Incluye:
 1. ¿Cómo es esta persona en su día a día? Sus rasgos más fuertes
 2. ¿Cómo maneja sus emociones y relaciones?
 3. ¿En qué es buena y en qué puede mejorar?
-4. ¿Cómo se combinan estos tres aspectos de su personalidad?
+4. ¿Cómo se combinan ${midheaven ? "estos cuatro aspectos" : "estos tres aspectos"} de su personalidad y qué significa esa combinación única para ella?${midheaven ? "\n5. Su camino y propósito: hacia dónde la impulsa naturalmente la vida" : ""}
 
 NO uses jerga astrológica. Habla como si le explicaras a un amigo quién es esta persona.
 Usa emojis para hacer el texto más visual (💪🧠❤️✨🌟).`
