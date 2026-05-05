@@ -99,7 +99,10 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-        {fields.map((field, i) => (
+        {fields.map((field, i) => {
+          const optional = field.name === "birthTime";
+          const hint = "hint" in field ? (field as { hint?: string }).hint : undefined;
+          return (
           <motion.div
             key={field.name}
             initial={{ opacity: 0, y: 10 }}
@@ -108,22 +111,28 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
           >
             <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
               <field.icon className="w-3.5 h-3.5 text-primary" />
-              {field.label} <span className="text-destructive">*</span>
+              {field.label} {!optional && <span className="text-destructive">*</span>}
             </label>
             <input
               type={field.type}
               name={field.name}
               value={formData[field.name as keyof InternalFormData]}
               onChange={handleChange}
-              required
+              required={!optional}
               className="input-modern"
               {...("placeholder" in field ? { placeholder: field.placeholder } : {})}
               {...("autoComplete" in field ? { autoComplete: field.autoComplete } : {})}
               {...("max" in field ? { max: field.max } : {})}
               {...("maxLength" in field ? { maxLength: field.maxLength } : {})}
             />
+            {hint && (
+              <p className="mt-1.5 text-xs text-muted-foreground/80 font-body italic">
+                {hint}
+              </p>
+            )}
           </motion.div>
-        ))}
+          );
+        })}
 
         <button
           type="submit"
