@@ -82,7 +82,13 @@ const Profile = () => {
     setEditOpen(true);
   };
 
-  const composedPlace = `${editCity.trim()}, ${editState.trim()}, ${editCountry.trim()}`;
+  const normalizedEdit = normalizeBirthFields({
+    fullName: "",
+    birthCity: editCity,
+    birthState: editState,
+    birthCountry: editCountry,
+  });
+  const composedPlace = normalizedEdit.birthPlace;
   const hasChanges = chart && (
     editDate !== chart.birth_date ||
     editTime !== chart.birth_time ||
