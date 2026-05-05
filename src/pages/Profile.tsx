@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import elfawaLogo from "@/assets/elfawa-logo.png";
 import {
   Dialog,
   DialogContent,
@@ -329,16 +330,19 @@ const Profile = () => {
           </button>
 
           {/* Powered by Elfawa AI Technologies */}
-          <div className="pt-4 pb-2 text-center">
+          <div className="pt-6 pb-2 flex flex-col items-center gap-2">
             <a
               href="https://elfawa-ai-technologies.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 text-muted-foreground/60 hover:text-primary transition-colors"
+              className="flex flex-col items-center gap-2 hover:opacity-80 transition-opacity"
             >
-              <span className="text-xs font-body">Powered by</span>
-              <span className="text-xs font-body font-medium">Elfawa AI Technologies</span>
-              <span className="text-xs font-body opacity-70">2026</span>
+              <img
+                src={elfawaLogo}
+                alt="Elfawa AI Technologies"
+                className="w-full max-w-[260px] h-auto rounded-lg"
+              />
+              <span className="text-[10px] font-body text-muted-foreground/60">Powered by Elfawa AI Technologies · 2026</span>
             </a>
           </div>
         </div>
