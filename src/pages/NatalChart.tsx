@@ -11,6 +11,7 @@ import type { NatalChartData } from "@/lib/natal-chart-types";
 import { getSignTrait, ELEMENT_FRIENDLY, PLANET_FRIENDLY } from "@/lib/sign-descriptions";
 import { formatAIText } from "@/lib/format-ai-text";
 import CompatibilitySection from "@/components/CompatibilitySection";
+import ZodiacKnightCard from "@/components/ZodiacKnightCard";
 import type { SignName } from "@/lib/compatibility";
 
 interface AstralChartRow {
@@ -224,6 +225,9 @@ const NatalChart = () => {
 
               {/* Positions table */}
               <NatalChartTable data={chartData} />
+
+              {/* Zodiac Knight */}
+              <ZodiacKnightCard sign={astralChart.sun_sign_name} />
 
               {/* Compatibility */}
               <CompatibilitySection userSign={astralChart.sun_sign_name as SignName} />
