@@ -58,6 +58,7 @@ const Index = () => {
   const { isPremium } = useSubscription();
   const [chartData, setChartData] = useState<ChartRow | null>(null);
   const [horoscope, setHoroscope] = useState<DailyHoroscope | null>(null);
+  const [luckyNumber, setLuckyNumber] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingHoroscope, setIsLoadingHoroscope] = useState(false);
   const [showForm, setShowForm] = useState(false);
