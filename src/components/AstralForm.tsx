@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Calendar, Clock, Lock, Sparkles, Building2, Map, Globe, Settings2, ChevronDown } from "lucide-react";
 import { normalizeBirthFields } from "@/lib/normalize-text";
+import { useI18n } from "@/hooks/useI18n";
 import {
   guessTimezoneFromCountry,
   listCommonTimezones,
@@ -36,6 +37,7 @@ interface InternalFormData {
 }
 
 const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
+  const { t } = useI18n();
   const [formData, setFormData] = useState<InternalFormData>({
     fullName: "",
     birthDate: "",
@@ -84,16 +86,16 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.fullName.trim()) return setError("Por favor ingresa tu nombre completo");
-    if (!formData.birthDate) return setError("Por favor ingresa tu fecha de nacimiento");
-    if (!formData.birthCity.trim()) return setError("Por favor ingresa tu ciudad de nacimiento");
-    if (!formData.birthState.trim()) return setError("Por favor ingresa tu estado o provincia");
-    if (!formData.birthCountry.trim()) return setError("Por favor ingresa tu país de nacimiento");
+    if (!formData.fullName.trim()) return setError(t("form.errName"));
+    if (!formData.birthDate) return setError(t("form.errDate"));
+    if (!formData.birthCity.trim()) return setError(t("form.errCity"));
+    if (!formData.birthState.trim()) return setError(t("form.errState"));
+    if (!formData.birthCountry.trim()) return setError(t("form.errCountry"));
 
     // Validate manual UTC if user edited it.
     if (utcEdited && utcOverride.trim()) {
       if (!isValidUtcISO(utcOverride.trim())) {
-        return setError("El UTC manual no es válido. Usa formato ISO 8601 terminado en Z (ej: 2020-03-15T20:30:00Z).");
+        return setError(t("form.errUtc"));
       }
     }
 
@@ -115,12 +117,12 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
   };
 
   const fields = [
-    { name: "fullName", label: "Nombre Completo", icon: User, type: "text", placeholder: "María Elena García López", autoComplete: "name", maxLength: 100 },
-    { name: "birthDate", label: "Fecha de Nacimiento", icon: Calendar, type: "date", max: new Date().toISOString().split("T")[0] },
-    { name: "birthTime", label: "Hora de Nacimiento (opcional)", icon: Clock, type: "time", hint: "Si no la conoces, usaremos 12:00 PM (mediodía). Puedes ajustarla luego en tu perfil para mayor precisión." },
-    { name: "birthCity", label: "Ciudad", icon: Building2, type: "text", placeholder: "Ciudad de México", maxLength: 80 },
-    { name: "birthState", label: "Estado o Provincia", icon: Map, type: "text", placeholder: "CDMX", maxLength: 80 },
-    { name: "birthCountry", label: "País", icon: Globe, type: "text", placeholder: "México", autoComplete: "country-name", maxLength: 80 },
+    { name: "fullName", label: t("form.fullName"), icon: User, type: "text", placeholder: "María Elena García López", autoComplete: "name", maxLength: 100 },
+    { name: "birthDate", label: t("form.birthDate"), icon: Calendar, type: "date", max: new Date().toISOString().split("T")[0] },
+    { name: "birthTime", label: `${t("form.birthTime")} (${t("common.optional")})`, icon: Clock, type: "time", hint: t("form.birthTimeHint") },
+    { name: "birthCity", label: t("form.city"), icon: Building2, type: "text", placeholder: "Ciudad de México", maxLength: 80 },
+    { name: "birthState", label: t("form.state"), icon: Map, type: "text", placeholder: "CDMX", maxLength: 80 },
+    { name: "birthCountry", label: t("form.country"), icon: Globe, type: "text", placeholder: "México", autoComplete: "country-name", maxLength: 80 },
   ] as const;
 
   return (
@@ -133,7 +135,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
       <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/10 mb-6">
         <Lock className="w-4 h-4 text-primary flex-shrink-0" />
         <p className="text-muted-foreground text-xs font-body">
-          Tus datos están protegidos y nunca se comparten sin tu consentimiento.
+          {t("form.privacy")}
         </p>
       </div>
 
@@ -192,7 +194,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
           >
             <span className="flex items-center gap-2 text-sm font-body">
               <Settings2 className="w-4 h-4 text-primary" />
-              Modo experto: zona horaria y UTC
+              {t("form.expertMode")}
             </span>
             <ChevronDown className={`w-4 h-4 transition-transform ${expertOpen ? "rotate-180" : ""}`} />
           </button>
@@ -209,7 +211,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                   {/* Timezone select */}
                   <div>
                     <label className="block text-xs font-body text-muted-foreground mb-1.5">
-                      Zona horaria IANA
+                      {t("form.timezone")}
                     </label>
                     <select
                       value={tzOverride || resolvedTz}
@@ -225,8 +227,8 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                     </select>
                     <p className="mt-1 text-[11px] text-muted-foreground/70 font-body">
                       {tzOverride
-                        ? "Zona horaria definida manualmente."
-                        : "Detectada a partir del país. Cambia si necesitas otra."}
+                        ? t("form.timezoneManual")
+                        : t("form.timezoneAuto")}
                     </p>
                   </div>
 
@@ -234,7 +236,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                   <div className="grid grid-cols-2 gap-3">
                     <div className="p-3 rounded-lg bg-background/40 border border-border/15">
                       <p className="text-[10px] uppercase tracking-wide text-muted-foreground/70 font-body mb-1">
-                        Desfase
+                        {t("form.offset")}
                       </p>
                       <p className="text-sm font-body text-foreground">
                         {computed ? formatOffset(computed.offsetMinutes) : "—"}
@@ -242,7 +244,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                     </div>
                     <div className="p-3 rounded-lg bg-background/40 border border-border/15">
                       <p className="text-[10px] uppercase tracking-wide text-muted-foreground/70 font-body mb-1">
-                        Hora local
+                        {t("form.localTime")}
                       </p>
                       <p className="text-sm font-body text-foreground">
                         {formData.birthDate || "—"} {effectiveTime}
@@ -253,7 +255,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                   {/* UTC override */}
                   <div>
                     <label className="block text-xs font-body text-muted-foreground mb-1.5">
-                      Instante UTC (ISO 8601)
+                      {t("form.utcInstant")}
                     </label>
                     <input
                       type="text"
@@ -267,7 +269,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                     />
                     <div className="mt-1.5 flex items-center justify-between gap-3">
                       <p className="text-[11px] text-muted-foreground/70 font-body">
-                        Calculado automáticamente; edítalo solo si conoces el UTC exacto.
+                        {t("form.utcHint")}
                       </p>
                       {utcEdited && (
                         <button
@@ -275,7 +277,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                           onClick={() => { setUtcEdited(false); setUtcOverride(""); }}
                           className="text-[11px] text-primary hover:text-primary/80 font-body"
                         >
-                          Restablecer
+                          {t("form.reset")}
                         </button>
                       )}
                     </div>
@@ -292,7 +294,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
           className="btn-gold w-full py-4 flex items-center justify-center gap-3 text-base"
         >
           <Sparkles className="w-5 h-5" />
-          Descubrir Mi Perfil
+          {t("form.submit")}
         </button>
       </form>
     </motion.div>

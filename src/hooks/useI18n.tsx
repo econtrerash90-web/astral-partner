@@ -56,12 +56,19 @@ export const I18nProvider = ({ children }: { children: ReactNode }) => {
   }, [language]);
 
   const setLanguage = useCallback(async (lang: LanguageCode) => {
+    const prev = language;
     setLanguageState(lang);
     localStorage.setItem(STORAGE_KEY, lang);
-    if (user) {
+    if (user && lang !== prev) {
       await supabase.from("profiles").update({ preferred_language: lang } as any).eq("id", user.id);
+      // Invalidate AI-generated cached content so it regenerates in the new language
+      try {
+        await (supabase as any).rpc("invalidate_user_ai_cache");
+      } catch (e) {
+        console.warn("Language cache invalidation failed", e);
+      }
     }
-  }, [user]);
+  }, [user, language]);
 
   const t = useCallback((key: string) => {
     return dictionaries[language]?.[key] ?? dictionaries[DEFAULT_LANGUAGE][key] ?? key;

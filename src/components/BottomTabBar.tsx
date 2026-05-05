@@ -17,39 +17,43 @@ import {
 } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
+import { useI18n } from "@/hooks/useI18n";
 
-const mainTabs = [
-  { to: "/", label: "Inicio", icon: Star },
-  { to: "/diario", label: "Diario", icon: BookOpen },
-  { to: "/compatibilidad", label: "Compat.", icon: Heart },
-  // center slot reserved
-  { to: "/logros", label: "Logros", icon: Trophy },
-  { to: "/carta-natal", label: "Carta", icon: Sparkles },
+const buildMainTabs = (t: (k: string) => string) => [
+  { to: "/", label: t("nav.home"), icon: Star },
+  { to: "/diario", label: t("nav.journal"), icon: BookOpen },
+  { to: "/compatibilidad", label: t("nav.compatibility"), icon: Heart },
+  { to: "/logros", label: t("nav.achievements"), icon: Trophy },
+  { to: "/carta-natal", label: t("nav.chart"), icon: Sparkles },
 ];
 
-const spreadOptions = [
-  { to: "/tarot", label: "Tarot", icon: Layers },
-  { to: "/el-secreto", label: "Secreto", icon: Crown },
-  { to: "/angeles", label: "Ángeles", icon: Feather },
-  { to: "/oraculo", label: "Oráculo", icon: SquareAsterisk },
-  { to: "/ritual", label: "Ritual", icon: Flame },
-  { to: "/amuleto", label: "Amuleto", icon: Gem },
+const buildSpreadOptions = (t: (k: string) => string) => [
+  { to: "/tarot", label: t("nav.tarot"), icon: Layers },
+  { to: "/el-secreto", label: t("nav.secret"), icon: Crown },
+  { to: "/angeles", label: t("nav.angels"), icon: Feather },
+  { to: "/oraculo", label: t("nav.oracle"), icon: SquareAsterisk },
+  { to: "/ritual", label: t("nav.ritual"), icon: Flame },
+  { to: "/amuleto", label: t("nav.amulet"), icon: Gem },
 ];
 
 const BottomTabBar = () => {
   const { pathname } = useLocation();
   const { isPremium } = useSubscription();
   const { user } = useAuth();
+  const { t } = useI18n();
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Usuario";
+  const mainTabs = buildMainTabs(t);
+  const spreadOptions = buildSpreadOptions(t);
+
+  const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || t("common.user");
   const initials = displayName.slice(0, 2).toUpperCase();
   const avatarUrl = (user?.user_metadata?.avatar_url || user?.user_metadata?.picture) as string | undefined;
   const profileActive = pathname === "/perfil";
 
   const isSpreadRoute = spreadOptions.some((o) => o.to === pathname);
 
-  const renderTab = (tab: typeof mainTabs[number]) => {
+  const renderTab = (tab: ReturnType<typeof buildMainTabs>[number]) => {
     const active = pathname === tab.to;
     const Icon = tab.icon;
     return (
@@ -106,12 +110,12 @@ const BottomTabBar = () => {
               <div className="mx-auto mt-3 mb-2 h-1.5 w-12 rounded-full bg-muted/60" />
               <div className="px-5 pt-2 pb-1 flex items-center justify-between">
                 <h3 className="font-display text-base tracking-widest text-foreground">
-                  Tiradas Místicas
+                  {t("nav.mysticSpreads")}
                 </h3>
                 <button
                   onClick={() => setSheetOpen(false)}
                   className="p-1.5 rounded-lg hover:bg-muted/40 text-muted-foreground"
-                  aria-label="Cerrar"
+                  aria-label={t("common.close")}
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -158,7 +162,7 @@ const BottomTabBar = () => {
                     }}
                   >
                     <Crown className="w-4 h-4" />
-                    Hazte Premium
+                    {t("header.becomePremium")}
                   </Link>
                 </div>
               )}
@@ -195,12 +199,12 @@ const BottomTabBar = () => {
                   : "0 0 16px hsl(var(--mystic-gold) / 0.4), 0 8px 24px hsl(0 0% 0% / 0.5)",
                 border: "3px solid hsl(234 45% 8%)",
               }}
-              aria-label="Tiradas Místicas"
+              aria-label={t("nav.mysticSpreads")}
             >
               <Sparkles className="w-6 h-6 text-background" />
             </button>
             <span className="absolute bottom-1.5 text-[10px] font-body text-muted-foreground tracking-wide">
-              Tiradas
+              {t("nav.spreads")}
             </span>
           </div>
 
@@ -231,7 +235,7 @@ const BottomTabBar = () => {
                 profileActive ? "text-foreground font-medium" : "text-muted-foreground"
               }`}
             >
-              Perfil
+              {t("nav.profile")}
             </span>
           </Link>
         </div>

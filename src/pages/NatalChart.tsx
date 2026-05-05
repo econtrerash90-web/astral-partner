@@ -6,6 +6,7 @@ import StarField from "@/components/StarField";
 import NatalChartWheel from "@/components/NatalChartWheel";
 import NatalChartTable from "@/components/NatalChartTable";
 import { useAuth } from "@/hooks/useAuth";
+import { useI18n } from "@/hooks/useI18n";
 import { supabase } from "@/integrations/supabase/client";
 import type { NatalChartData } from "@/lib/natal-chart-types";
 import { getSignTrait, ELEMENT_FRIENDLY, PLANET_FRIENDLY } from "@/lib/sign-descriptions";
@@ -29,6 +30,7 @@ interface AstralChartRow {
 
 const NatalChart = () => {
   const { user } = useAuth();
+  const { t } = useI18n();
   const [chartData, setChartData] = useState<NatalChartData | null>(null);
   const [loading, setLoading] = useState(true);
   const [astralChart, setAstralChart] = useState<AstralChartRow | null>(null);
@@ -104,7 +106,7 @@ const NatalChart = () => {
 
     if (!hasCached) {
       const ok = await fetchAndCache(chart as AstralChartRow);
-      if (!ok) toast.error("No pudimos generar tu carta natal. Intenta de nuevo.");
+      if (!ok) toast.error(t("natal.errorRetry"));
       setLoading(false);
     }
   };
@@ -125,7 +127,7 @@ const NatalChart = () => {
           <div className="text-center mb-6">
             <h1 className="font-display text-2xl text-foreground flex items-center justify-center gap-2">
               <Star className="w-5 h-5 text-primary" />
-              Tu Carta Natal
+              {t("natal.title")}
             </h1>
             {astralChart && (
               <p className="text-muted-foreground text-xs font-body mt-1">
@@ -137,12 +139,12 @@ const NatalChart = () => {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-3">
               <Loader2 className="w-8 h-8 text-primary animate-spin" />
-              <p className="text-muted-foreground text-sm font-body">Calculando tu carta natal...</p>
+              <p className="text-muted-foreground text-sm font-body">{t("natal.calculating")}</p>
             </div>
           ) : !astralChart ? (
             <div className="glass-card p-8 text-center">
               <p className="text-muted-foreground font-body">
-                Necesitas completar tus datos de nacimiento para ver tu carta natal.
+                {t("natal.needData")}
               </p>
             </div>
           ) : chartData ? (
@@ -190,22 +192,22 @@ const NatalChart = () => {
                   <div className="feature-icon w-8 h-8 rounded-xl">
                     <Star className="w-4 h-4 text-primary" />
                   </div>
-                  <h2 className="font-display text-base text-foreground tracking-wide">Tu Perfil Astral</h2>
+                  <h2 className="font-display text-base text-foreground tracking-wide">{t("natal.profile")}</h2>
                 </div>
 
                 <div className="glass-card-elevated p-4 rounded-xl mb-3 border-primary/10">
-                  <p className="section-label mb-1">Tu signo</p>
+                  <p className="section-label mb-1">{t("natal.yourSign")}</p>
                   <p className="text-foreground text-xl font-display font-semibold flex items-center gap-2">
                     <span className="text-2xl">{astralChart.sun_sign_symbol}</span>
                     {astralChart.sun_sign_name}
                   </p>
                   <div className="grid grid-cols-2 gap-2 mt-3">
                     <div className="flex justify-between items-center p-2.5 bg-muted/20 rounded-lg">
-                      <span className="text-muted-foreground text-xs font-body">Tu energía</span>
+                      <span className="text-muted-foreground text-xs font-body">{t("natal.yourEnergy")}</span>
                       <span className="text-primary font-medium text-xs font-body">{ELEMENT_FRIENDLY[astralChart.sun_sign_element] || astralChart.sun_sign_element}</span>
                     </div>
                     <div className="flex justify-between items-center p-2.5 bg-muted/20 rounded-lg">
-                      <span className="text-muted-foreground text-xs font-body">Tu impulso</span>
+                      <span className="text-muted-foreground text-xs font-body">{t("natal.yourDrive")}</span>
                       <span className="text-primary font-medium text-xs font-body">{PLANET_FRIENDLY[astralChart.sun_sign_planet] || astralChart.sun_sign_planet}</span>
                     </div>
                   </div>
@@ -213,12 +215,12 @@ const NatalChart = () => {
 
                 <div className="grid grid-cols-2 gap-3 mb-3">
                   <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
-                    <p className="section-label mb-1">Tus emociones</p>
+                    <p className="section-label mb-1">{t("natal.yourEmotions")}</p>
                     <p className="text-foreground font-display font-semibold">{astralChart.moon_sign}</p>
                     <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(astralChart.moon_sign, "moon")}</p>
                   </div>
                   <div className="p-3 rounded-xl bg-muted/20 border border-border/20">
-                    <p className="section-label mb-1">Cómo te ven</p>
+                    <p className="section-label mb-1">{t("natal.howOthersSee")}</p>
                     <p className="text-foreground font-display font-semibold">{astralChart.ascendant}</p>
                     <p className="text-muted-foreground/60 text-[11px] font-body mt-0.5">{getSignTrait(astralChart.ascendant, "asc")}</p>
                   </div>
@@ -232,7 +234,7 @@ const NatalChart = () => {
                     >
                       <span className="text-sm font-body font-medium text-foreground/90 flex items-center gap-2">
                         <Sparkles className="w-3.5 h-3.5 text-primary" />
-                        Tu personalidad según las estrellas
+                        {t("natal.personalityTitle")}
                       </span>
                       <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-300 ${analysisExpanded ? "rotate-180" : ""}`} />
                     </button>
@@ -283,13 +285,13 @@ const NatalChart = () => {
           ) : (
             <div className="glass-card p-8 text-center">
               <p className="text-muted-foreground font-body text-sm">
-                No pudimos generar tu carta natal.
+                {t("natal.error")}
               </p>
               <button
                 onClick={() => loadChart(true)}
                 className="mt-3 text-primary text-sm font-body hover:underline"
               >
-                Intentar de nuevo
+                {t("common.retry")}
               </button>
             </div>
           )}

@@ -4,25 +4,28 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Star, BookOpen, User, LogOut, ChevronDown, Crown, Feather, SquareAsterisk, Heart } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useI18n } from "@/hooks/useI18n";
 import { Badge } from "@/components/ui/badge";
 
-const navItems = [
-  { to: "/", label: "Inicio", icon: Star },
-  { to: "/compatibilidad", label: "Compatibilidad", icon: Heart },
-  { to: "/el-secreto", label: "Secreto", icon: Crown },
-  { to: "/angeles", label: "Ángeles", icon: Feather },
-  { to: "/oraculo", label: "Oráculo", icon: SquareAsterisk },
-  { to: "/diario", label: "Diario", icon: BookOpen },
+const buildNavItems = (t: (k: string) => string) => [
+  { to: "/", label: t("nav.home"), icon: Star },
+  { to: "/compatibilidad", label: t("nav.compatibilityFull"), icon: Heart },
+  { to: "/el-secreto", label: t("nav.secret"), icon: Crown },
+  { to: "/angeles", label: t("nav.angels"), icon: Feather },
+  { to: "/oraculo", label: t("nav.oracle"), icon: SquareAsterisk },
+  { to: "/diario", label: t("nav.journal"), icon: BookOpen },
 ];
 
 const AppHeader = () => {
   const location = useLocation();
   const { user, signOut } = useAuth();
   const { isPremium } = useSubscription();
+  const { t } = useI18n();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Usuario";
+  const navItems = buildNavItems(t);
+  const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || t("common.user");
   const initials = displayName.slice(0, 2).toUpperCase();
 
   useEffect(() => {
@@ -85,7 +88,7 @@ const AppHeader = () => {
           {isPremium && (
             <Badge className="bg-gradient-to-r from-amber-500 to-yellow-400 text-background border-0 font-display text-[10px] tracking-wider shadow-[0_0_8px_hsl(var(--primary)/0.3)]">
               <Crown className="w-3 h-3 mr-1" />
-              PREMIUM
+              {t("header.premium")}
             </Badge>
           )}
         </div>
@@ -125,13 +128,13 @@ const AppHeader = () => {
                   onClick={() => setUserMenuOpen(false)}
                   className="flex items-center gap-2.5 px-4 py-2.5 text-foreground/80 hover:text-foreground hover:bg-muted/50 transition-all font-body text-sm"
                 >
-                  <User className="w-4 h-4" /> Mi Perfil
+                  <User className="w-4 h-4" /> {t("header.myProfile")}
                 </Link>
                 <button
                   onClick={() => { setUserMenuOpen(false); signOut(); }}
                   className="w-full flex items-center gap-2.5 px-4 py-2.5 text-destructive/70 hover:text-destructive hover:bg-destructive/10 transition-all font-body text-sm"
                 >
-                  <LogOut className="w-4 h-4" /> Cerrar Sesión
+                  <LogOut className="w-4 h-4" /> {t("header.signOut")}
                 </button>
               </motion.div>
             )}

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Star, Sparkles, BookOpen, Hash, Flame, Gem, Sun, Moon, ArrowUp, Heart, Briefcase, Activity, Palette, Clock, AlertTriangle, ChevronRight, RefreshCw, Layers, Crown, Feather, SquareAsterisk, Lock, Map, ChevronDown, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { es as esLocale, enUS, de as deLocale, pl as plLocale, pt as ptLocale } from "date-fns/locale";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import AstralForm from "@/components/AstralForm";
@@ -11,6 +11,7 @@ import AstralLoading from "@/components/AstralLoading";
 import DailyShareCard from "@/components/DailyShareCard";
 import ResultShareButtons from "@/components/ResultShareButtons";
 import { useAuth } from "@/hooks/useAuth";
+import { useI18n } from "@/hooks/useI18n";
 import { supabase } from "@/integrations/supabase/client";
 import { useSubscription } from "@/hooks/useSubscription";
 import {
@@ -21,6 +22,15 @@ import {
 } from "@/lib/astral-calculations";
 import { formatAIText } from "@/lib/format-ai-text";
 import { getSignTrait, getMoonTransitLabel, ELEMENT_FRIENDLY, PLANET_FRIENDLY } from "@/lib/sign-descriptions";
+
+const dateLocales: Record<string, any> = { es: esLocale, en: enUS, de: deLocale, pl: plLocale, pt: ptLocale };
+const dateFormatByLang: Record<string, string> = {
+  es: "EEEE, d 'de' MMMM",
+  en: "EEEE, MMMM d",
+  de: "EEEE, d. MMMM",
+  pl: "EEEE, d MMMM",
+  pt: "EEEE, d 'de' MMMM",
+};
 
 interface DailyHoroscope {
   general: string;
@@ -57,6 +67,7 @@ interface ChartRow {
 
 const Index = () => {
   const { user } = useAuth();
+  const { t, language } = useI18n();
   const { isPremium } = useSubscription();
   const [chartData, setChartData] = useState<ChartRow | null>(null);
   const [horoscope, setHoroscope] = useState<DailyHoroscope | null>(null);
@@ -154,7 +165,7 @@ const Index = () => {
       }, { onConflict: "user_id,reading_date,reading_type" });
     } catch (e) {
       console.error("Horoscope error:", e);
-      toast.error("No se pudo generar tu lectura del día. Intenta de nuevo.");
+      toast.error(t("home.errorHoroscope"));
     } finally {
       setIsLoadingHoroscope(false);
     }
@@ -212,10 +223,10 @@ const Index = () => {
 
       if (chart) setChartData(chart);
       setShowForm(false);
-      toast.success("¡Tu perfil personal está listo!");
+      toast.success(t("home.profileReady"));
     } catch (err) {
       console.error(err);
-      toast.error("No pudimos crear tu perfil. Intenta de nuevo.");
+      toast.error(t("home.errorProfile"));
     } finally {
       setIsLoading(false);
     }
@@ -239,9 +250,9 @@ const Index = () => {
         <div className="relative z-10 px-4 py-8 sm:py-12 max-w-2xl mx-auto">
           <motion.header initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
             <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent mb-2" style={{ backgroundImage: "var(--gradient-title)" }}>
-              Crea Tu Perfil Personal
+              {t("home.createProfileTitle")}
             </h1>
-            <p className="text-muted-foreground text-sm font-body">Cuéntanos cuándo y dónde naciste para conocer más sobre ti</p>
+            <p className="text-muted-foreground text-sm font-body">{t("home.createProfileSub")}</p>
           </motion.header>
           <AstralForm onSubmit={handleSubmit} isLoading={isLoading} />
         </div>
@@ -260,10 +271,10 @@ const Index = () => {
         {/* ─── Greeting ─── */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
           <p className="text-muted-foreground text-xs font-body mb-1 tracking-wide">
-            {format(today, "EEEE, d 'de' MMMM", { locale: es })}
+            {format(today, dateFormatByLang[language] ?? dateFormatByLang.es, { locale: dateLocales[language] ?? esLocale })}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent" style={{ backgroundImage: "var(--gradient-title)" }}>
-            Hola, {displayName}
+            {t("home.hello")}, {displayName}
           </h1>
           <div className="flex items-center gap-4 mt-3">
             <SignPill icon={<Sun className="w-3 h-3 text-primary" />} label={chartData.sun_sign_name} tooltip={getSignTrait(chartData.sun_sign_name, "sun")} />
@@ -281,7 +292,7 @@ const Index = () => {
             )}
             {horoscope.mercuryRetrograde && (
               <span className="pill-tag-danger pill-tag">
-                <AlertTriangle className="w-3 h-3" /> Energía en pausa ☿
+                <AlertTriangle className="w-3 h-3" /> {t("home.energyPause")} ☿
               </span>
             )}
             {horoscope.luckyColor && (
@@ -291,7 +302,7 @@ const Index = () => {
               <span className="pill-tag"><Clock className="w-3 h-3" /> {horoscope.luckyHour}</span>
             )}
             {luckyNumber !== null && (
-              <span className="pill-tag"><Hash className="w-3 h-3" /> Número de la suerte hoy: {luckyNumber}</span>
+              <span className="pill-tag"><Hash className="w-3 h-3" /> {t("home.luckyNumberToday")}: {luckyNumber}</span>
             )}
           </motion.div>
         )}
@@ -305,11 +316,11 @@ const Index = () => {
                 <Sparkles className="w-4 h-4 text-primary" />
               </div>
               <h2 className="font-display text-base text-foreground tracking-wide">
-                Tu Día de Hoy
+                {t("home.todaysReading")}
               </h2>
             </div>
             <button onClick={generateHoroscope} disabled={isLoadingHoroscope}
-              className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all" title="Regenerar">
+              className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all" title={t("home.regenerate")}>
               <RefreshCw className={`w-4 h-4 ${isLoadingHoroscope ? "animate-spin" : ""}`} />
             </button>
           </div>
@@ -317,7 +328,7 @@ const Index = () => {
           {isLoadingHoroscope && !horoscope ? (
             <div className="flex items-center gap-3 py-8 justify-center">
               <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              <p className="text-muted-foreground text-sm font-body">Preparando tu lectura...</p>
+              <p className="text-muted-foreground text-sm font-body">{t("home.preparingReading")}</p>
             </div>
           ) : horoscope ? (
             <div className="space-y-5">
@@ -327,18 +338,18 @@ const Index = () => {
 
               {/* Energy meters */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <EnergyBar icon={<Sparkles className="w-3.5 h-3.5" />} label="Energía" value={horoscope.energy} />
-                <EnergyBar icon={<Heart className="w-3.5 h-3.5" />} label="Amor" value={horoscope.love} />
-                <EnergyBar icon={<Briefcase className="w-3.5 h-3.5" />} label="Trabajo" value={horoscope.work} />
-                <EnergyBar icon={<Activity className="w-3.5 h-3.5" />} label="Salud" value={horoscope.health} />
+                <EnergyBar icon={<Sparkles className="w-3.5 h-3.5" />} label={t("home.energy")} value={horoscope.energy} />
+                <EnergyBar icon={<Heart className="w-3.5 h-3.5" />} label={t("home.love")} value={horoscope.love} />
+                <EnergyBar icon={<Briefcase className="w-3.5 h-3.5" />} label={t("home.work")} value={horoscope.work} />
+                <EnergyBar icon={<Activity className="w-3.5 h-3.5" />} label={t("home.health")} value={horoscope.health} />
               </div>
 
               {/* Expandable details */}
               <div className="space-y-1.5">
-                <DetailRow label="✨ Energía" text={horoscope.energyDetail || horoscope.general} id="energy" expanded={expandedSection} toggle={setExpandedSection} />
-                <DetailRow label="💕 Amor" text={horoscope.loveDetail} id="love" expanded={expandedSection} toggle={setExpandedSection} />
-                <DetailRow label="💼 Trabajo" text={horoscope.workDetail} id="work" expanded={expandedSection} toggle={setExpandedSection} />
-                <DetailRow label="🌿 Salud" text={horoscope.healthDetail} id="health" expanded={expandedSection} toggle={setExpandedSection} />
+                <DetailRow label={`✨ ${t("home.energy")}`} text={horoscope.energyDetail || horoscope.general} id="energy" expanded={expandedSection} toggle={setExpandedSection} />
+                <DetailRow label={`💕 ${t("home.love")}`} text={horoscope.loveDetail} id="love" expanded={expandedSection} toggle={setExpandedSection} />
+                <DetailRow label={`💼 ${t("home.work")}`} text={horoscope.workDetail} id="work" expanded={expandedSection} toggle={setExpandedSection} />
+                <DetailRow label={`🌿 ${t("home.health")}`} text={horoscope.healthDetail} id="health" expanded={expandedSection} toggle={setExpandedSection} />
               </div>
 
               {/* Advice */}
@@ -362,24 +373,24 @@ const Index = () => {
                 className="w-full glass-card p-4 flex items-center justify-center gap-2 hover:border-primary/30 transition-all text-foreground/85 hover:text-foreground"
               >
                 <Share2 className="w-4 h-4 text-primary" />
-                <span className="font-body text-sm">Compartir Mi Día en Stories</span>
+                <span className="font-body text-sm">{t("home.shareDay")}</span>
               </button>
             ) : (
               <div className="glass-card p-4 space-y-4">
                 <p className="font-body text-xs text-muted-foreground text-center">
-                  Tu tarjeta del día está lista para Instagram Stories ✨
+                  {t("home.shareCardReady")}
                 </p>
                 <ResultShareButtons
                   captureRef={shareCardRef}
                   filename={`dia-${format(today, "yyyy-MM-dd")}`}
-                  shareText={`Mi energía de hoy según Astrelle ✨ ${chartData.sun_sign_name}`}
+                  shareText={`${t("home.shareCardCaption")} ✨ ${chartData.sun_sign_name}`}
                   buttons={["download", "more"]}
                 />
                 <button
                   onClick={() => setShowShareCard(false)}
                   className="w-full text-xs text-muted-foreground/60 hover:text-muted-foreground font-body"
                 >
-                  Cerrar
+                  {t("common.close")}
                 </button>
               </div>
             )}
@@ -403,7 +414,7 @@ const Index = () => {
         )}
 
         <p className="text-center text-muted-foreground/30 text-[11px] mt-4 font-body">
-          Las lecturas son para entretenimiento y reflexión personal, no sustituyen asesoría profesional.
+          {t("home.disclaimer")}
         </p>
       </div>
     </div>
