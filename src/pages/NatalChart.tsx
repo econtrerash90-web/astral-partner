@@ -32,7 +32,7 @@ const NatalChart = () => {
   const [astralChart, setAstralChart] = useState<AstralChartRow | null>(null);
   const [analysisExpanded, setAnalysisExpanded] = useState(false);
 
-  const loadChart = async () => {
+  const loadChart = async (forceRegenerate = false) => {
     if (!user) return;
     setLoading(true);
 
@@ -51,6 +51,21 @@ const NatalChart = () => {
 
     setAstralChart(chart as AstralChartRow);
 
+    // Use cached natal chart unless forced (trigger clears cache when birth data changes)
+    if (!forceRegenerate) {
+      const { data: cached } = await supabase
+        .from("astral_extras" as any)
+        .select("result")
+        .eq("user_id", user.id)
+        .eq("type", "natalChart")
+        .maybeSingle();
+      if (cached && (cached as any).result) {
+        setChartData((cached as any).result as NatalChartData);
+        setLoading(false);
+        return;
+      }
+    }
+
     try {
       const { data, error } = await supabase.functions.invoke("natal-chart", {
         body: {
@@ -64,6 +79,11 @@ const NatalChart = () => {
       if (data?.error) throw new Error(data.error);
 
       setChartData(data as NatalChartData);
+
+      await supabase.from("astral_extras" as any).upsert(
+        { user_id: user.id, type: "natalChart", result: data, created_at: new Date().toISOString() },
+        { onConflict: "user_id,type" }
+      );
     } catch (e: any) {
       console.error("Error loading natal chart:", e);
       toast.error("No pudimos generar tu carta natal. Intenta de nuevo.");
