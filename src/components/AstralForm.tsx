@@ -48,12 +48,17 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
     if (!formData.birthState.trim()) return setError("Por favor ingresa tu estado o provincia");
     if (!formData.birthCountry.trim()) return setError("Por favor ingresa tu país de nacimiento");
 
-    const birthPlace = `${formData.birthCity.trim()}, ${formData.birthState.trim()}, ${formData.birthCountry.trim()}`;
+    const normalized = normalizeBirthFields({
+      fullName: formData.fullName,
+      birthCity: formData.birthCity,
+      birthState: formData.birthState,
+      birthCountry: formData.birthCountry,
+    });
     onSubmit({
-      fullName: formData.fullName.trim(),
+      fullName: normalized.fullName,
       birthDate: formData.birthDate,
       birthTime: formData.birthTime,
-      birthPlace,
+      birthPlace: normalized.birthPlace,
     });
   };
 
