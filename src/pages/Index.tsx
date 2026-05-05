@@ -26,6 +26,7 @@ interface DailyHoroscope {
   love: number;
   work: number;
   health: number;
+  energyDetail?: string;
   loveDetail: string;
   workDetail: string;
   healthDetail: string;
@@ -294,6 +295,7 @@ const Index = () => {
 
               {/* Expandable details */}
               <div className="space-y-1.5">
+                <DetailRow label="✨ Energía" text={horoscope.energyDetail || horoscope.general} id="energy" expanded={expandedSection} toggle={setExpandedSection} />
                 <DetailRow label="💕 Amor" text={horoscope.loveDetail} id="love" expanded={expandedSection} toggle={setExpandedSection} />
                 <DetailRow label="💼 Trabajo" text={horoscope.workDetail} id="work" expanded={expandedSection} toggle={setExpandedSection} />
                 <DetailRow label="🌿 Salud" text={horoscope.healthDetail} id="health" expanded={expandedSection} toggle={setExpandedSection} />
