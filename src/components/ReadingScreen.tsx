@@ -82,10 +82,36 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
     load();
   }, [user, type]);
 
+  const loadPreviousByCategory = useCallback(async (cat: string) => {
+    if (!user) return false;
+    setIsLoading(true);
+    try {
+      const { data: rows } = await supabase
+        .from("daily_readings")
+        .select("content, created_at")
+        .eq("user_id", user.id)
+        .eq("reading_type", type)
+        .order("created_at", { ascending: false })
+        .limit(50);
+      const match = (rows || []).find((r: any) => r?.content?._category === cat);
+      if (match) {
+        setResult(match.content);
+        toast.success("Mostrando tu última tirada de esta categoría ✨");
+        return true;
+      }
+      toast.info("Aún no tienes una tirada guardada para esta categoría");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user, type]);
+
   const performReading = useCallback(async () => {
     if (!chartData || !user || !category) return;
+
+    // Sin tiradas disponibles → mostrar última guardada de esta categoría
     if (remaining <= 0) {
-      toast.error("Has alcanzado tu límite de tiradas para hoy");
+      await loadPreviousByCategory(category);
       return;
     }
 
@@ -106,14 +132,15 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
-      setResult(data);
+      const enriched = { ...(data as any), _category: category };
+      setResult(enriched);
 
       const today = format(new Date(), "yyyy-MM-dd");
       await supabase.from("daily_readings").insert({
         user_id: user.id,
         reading_date: today,
         reading_type: type,
-        content: data,
+        content: enriched,
       });
 
       await supabase.rpc("increment_reading_count", {
@@ -129,7 +156,7 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
     } finally {
       setIsLoading(false);
     }
-  }, [chartData, user, category, question, type, remaining]);
+  }, [chartData, user, category, question, type, remaining, loadPreviousByCategory]);
 
   const newReading = () => {
     setResult(null);
