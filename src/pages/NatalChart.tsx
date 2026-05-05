@@ -44,6 +44,8 @@ const NatalChart = () => {
           birthDate: chart.birth_date,
           birthTime: chart.birth_time,
           birthPlace: chart.birth_place,
+          birthTimezone: (chart as any).birth_timezone ?? undefined,
+          birthUtc: (chart as any).birth_utc ?? undefined,
         },
       });
 
