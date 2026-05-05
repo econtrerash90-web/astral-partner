@@ -162,7 +162,7 @@ const BottomTabBar = () => {
                     }}
                   >
                     <Crown className="w-4 h-4" />
-                    Hazte Premium
+                    {t("header.becomePremium")}
                   </Link>
                 </div>
               )}
@@ -199,12 +199,12 @@ const BottomTabBar = () => {
                   : "0 0 16px hsl(var(--mystic-gold) / 0.4), 0 8px 24px hsl(0 0% 0% / 0.5)",
                 border: "3px solid hsl(234 45% 8%)",
               }}
-              aria-label="Tiradas Místicas"
+              aria-label={t("nav.mysticSpreads")}
             >
               <Sparkles className="w-6 h-6 text-background" />
             </button>
             <span className="absolute bottom-1.5 text-[10px] font-body text-muted-foreground tracking-wide">
-              Tiradas
+              {t("nav.spreads")}
             </span>
           </div>
 
@@ -235,7 +235,7 @@ const BottomTabBar = () => {
                 profileActive ? "text-foreground font-medium" : "text-muted-foreground"
               }`}
             >
-              Perfil
+              {t("nav.profile")}
             </span>
           </Link>
         </div>
