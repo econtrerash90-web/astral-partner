@@ -1,13 +1,24 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { User, Calendar, Clock, MapPin, Lock, Sparkles, Building2, Map, Globe } from "lucide-react";
+import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { User, Calendar, Clock, Lock, Sparkles, Building2, Map, Globe, Settings2, ChevronDown } from "lucide-react";
 import { normalizeBirthFields } from "@/lib/normalize-text";
+import {
+  guessTimezoneFromCountry,
+  listCommonTimezones,
+  localToUTC,
+  formatOffset,
+  isValidUtcISO,
+} from "@/lib/timezone";
 
 interface FormData {
   fullName: string;
   birthDate: string;
   birthTime: string;
   birthPlace: string;
+  /** Optional: IANA timezone selected/overridden in expert mode. */
+  birthTimezone?: string;
+  /** Optional: ISO UTC instant override from expert mode. */
+  birthUtc?: string;
 }
 
 interface AstralFormProps {
@@ -35,6 +46,37 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
   });
   const [error, setError] = useState("");
 
+  // ─── Expert mode state ───
+  const [expertOpen, setExpertOpen] = useState(false);
+  const [tzOverride, setTzOverride] = useState<string>("");
+  const [utcOverride, setUtcOverride] = useState<string>("");
+  const [utcEdited, setUtcEdited] = useState(false);
+
+  const tzOptions = useMemo(() => listCommonTimezones(), []);
+
+  // Resolved timezone: explicit override → guess from country → browser fallback.
+  const resolvedTz =
+    tzOverride ||
+    guessTimezoneFromCountry(formData.birthCountry) ||
+    Intl.DateTimeFormat().resolvedOptions().timeZone ||
+    "UTC";
+
+  // Effective time (default 12:00 if empty).
+  const effectiveTime = formData.birthTime?.trim() ? formData.birthTime : "12:00";
+
+  // Computed UTC preview from local date/time + tz.
+  const computed = useMemo(() => {
+    if (!formData.birthDate) return null;
+    try {
+      return localToUTC({ date: formData.birthDate, time: effectiveTime, timezone: resolvedTz });
+    } catch {
+      return null;
+    }
+  }, [formData.birthDate, effectiveTime, resolvedTz]);
+
+  // Auto-fill UTC override field when computed changes and user hasn't edited.
+  const displayedUtc = utcEdited ? utcOverride : (computed?.utcISO ?? "");
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
@@ -48,19 +90,27 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
     if (!formData.birthState.trim()) return setError("Por favor ingresa tu estado o provincia");
     if (!formData.birthCountry.trim()) return setError("Por favor ingresa tu país de nacimiento");
 
+    // Validate manual UTC if user edited it.
+    if (utcEdited && utcOverride.trim()) {
+      if (!isValidUtcISO(utcOverride.trim())) {
+        return setError("El UTC manual no es válido. Usa formato ISO 8601 terminado en Z (ej: 2020-03-15T20:30:00Z).");
+      }
+    }
+
     const normalized = normalizeBirthFields({
       fullName: formData.fullName,
       birthCity: formData.birthCity,
       birthState: formData.birthState,
       birthCountry: formData.birthCountry,
     });
-    // Default to noon when birth time is missing.
-    const effectiveTime = formData.birthTime?.trim() ? formData.birthTime : "12:00";
+
     onSubmit({
       fullName: normalized.fullName,
       birthDate: formData.birthDate,
       birthTime: effectiveTime,
       birthPlace: normalized.birthPlace,
+      birthTimezone: resolvedTz,
+      birthUtc: utcEdited && utcOverride.trim() ? utcOverride.trim() : computed?.utcISO,
     });
   };
 
@@ -80,7 +130,6 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
       transition={{ duration: 0.5 }}
       className="glass-card p-6 sm:p-8"
     >
-      {/* Security notice */}
       <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/10 mb-6">
         <Lock className="w-4 h-4 text-primary flex-shrink-0" />
         <p className="text-muted-foreground text-xs font-body">
@@ -103,36 +152,139 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
           const optional = field.name === "birthTime";
           const hint = "hint" in field ? (field as { hint?: string }).hint : undefined;
           return (
-          <motion.div
-            key={field.name}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.06 }}
-          >
-            <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
-              <field.icon className="w-3.5 h-3.5 text-primary" />
-              {field.label} {!optional && <span className="text-destructive">*</span>}
-            </label>
-            <input
-              type={field.type}
-              name={field.name}
-              value={formData[field.name as keyof InternalFormData]}
-              onChange={handleChange}
-              required={!optional}
-              className="input-modern"
-              {...("placeholder" in field ? { placeholder: field.placeholder } : {})}
-              {...("autoComplete" in field ? { autoComplete: field.autoComplete } : {})}
-              {...("max" in field ? { max: field.max } : {})}
-              {...("maxLength" in field ? { maxLength: field.maxLength } : {})}
-            />
-            {hint && (
-              <p className="mt-1.5 text-xs text-muted-foreground/80 font-body italic">
-                {hint}
-              </p>
-            )}
-          </motion.div>
+            <motion.div
+              key={field.name}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.06 }}
+            >
+              <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
+                <field.icon className="w-3.5 h-3.5 text-primary" />
+                {field.label} {!optional && <span className="text-destructive">*</span>}
+              </label>
+              <input
+                type={field.type}
+                name={field.name}
+                value={formData[field.name as keyof InternalFormData]}
+                onChange={handleChange}
+                required={!optional}
+                className="input-modern"
+                {...("placeholder" in field ? { placeholder: field.placeholder } : {})}
+                {...("autoComplete" in field ? { autoComplete: field.autoComplete } : {})}
+                {...("max" in field ? { max: field.max } : {})}
+                {...("maxLength" in field ? { maxLength: field.maxLength } : {})}
+              />
+              {hint && (
+                <p className="mt-1.5 text-xs text-muted-foreground/80 font-body italic">
+                  {hint}
+                </p>
+              )}
+            </motion.div>
           );
         })}
+
+        {/* ─── Expert mode toggle ─── */}
+        <div className="pt-2">
+          <button
+            type="button"
+            onClick={() => setExpertOpen((v) => !v)}
+            className="w-full flex items-center justify-between gap-2 px-4 py-3 rounded-xl bg-muted/15 border border-border/15 hover:border-primary/30 transition-all text-foreground/85"
+          >
+            <span className="flex items-center gap-2 text-sm font-body">
+              <Settings2 className="w-4 h-4 text-primary" />
+              Modo experto: zona horaria y UTC
+            </span>
+            <ChevronDown className={`w-4 h-4 transition-transform ${expertOpen ? "rotate-180" : ""}`} />
+          </button>
+
+          <AnimatePresence>
+            {expertOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="mt-3 p-4 rounded-xl bg-muted/10 border border-border/15 space-y-4">
+                  {/* Timezone select */}
+                  <div>
+                    <label className="block text-xs font-body text-muted-foreground mb-1.5">
+                      Zona horaria IANA
+                    </label>
+                    <select
+                      value={tzOverride || resolvedTz}
+                      onChange={(e) => setTzOverride(e.target.value)}
+                      className="input-modern"
+                    >
+                      {!tzOptions.includes(resolvedTz) && (
+                        <option value={resolvedTz}>{resolvedTz}</option>
+                      )}
+                      {tzOptions.map((tz) => (
+                        <option key={tz} value={tz}>{tz}</option>
+                      ))}
+                    </select>
+                    <p className="mt-1 text-[11px] text-muted-foreground/70 font-body">
+                      {tzOverride
+                        ? "Zona horaria definida manualmente."
+                        : "Detectada a partir del país. Cambia si necesitas otra."}
+                    </p>
+                  </div>
+
+                  {/* Computed offset + UTC */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 rounded-lg bg-background/40 border border-border/15">
+                      <p className="text-[10px] uppercase tracking-wide text-muted-foreground/70 font-body mb-1">
+                        Desfase
+                      </p>
+                      <p className="text-sm font-body text-foreground">
+                        {computed ? formatOffset(computed.offsetMinutes) : "—"}
+                      </p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-background/40 border border-border/15">
+                      <p className="text-[10px] uppercase tracking-wide text-muted-foreground/70 font-body mb-1">
+                        Hora local
+                      </p>
+                      <p className="text-sm font-body text-foreground">
+                        {formData.birthDate || "—"} {effectiveTime}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* UTC override */}
+                  <div>
+                    <label className="block text-xs font-body text-muted-foreground mb-1.5">
+                      Instante UTC (ISO 8601)
+                    </label>
+                    <input
+                      type="text"
+                      value={displayedUtc}
+                      onChange={(e) => {
+                        setUtcOverride(e.target.value);
+                        setUtcEdited(true);
+                      }}
+                      placeholder="2020-03-15T20:30:00Z"
+                      className="input-modern font-mono text-sm"
+                    />
+                    <div className="mt-1.5 flex items-center justify-between gap-3">
+                      <p className="text-[11px] text-muted-foreground/70 font-body">
+                        Calculado automáticamente; edítalo solo si conoces el UTC exacto.
+                      </p>
+                      {utcEdited && (
+                        <button
+                          type="button"
+                          onClick={() => { setUtcEdited(false); setUtcOverride(""); }}
+                          className="text-[11px] text-primary hover:text-primary/80 font-body"
+                        >
+                          Restablecer
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         <button
           type="submit"
