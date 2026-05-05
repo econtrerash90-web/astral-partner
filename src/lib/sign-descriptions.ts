@@ -91,8 +91,8 @@ export const PLANET_FRIENDLY: Record<string, string> = {
 };
 
 /** Get a short personality summary from a sign name */
-export function getSignTrait(sign: string, type: "sun" | "moon" | "asc"): string {
-  const map = type === "sun" ? SUN_TRAITS : type === "moon" ? MOON_TRAITS : ASC_TRAITS;
+export function getSignTrait(sign: string, type: "sun" | "moon" | "asc" | "mc"): string {
+  const map = type === "sun" ? SUN_TRAITS : type === "moon" ? MOON_TRAITS : type === "asc" ? ASC_TRAITS : MC_TRAITS;
   return map[sign] || sign;
 }
 
