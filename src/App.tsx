@@ -1,6 +1,15 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import elfawaLogo from "@/assets/elfawa-logo.png";
-import { BrowserRouter, Route, Routes, Navigate, Link } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate, Link, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [pathname]);
+  return null;
+};
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -44,6 +53,7 @@ const AppRoutes = () => {
 
   return (
     <>
+      <ScrollToTop />
       {user && <BetaBanner />}
       <div style={user ? { paddingBottom: "calc(4rem + env(safe-area-inset-bottom))" } : undefined}>
       <Routes>
