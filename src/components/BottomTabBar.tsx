@@ -179,9 +179,10 @@ const BottomTabBar = () => {
           paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
-        <div className="relative max-w-2xl mx-auto flex items-stretch h-16 px-2">
+        <div className="relative max-w-2xl mx-auto flex items-stretch h-16 px-1">
           {renderTab(mainTabs[0])}
           {renderTab(mainTabs[1])}
+          {renderTab(mainTabs[2])}
 
           {/* Center FAB */}
           <div className="flex-1 flex items-start justify-center relative">
@@ -204,8 +205,8 @@ const BottomTabBar = () => {
             </span>
           </div>
 
-          {renderTab(mainTabs[2])}
           {renderTab(mainTabs[3])}
+          {renderTab(mainTabs[4])}
 
           <Link
             to="/perfil"
