@@ -387,6 +387,7 @@ export type Database = {
         Args: { p_date: string; p_type: string; p_user_id: string }
         Returns: undefined
       }
+      title_case_es: { Args: { p_input: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
