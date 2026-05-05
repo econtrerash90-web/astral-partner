@@ -22,17 +22,16 @@ import { useAuth } from "@/hooks/useAuth";
 const mainTabs = [
   { to: "/", label: "Inicio", icon: Star },
   { to: "/diario", label: "Diario", icon: BookOpen },
+  { to: "/tarot", label: "Tarot", icon: Layers },
   // center slot reserved
   { to: "/logros", label: "Logros", icon: Trophy },
   { to: "/carta-natal", label: "Carta", icon: Sparkles },
 ];
 
 const spreadOptions = [
-  { to: "/tarot", label: "Tarot", icon: Layers },
   { to: "/el-secreto", label: "Secreto", icon: Crown },
   { to: "/angeles", label: "Ángeles", icon: Feather },
   { to: "/oraculo", label: "Oráculo", icon: SquareAsterisk },
-  { to: "/numero-suerte", label: "Suerte", icon: Hash },
   { to: "/ritual", label: "Ritual", icon: Flame },
   { to: "/amuleto", label: "Amuleto", icon: Gem },
   { to: "/mapa-estelar", label: "Mapa", icon: Map },
