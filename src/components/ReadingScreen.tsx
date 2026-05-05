@@ -319,7 +319,20 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
             {/* Secret */}
             {type === "secret" && (
               <div className="glass-card p-6 text-center">
-                <span className="text-4xl block mb-3">{result.emoji || "🌟"}</span>
+                {/* Carta alusiva */}
+                <div
+                  className="mx-auto mb-5 rounded-2xl flex flex-col items-center justify-center"
+                  style={{
+                    width: 140,
+                    height: 220,
+                    background: "linear-gradient(160deg, hsl(var(--primary) / 0.25), hsl(var(--accent) / 0.18))",
+                    border: "1.5px solid hsl(var(--primary) / 0.4)",
+                    boxShadow: "0 0 50px hsl(var(--primary) / 0.25), inset 0 0 30px hsl(var(--accent) / 0.1)",
+                  }}
+                >
+                  <span className="text-5xl mb-2">{result.emoji || "🌟"}</span>
+                  <p className="font-display text-[11px] tracking-[0.2em] text-primary/90 uppercase">El Secreto</p>
+                </div>
                 <h2 className="font-display text-xl text-foreground font-semibold mb-4">{result.title}</h2>
                 <div className="glass-card-elevated p-4 mb-4 border-primary/15">
                   <p className="text-sm font-body text-primary italic">"{result.affirmation}"</p>
@@ -341,8 +354,20 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
             {/* Angels */}
             {type === "angels" && (
               <div className="glass-card p-6 text-center">
-                <span className="text-4xl block mb-3">{result.emoji || "👼"}</span>
-                <p className="section-label mb-1">{result.angelName}</p>
+                {/* Carta alusiva */}
+                <div
+                  className="mx-auto mb-5 rounded-2xl flex flex-col items-center justify-center"
+                  style={{
+                    width: 140,
+                    height: 220,
+                    background: "linear-gradient(160deg, hsl(var(--nebula-pink, var(--accent)) / 0.25), hsl(var(--primary) / 0.15))",
+                    border: "1.5px solid hsl(var(--accent) / 0.4)",
+                    boxShadow: "0 0 50px hsl(var(--accent) / 0.25), inset 0 0 30px hsl(var(--primary) / 0.1)",
+                  }}
+                >
+                  <span className="text-5xl mb-2">{result.emoji || "👼"}</span>
+                  <p className="font-display text-[11px] tracking-[0.2em] text-accent uppercase">{result.angelName || "Ángel"}</p>
+                </div>
                 <h2 className="font-display text-xl text-foreground font-semibold mb-4">{result.title}</h2>
                 <p className="text-foreground/80 text-sm font-body leading-relaxed mb-4">{result.message}</p>
                 <div className="bg-accent/8 border border-accent/15 rounded-xl p-4 mb-3">
