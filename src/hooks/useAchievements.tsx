@@ -26,11 +26,7 @@ const showUnlockToast = (def: AchievementDef) => {
     description: `${def.icon}  ${def.title} — ${def.description}`,
     duration: 5000,
     className: "achievement-toast cursor-pointer",
-    onAutoClose: () => {},
-    action: {
-      label: "✕",
-      onClick: () => toast.dismiss(id),
-    },
+    onClick: () => toast.dismiss(id),
   });
 };
 
