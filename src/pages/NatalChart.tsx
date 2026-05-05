@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, Star, RefreshCw, Sparkles, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
@@ -12,6 +12,7 @@ import { getSignTrait, ELEMENT_FRIENDLY, PLANET_FRIENDLY } from "@/lib/sign-desc
 import { formatAIText } from "@/lib/format-ai-text";
 import CompatibilitySection from "@/components/CompatibilitySection";
 import ZodiacKnightCard from "@/components/ZodiacKnightCard";
+import ResultShareButtons from "@/components/ResultShareButtons";
 import type { SignName } from "@/lib/compatibility";
 
 interface AstralChartRow {
@@ -34,6 +35,9 @@ const NatalChart = () => {
   const [loading, setLoading] = useState(true);
   const [astralChart, setAstralChart] = useState<AstralChartRow | null>(null);
   const [analysisExpanded, setAnalysisExpanded] = useState(false);
+  const wheelRef = useRef<HTMLDivElement>(null);
+  const knightRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
 
   const fetchAndCache = async (chart: AstralChartRow) => {
     try {
@@ -144,22 +148,44 @@ const NatalChart = () => {
           ) : chartData ? (
             <>
               {/* Chart wheel */}
-              <div className="glass-card p-4 rounded-2xl">
-                <NatalChartWheel data={chartData} size={380} />
+              <div>
+                <div ref={wheelRef} className="glass-card p-4 rounded-2xl">
+                  <NatalChartWheel data={chartData} size={380} />
+                </div>
+                <div className="mt-3">
+                  <ResultShareButtons
+                    captureRef={wheelRef}
+                    filename="carta-natal-rueda"
+                    shareText={`Mi carta natal ✨ ${astralChart.sun_sign_name}`}
+                  />
+                </div>
               </div>
 
               {/* Zodiac Knight (above profile) */}
-              <ZodiacKnightCard
-                sign={astralChart.sun_sign_name}
-                signSymbol={astralChart.sun_sign_symbol}
-              />
+              <div>
+                <div ref={knightRef}>
+                  <ZodiacKnightCard
+                    sign={astralChart.sun_sign_name}
+                    signSymbol={astralChart.sun_sign_symbol}
+                  />
+                </div>
+                <div className="mt-3">
+                  <ResultShareButtons
+                    captureRef={knightRef}
+                    filename="caballero-zodiacal"
+                    shareText={`Mi Caballero del Zodiaco ⚔️ ${astralChart.sun_sign_name}`}
+                  />
+                </div>
+              </div>
 
               {/* ─── Tu Perfil Astral ─── */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="glass-card p-5 sm:p-6"
-              >
+              <div>
+                <motion.div
+                  ref={profileRef}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="glass-card p-5 sm:p-6"
+                >
                 <div className="flex items-center gap-2 mb-4">
                   <div className="feature-icon w-8 h-8 rounded-xl">
                     <Star className="w-4 h-4 text-primary" />
@@ -227,7 +253,15 @@ const NatalChart = () => {
                     </AnimatePresence>
                   </div>
                 )}
-              </motion.div>
+                </motion.div>
+                <div className="mt-3">
+                  <ResultShareButtons
+                    captureRef={profileRef}
+                    filename="perfil-astral"
+                    shareText={`Mi Perfil Astral ✨ ${astralChart.sun_sign_name} · Luna en ${astralChart.moon_sign} · Asc. ${astralChart.ascendant}`}
+                  />
+                </div>
+              </div>
 
               {/* Positions table */}
               <NatalChartTable data={chartData} />
