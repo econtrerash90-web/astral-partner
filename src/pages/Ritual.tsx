@@ -114,9 +114,9 @@ const Ritual = () => {
       <div className="relative z-10 px-4 py-8 sm:py-12 max-w-lg mx-auto">
         <motion.header initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
           <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent mb-2" style={{ backgroundImage: "var(--gradient-title)" }}>
-            Ritual Sugerido
+            {t("ritual.title")}
           </h1>
-          <p className="text-muted-foreground text-sm font-body">Tu ritual con velas de hoy, alineado a tu carta astral</p>
+          <p className="text-muted-foreground text-sm font-body">{t("ritual.subtitle")}</p>
         </motion.header>
 
         {generating && !data ? (
