@@ -262,10 +262,10 @@ const Compatibility = () => {
 
             {relType === "especial" && (
               <FieldInput
-                label="Especifica el acompañamiento"
+                label={t("compat.specifyType")}
                 value={specialDetail}
                 onChange={setSpecialDetail}
-                placeholder="Ej: cuidador familiar, mentor espiritual..."
+                placeholder={t("compat.specialPh")}
               />
             )}
 
@@ -282,11 +282,11 @@ const Compatibility = () => {
             >
               {submitting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" /> Analizando...
+                  <Loader2 className="w-4 h-4 animate-spin" /> {t("compat.analyzing")}
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4" /> Analizar Compatibilidad
+                  <Sparkles className="w-4 h-4" /> {t("compat.analyze")}
                 </>
               )}
             </button>
@@ -330,21 +330,21 @@ const Compatibility = () => {
                   )}
 
                   <div className="glass-card-elevated p-3 rounded-xl border-primary/10">
-                    <p className="section-label mb-1">✨ Fortalezas</p>
+                    <p className="section-label mb-1">{t("compat.strengths")}</p>
                     <div className="text-xs font-body text-foreground/80 leading-relaxed">
                       {formatAIText(result.strengths)}
                     </div>
                   </div>
 
                   <div className="p-3 rounded-xl bg-muted/15 border border-border/15">
-                    <p className="section-label mb-1">⚠️ Retos</p>
+                    <p className="section-label mb-1">{t("compat.challenges")}</p>
                     <div className="text-xs font-body text-muted-foreground leading-relaxed">
                       {formatAIText(result.challenges)}
                     </div>
                   </div>
 
                   <div className="glass-card-elevated p-3 rounded-xl border-accent/15">
-                    <p className="section-label mb-1">💡 Consejos</p>
+                    <p className="section-label mb-1">{t("compat.advice")}</p>
                     <div className="text-xs font-body text-foreground/85 leading-relaxed">
                       {formatAIText(result.advice)}
                     </div>
