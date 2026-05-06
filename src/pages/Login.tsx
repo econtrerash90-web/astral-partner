@@ -1,21 +1,31 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import { Sparkles, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import { useEffect, useState } from "react";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
 import { lovable } from "@/integrations/lovable/index";
+import { describeOAuthError, isInAppBrowser } from "@/lib/auth-errors";
 
 const Login = () => {
   const { user, loading } = useAuth();
+  const [inAppWarning, setInAppWarning] = useState(false);
+
+  useEffect(() => {
+    setInAppWarning(isInAppBrowser());
+  }, []);
 
   if (!loading && user) return <Navigate to="/" replace />;
 
   const handleOAuth = async (provider: "google" | "apple") => {
-    const { error } = await lovable.auth.signInWithOAuth(provider, {
+    const result = await lovable.auth.signInWithOAuth(provider, {
       redirect_uri: window.location.origin,
     });
-    if (error) toast.error(`Error al iniciar sesión con ${provider === "google" ? "Google" : "Apple"}`);
+    if (result.error) {
+      const info = describeOAuthError(provider, result.error);
+      toast.error(info.message, { description: info.hint });
+    }
   };
 
   return (
