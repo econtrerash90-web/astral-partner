@@ -81,10 +81,10 @@ const Compatibility = () => {
 
   const handleAnalyze = async () => {
     setError("");
-    if (!partnerName.trim()) return setError("Ingresa el nombre");
-    if (!partnerDate) return setError("Ingresa la fecha de nacimiento");
+    if (!partnerName.trim()) return setError(t("compat.errName"));
+    if (!partnerDate) return setError(t("compat.errDate"));
     if (relType === "especial" && !specialDetail.trim())
-      return setError("Especifica el tipo de acompañamiento");
+      return setError(t("compat.errType"));
     if (!chart) return;
 
     setSubmitting(true);
@@ -113,7 +113,7 @@ const Compatibility = () => {
       setResult(data as AnalysisResult);
     } catch (e: any) {
       console.error(e);
-      toast.error(e?.message || "No se pudo generar el análisis");
+      toast.error(e?.message || t("compat.errAnalysis"));
     } finally {
       setSubmitting(false);
     }
@@ -134,15 +134,15 @@ const Compatibility = () => {
         <StarField />
         <div className="relative z-10 px-4 py-16 max-w-lg mx-auto text-center">
           <Heart className="w-12 h-12 text-primary mx-auto mb-4" />
-          <h1 className="font-display text-2xl text-foreground mb-3">Compatibilidad</h1>
+          <h1 className="font-display text-2xl text-foreground mb-3">{t("compat.title")}</h1>
           <p className="text-muted-foreground font-body mb-6">
-            Primero crea tu perfil personal para descubrir compatibilidades.
+            {t("compat.needProfile")}
           </p>
           <Link
             to="/"
             className="inline-block px-6 py-3 rounded-xl bg-primary text-primary-foreground font-body font-medium hover:opacity-90 transition-opacity"
           >
-            Crear Mi Perfil
+            {t("compat.createProfile")}
           </Link>
         </div>
       </div>
@@ -162,10 +162,10 @@ const Compatibility = () => {
             className="font-display text-3xl font-bold tracking-wide bg-clip-text text-transparent mb-1"
             style={{ backgroundImage: "var(--gradient-title)" }}
           >
-            Compatibilidad
+            {t("compat.title")}
           </h1>
           <p className="text-muted-foreground text-sm font-body">
-            Descubre tu conexión con otra persona
+            {t("compat.subtitle")}
           </p>
         </motion.header>
 
@@ -173,20 +173,20 @@ const Compatibility = () => {
         <div className="glass-card p-1 grid grid-cols-2 gap-1 rounded-xl">
           {(
             [
-              { id: "simple", label: "Simple" },
-              { id: "full", label: "Completa" },
+              { id: "simple", labelKey: "compat.simple" },
+              { id: "full", labelKey: "compat.full" },
             ] as const
-          ).map((t) => (
+          ).map((tabItem) => (
             <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
+              key={tabItem.id}
+              onClick={() => setTab(tabItem.id)}
               className={`py-2 rounded-lg font-body text-sm transition-all ${
-                tab === t.id
+                tab === tabItem.id
                   ? "bg-primary/15 text-primary"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {t.label}
+              {t(tabItem.labelKey)}
             </button>
           ))}
         </div>
@@ -200,52 +200,52 @@ const Compatibility = () => {
             className="glass-card p-5 sm:p-6 space-y-4"
           >
             <p className="text-muted-foreground text-xs font-body">
-              Ingresa los datos de la persona con quien quieres validar compatibilidad.
+              {t("compat.intro")}
             </p>
 
             <div className="space-y-3">
               <FieldInput
-                label="Nombre completo"
+                label={t("compat.fullName")}
                 value={partnerName}
                 onChange={setPartnerName}
-                placeholder="Ana García"
+                placeholder={t("compat.partnerNamePh")}
               />
               <div className="grid grid-cols-2 gap-3">
                 <FieldInput
-                  label="Fecha de nacimiento"
+                  label={t("compat.birthDate")}
                   type="date"
                   value={partnerDate}
                   onChange={setPartnerDate}
                   max={new Date().toISOString().split("T")[0]}
                 />
                 <FieldInput
-                  label="Hora (opcional)"
+                  label={t("compat.timeOptional")}
                   type="time"
                   value={partnerTime}
                   onChange={setPartnerTime}
                 />
               </div>
               <FieldInput
-                label="Lugar de nacimiento (opcional)"
+                label={t("compat.placeOptional")}
                 value={partnerPlace}
                 onChange={setPartnerPlace}
-                placeholder="Ciudad, Estado, País"
+                placeholder={t("compat.placePh")}
               />
             </div>
 
             <div>
               <label className="text-foreground/80 font-body text-sm font-medium mb-2 block">
-                Tipo de compatibilidad
+                {t("compat.typeLabel")}
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {REL_OPTIONS.map((o) => {
-                  const Icon = o.icon;
-                  const active = relType === o.id;
+                {REL_TYPES.map((id) => {
+                  const Icon = REL_ICONS[id];
+                  const active = relType === id;
                   return (
                     <button
-                      key={o.id}
+                      key={id}
                       type="button"
-                      onClick={() => setRelType(o.id)}
+                      onClick={() => setRelType(id)}
                       className={`flex items-center gap-1.5 p-2.5 rounded-xl border transition-all text-xs font-body ${
                         active
                           ? "bg-primary/15 border-primary/40 text-primary"
@@ -253,7 +253,7 @@ const Compatibility = () => {
                       }`}
                     >
                       <Icon className="w-3.5 h-3.5" />
-                      <span className="truncate">{o.label}</span>
+                      <span className="truncate">{t(REL_KEY[id])}</span>
                     </button>
                   );
                 })}
