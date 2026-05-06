@@ -100,10 +100,10 @@ const Amulet = () => {
         <StarField />
         <div className="relative z-10 px-4 py-16 max-w-lg mx-auto text-center">
           <Gem className="w-12 h-12 text-primary mx-auto mb-4" />
-          <h1 className="font-display text-2xl text-foreground mb-3">Amuleto de la Suerte</h1>
-          <p className="text-muted-foreground font-body mb-6">Primero necesitas generar tu carta astral para descubrir tu piedra de poder.</p>
+          <h1 className="font-display text-2xl text-foreground mb-3">{t("amulet.title")}</h1>
+          <p className="text-muted-foreground font-body mb-6">{t("amulet.needChart")}</p>
           <Link to="/" className="inline-block px-6 py-3 rounded-xl bg-primary text-primary-foreground font-body font-medium hover:opacity-90 transition-opacity">
-            Generar Carta Astral
+            {t("ritual.generateChart")}
           </Link>
         </div>
       </div>
