@@ -11,6 +11,7 @@ import ResultShareButtons from "@/components/ResultShareButtons";
 
 const LuckyNumber = () => {
   const { user } = useAuth();
+  const { t } = useI18n();
   const resultRef = useRef<HTMLDivElement>(null);
   const [chartData, setChartData] = useState<{ sun_sign_name: string; moon_sign: string; ascendant: string } | null>(null);
   const [data, setData] = useState<{ number: number; reason: string } | null>(null);
