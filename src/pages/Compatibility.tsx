@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getZodiacSign } from "@/lib/astral-calculations";
 import type { SignName } from "@/lib/compatibility";
 import { formatAIText } from "@/lib/format-ai-text";
+import { useI18n } from "@/hooks/useI18n";
 
 interface ChartRow {
   full_name: string;
@@ -20,13 +21,21 @@ interface ChartRow {
 
 type RelType = "amor" | "laboral" | "amistad" | "paternidad" | "especial";
 
-const REL_OPTIONS: { id: RelType; label: string; icon: any }[] = [
-  { id: "amor", label: "Amor", icon: Heart },
-  { id: "laboral", label: "Laboral", icon: Briefcase },
-  { id: "amistad", label: "Amistad", icon: Users },
-  { id: "paternidad", label: "Paternidad", icon: Baby },
-  { id: "especial", label: "Acompañamiento Especial", icon: Sparkles },
-];
+const REL_KEY: Record<RelType, string> = {
+  amor: "compat.optAmor",
+  laboral: "compat.optLaboral",
+  amistad: "compat.optAmistad",
+  paternidad: "compat.optPaternidad",
+  especial: "compat.optEspecial",
+};
+const REL_ICONS: Record<RelType, any> = {
+  amor: Heart,
+  laboral: Briefcase,
+  amistad: Users,
+  paternidad: Baby,
+  especial: Sparkles,
+};
+const REL_TYPES: RelType[] = ["amor", "laboral", "amistad", "paternidad", "especial"];
 
 interface AnalysisResult {
   overall: number;
