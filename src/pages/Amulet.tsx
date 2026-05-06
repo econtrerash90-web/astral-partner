@@ -138,7 +138,7 @@ const Amulet = () => {
                 <p className="text-foreground/80 text-base font-body leading-relaxed">{data.properties}</p>
               </div>
               <div className="bg-primary/5 p-5 rounded-xl border border-primary/15">
-                <p className="text-muted-foreground text-xs font-body tracking-wide mb-2">Cómo Usarlo</p>
+                <p className="text-muted-foreground text-xs font-body tracking-wide mb-2">{t("amulet.howToUse")}</p>
                 <p className="text-primary/80 text-base font-body leading-relaxed italic">{data.howToUse}</p>
               </div>
             </div>
