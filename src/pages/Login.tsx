@@ -80,6 +80,16 @@ const Login = () => {
             Continuar con Apple
           </button>
         </div>
+
+        <p className="mt-5 text-muted-foreground/80 text-xs font-body leading-relaxed">
+          Usa siempre el mismo método con el que creaste tu cuenta. Si te registraste con Google,
+          inicia con Google; si lo hiciste con Apple, usa Apple.
+        </p>
+
+        <p className="mt-3 text-muted-foreground text-xs font-body">
+          ¿Cuenta con email y contraseña?{" "}
+          <Link to="/recuperar-password" className="text-primary hover:underline">Recupérala aquí</Link>
+        </p>
       </motion.div>
     </div>
   );
