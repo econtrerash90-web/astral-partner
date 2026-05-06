@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
+import { useI18n } from "@/hooks/useI18n";
 import { supabase } from "@/integrations/supabase/client";
 import ResultShareButtons from "@/components/ResultShareButtons";
 
@@ -19,6 +20,7 @@ interface RitualData {
 
 const Ritual = () => {
   const { user } = useAuth();
+  const { t } = useI18n();
   const resultRef = useRef<HTMLDivElement>(null);
   const [chartData, setChartData] = useState<{ sun_sign_name: string; moon_sign: string; ascendant: string } | null>(null);
   const [data, setData] = useState<RitualData | null>(null);
@@ -73,7 +75,7 @@ const Ritual = () => {
           { onConflict: "user_id,type" }
         );
       } catch {
-        toast.error("No se pudo generar tu ritual de hoy");
+        toast.error(t("ritual.error"));
       } finally {
         setGenerating(false);
       }
@@ -85,7 +87,7 @@ const Ritual = () => {
     return (
       <div className="min-h-screen relative flex items-center justify-center">
         <StarField />
-        <div className="relative z-10 animate-pulse text-muted-foreground font-body">Cargando...</div>
+        <div className="relative z-10 animate-pulse text-muted-foreground font-body">{t("common.loading")}</div>
       </div>
     );
   }
@@ -96,10 +98,10 @@ const Ritual = () => {
         <StarField />
         <div className="relative z-10 px-4 py-16 max-w-lg mx-auto text-center">
           <Flame className="w-12 h-12 text-primary mx-auto mb-4" />
-          <h1 className="font-display text-2xl text-foreground mb-3">Ritual Sugerido</h1>
-          <p className="text-muted-foreground font-body mb-6">Primero necesitas generar tu carta astral para recibir un ritual personalizado.</p>
+          <h1 className="font-display text-2xl text-foreground mb-3">{t("ritual.title")}</h1>
+          <p className="text-muted-foreground font-body mb-6">{t("ritual.needChart")}</p>
           <Link to="/" className="inline-block px-6 py-3 rounded-xl bg-primary text-primary-foreground font-body font-medium hover:opacity-90 transition-opacity">
-            Generar Carta Astral
+            {t("ritual.generateChart")}
           </Link>
         </div>
       </div>
@@ -112,15 +114,15 @@ const Ritual = () => {
       <div className="relative z-10 px-4 py-8 sm:py-12 max-w-lg mx-auto">
         <motion.header initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
           <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent mb-2" style={{ backgroundImage: "var(--gradient-title)" }}>
-            Ritual Sugerido
+            {t("ritual.title")}
           </h1>
-          <p className="text-muted-foreground text-sm font-body">Tu ritual con velas de hoy, alineado a tu carta astral</p>
+          <p className="text-muted-foreground text-sm font-body">{t("ritual.subtitle")}</p>
         </motion.header>
 
         {generating && !data ? (
           <div className="glass-card p-8 text-center flex flex-col items-center gap-3">
             <Loader2 className="w-8 h-8 text-primary animate-spin" />
-            <p className="text-muted-foreground font-body text-sm">Preparando tu ritual de hoy...</p>
+            <p className="text-muted-foreground font-body text-sm">{t("ritual.preparing")}</p>
           </div>
         ) : data ? (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-5">
@@ -130,7 +132,7 @@ const Ritual = () => {
                   <Flame className="w-8 h-8 text-primary" />
                 </div>
                 <h2 className="font-display text-xl text-foreground font-semibold mb-1">{data.title}</h2>
-                <p className="text-primary text-sm font-body">🕯️ Vela {data.candleColor} · {data.bestTime}</p>
+                <p className="text-primary text-sm font-body">🕯️ {t("ritual.candle")} {data.candleColor} · {data.bestTime}</p>
               </div>
               <div className="bg-muted/30 p-5 rounded-xl border border-border">
                 <p className="text-foreground/80 text-base font-body leading-relaxed">{data.description}</p>
@@ -138,7 +140,7 @@ const Ritual = () => {
             </div>
             <button onClick={() => setShowShare(!showShare)} className="w-full py-3.5 rounded-xl font-body text-sm font-medium bg-accent/15 text-accent border border-accent/20 hover:bg-accent/25 transition-all flex items-center justify-center gap-2">
               <Share2 className="w-4 h-4" />
-              Compartir
+              {t("common.share")}
             </button>
             {showShare && (
               <ResultShareButtons
@@ -148,12 +150,12 @@ const Ritual = () => {
               />
             )}
             <p className="text-center text-muted-foreground/50 text-[11px] font-body">
-              Tu ritual se renueva automáticamente cada día.
+              {t("ritual.renewsDaily")}
             </p>
           </motion.div>
         ) : (
           <div className="glass-card p-8 text-center">
-            <p className="text-muted-foreground font-body">No pudimos generar tu ritual. Intenta más tarde.</p>
+            <p className="text-muted-foreground font-body">{t("ritual.errorGeneral")}</p>
           </div>
         )}
       </div>
