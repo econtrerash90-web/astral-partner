@@ -47,6 +47,7 @@ interface AnalysisResult {
 }
 
 const Compatibility = () => {
+  const { user } = useAuth();
   const { t } = useI18n();
   const [chart, setChart] = useState<ChartRow | null>(null);
   const [loading, setLoading] = useState(true);
