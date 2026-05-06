@@ -159,7 +159,7 @@ const Amulet = () => {
           </motion.div>
         ) : (
           <div className="glass-card p-8 text-center">
-            <p className="text-muted-foreground font-body">No pudimos generar tu amuleto. Intenta más tarde.</p>
+            <p className="text-muted-foreground font-body">{t("amulet.errorGeneral")}</p>
           </div>
         )}
       </div>
