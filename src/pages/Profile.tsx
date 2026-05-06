@@ -103,7 +103,7 @@ const Profile = () => {
   const handleSaveChart = async () => {
     if (!chart || !hasChanges) return;
     if (!placeComplete) {
-      toast.error("Debes ingresar Ciudad, Estado y País");
+      toast.error(t("profile.errPlaceFields"));
       return;
     }
 
@@ -119,9 +119,9 @@ const Profile = () => {
       .eq("id", chart.id);
 
     if (error) {
-      toast.error("Error al actualizar los datos");
+      toast.error(t("profile.errUpdate"));
     } else {
-      toast.success("Datos actualizados. Tus signos han sido recalculados y tus lecturas se regenerarán.");
+      toast.success(t("profile.updated"));
       setEditOpen(false);
       await loadData();
     }
@@ -130,16 +130,17 @@ const Profile = () => {
 
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newPassword.length < 8) return toast.error("Mínimo 8 caracteres");
-    if (newPassword !== confirmPassword) return toast.error("Las contraseñas no coinciden");
+    if (newPassword.length < 8) return toast.error(t("profile.errPwdMin"));
+    if (newPassword !== confirmPassword) return toast.error(t("profile.errPwdMatch"));
     setChangingPassword(true);
     const { error } = await updatePassword(newPassword);
     if (error) toast.error(error);
-    else { toast.success("Contraseña actualizada"); setNewPassword(""); setConfirmPassword(""); }
+    else { toast.success(t("profile.pwdUpdated")); setNewPassword(""); setConfirmPassword(""); }
     setChangingPassword(false);
   };
 
-  const memberSince = profile?.created_at ? new Date(profile.created_at).toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric" }) : "";
+  const localeMap: Record<string, string> = { es: "es-ES", en: "en-US", de: "de-DE", pl: "pl-PL", pt: "pt-BR" };
+  const memberSince = profile?.created_at ? new Date(profile.created_at).toLocaleDateString(localeMap[language] || "en-US", { year: "numeric", month: "long", day: "numeric" }) : "";
   const displayName = profile?.full_name || user?.user_metadata?.full_name || "—";
   const initials = displayName.slice(0, 2).toUpperCase();
 
@@ -152,9 +153,9 @@ const Profile = () => {
             {initials}
           </div>
           <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent mb-1" style={{ backgroundImage: "var(--gradient-title)" }}>
-            Mi Perfil
+            {t("profile.title")}
           </h1>
-          <p className="text-muted-foreground text-sm font-body">Miembro desde {memberSince}</p>
+          <p className="text-muted-foreground text-sm font-body">{t("profile.memberSince")} {memberSince}</p>
         </motion.div>
 
         <div className="space-y-4">
