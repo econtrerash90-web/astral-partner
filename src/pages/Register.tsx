@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mail, Lock, User, Sparkles, UserPlus } from "lucide-react";
+import { Mail, Lock, User, Sparkles, UserPlus, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
 import { lovable } from "@/integrations/lovable/index";
+import { describeOAuthError, describeSignUpError, isInAppBrowser } from "@/lib/auth-errors";
 
 const Register = () => {
   const { signUp, user, loading } = useAuth();
