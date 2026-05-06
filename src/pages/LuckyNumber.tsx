@@ -62,7 +62,7 @@ const LuckyNumber = () => {
         { onConflict: "user_id,type" }
       );
     } catch {
-      toast.error("No se pudo generar tu número de la suerte");
+      toast.error(t("lucky.error"));
     } finally {
       setIsLoading(false);
     }
