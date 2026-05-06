@@ -150,7 +150,7 @@ const Ritual = () => {
               />
             )}
             <p className="text-center text-muted-foreground/50 text-[11px] font-body">
-              Tu ritual se renueva automáticamente cada día.
+              {t("ritual.renewsDaily")}
             </p>
           </motion.div>
         ) : (
