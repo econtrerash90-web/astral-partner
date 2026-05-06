@@ -9,6 +9,7 @@ import SkyMapCanvas, { type SkyMapStyle } from "@/components/SkyMapCanvas";
 import AddDateDialog from "@/components/AddDateDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useI18n } from "@/hooks/useI18n";
 import { supabase } from "@/integrations/supabase/client";
 import { generateSkyMap, getMoonPhaseDescription, type SkyMapData } from "@/services/skyMap";
 import { toast } from "sonner";
@@ -23,16 +24,18 @@ interface ImportantDate {
   event_longitude: number | null;
 }
 
-const STYLE_OPTIONS: { value: SkyMapStyle; label: string }[] = [
-  { value: "classic", label: "Clásico" },
-  { value: "minimal", label: "Minimalista" },
-  { value: "watercolor", label: "Acuarela" },
-  { value: "gold", label: "Dorado" },
-];
-
 const SkyMap = () => {
   const { user } = useAuth();
   const { isPremium } = useSubscription();
+  const { t } = useI18n();
+
+  const STYLE_OPTIONS: { value: SkyMapStyle; labelKey: string }[] = [
+    { value: "classic", labelKey: "sky.classic" },
+    { value: "minimal", labelKey: "sky.minimal" },
+    { value: "watercolor", labelKey: "sky.watercolor" },
+    { value: "gold", labelKey: "sky.gold" },
+  ];
+
   const [chart, setChart] = useState<{
     sun_sign_name: string;
     birth_date: string;
@@ -45,7 +48,6 @@ const SkyMap = () => {
   const [style, setStyle] = useState<SkyMapStyle>("classic");
   const [showLabels, setShowLabels] = useState(true);
 
-  // Default coords (Mexico City) when not available
   const DEFAULT_LAT = 19.4326;
   const DEFAULT_LNG = -99.1332;
 
@@ -59,7 +61,6 @@ const SkyMap = () => {
     []
   );
 
-  // Load astral chart
   useEffect(() => {
     if (!user) return;
     supabase
@@ -77,13 +78,12 @@ const SkyMap = () => {
             data.birth_time,
             DEFAULT_LAT,
             DEFAULT_LNG,
-            data.birth_place || "Lugar de nacimiento"
+            data.birth_place || t("sky.birthPlaceFallback")
           );
         }
       });
-  }, [user, generateForDate]);
+  }, [user, generateForDate, t]);
 
-  // Load important dates
   const loadDates = useCallback(async () => {
     if (!user) return;
     const { data } = await supabase
@@ -123,7 +123,7 @@ const SkyMap = () => {
       if (chart) generateForDate(chart.birth_date, chart.birth_time, DEFAULT_LAT, DEFAULT_LNG, chart.birth_place);
     }
     loadDates();
-    toast.success("Fecha eliminada");
+    toast.success(t("sky.dateDeleted"));
   };
 
   const downloadMap = () => {
@@ -133,10 +133,9 @@ const SkyMap = () => {
     link.download = `mapa-estelar-${selectedDate}.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
-    toast.success("Mapa descargado");
+    toast.success(t("sky.downloaded"));
   };
 
-  // Premium gate
   if (!isPremium) {
     return (
       <div className="min-h-screen relative">
@@ -149,16 +148,16 @@ const SkyMap = () => {
             className="font-display text-2xl font-bold tracking-wide bg-clip-text text-transparent mb-3"
             style={{ backgroundImage: "var(--gradient-title)" }}
           >
-            Mapa Estelar
+            {t("sky.title2")}
           </h1>
           <p className="text-muted-foreground text-sm font-body mb-6">
-            El mapa estelar interactivo es una funcionalidad exclusiva de Premium+.{" "}
+            {t("sky.premiumGate")}{" "}
             <Link to="/premium" className="text-primary underline underline-offset-2 hover:text-primary/80">
-              Conoce los planes y elige el tuyo →
+              {t("sky.viewPlansLink")}
             </Link>
           </p>
           <Link to="/premium" className="btn-gold py-3 inline-flex items-center gap-2">
-            <Star className="w-4 h-4" /> Ver planes
+            <Star className="w-4 h-4" /> {t("sky.viewPlansBtn")}
           </Link>
         </div>
       </div>
@@ -169,27 +168,24 @@ const SkyMap = () => {
     <div className="min-h-screen relative">
       <StarField />
       <div className="relative z-10 px-4 py-6 sm:py-8 max-w-5xl mx-auto space-y-5">
-        {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
           <h1
             className="font-display text-2xl sm:text-3xl font-bold tracking-wide bg-clip-text text-transparent mb-1"
             style={{ backgroundImage: "var(--gradient-title)" }}
           >
-            🌌 Tu Mapa Estelar
+            {t("sky.heroTitle")}
           </h1>
           <p className="text-muted-foreground text-sm font-body">
-            El cielo exacto de tus momentos más importantes
+            {t("sky.heroSub")}
           </p>
         </motion.div>
 
-        {/* Date selector */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs text-muted-foreground font-body tracking-wide">Selecciona una fecha</span>
+            <span className="text-xs text-muted-foreground font-body tracking-wide">{t("sky.selectDate")}</span>
             <AddDateDialog onDateAdded={loadDates} />
           </div>
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            {/* Birth date chip */}
             {chart && (
               <button
                 onClick={() => handleSelectDate("birth")}
@@ -200,7 +196,7 @@ const SkyMap = () => {
                 }`}
               >
                 <span>🎂</span>
-                <span>Mi nacimiento</span>
+                <span>{t("sky.myBirth")}</span>
               </button>
             )}
             {importantDates.map((d) => (
@@ -227,9 +223,7 @@ const SkyMap = () => {
           </div>
         </motion.div>
 
-        {/* Main content */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-5">
-          {/* Canvas */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -240,22 +234,20 @@ const SkyMap = () => {
               <SkyMapCanvas skyData={skyData} style={style} showLabels={showLabels} />
             ) : (
               <div className="aspect-square flex items-center justify-center">
-                <p className="text-muted-foreground text-sm">Generando mapa…</p>
+                <p className="text-muted-foreground text-sm">{t("sky.generating")}</p>
               </div>
             )}
           </motion.div>
 
-          {/* Sidebar */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.15 }}
             className="space-y-4"
           >
-            {/* Info card */}
             {skyData && (
               <div className="glass-card p-4 space-y-3">
-                <h3 className="text-xs tracking-wide text-muted-foreground font-body">Información</h3>
+                <h3 className="text-xs tracking-wide text-muted-foreground font-body">{t("sky.info")}</h3>
                 <div className="space-y-2 text-sm font-body">
                   <div>
                     <span className="text-muted-foreground">📍 </span>
@@ -274,22 +266,21 @@ const SkyMap = () => {
                   {skyData.celestialObjects.sun.visible && (
                     <div>
                       <span className="text-muted-foreground">☀️ </span>
-                      <span className="text-foreground">Sol visible (Alt: {skyData.celestialObjects.sun.altitude.toFixed(0)}°)</span>
+                      <span className="text-foreground">{t("sky.sunVisible")} ({t("sky.altitudeShort")}: {skyData.celestialObjects.sun.altitude.toFixed(0)}°)</span>
                     </div>
                   )}
                   <div>
                     <span className="text-muted-foreground">🪐 </span>
                     <span className="text-foreground">
-                      {skyData.celestialObjects.planets.filter((p) => p.visible).length} planetas visibles
+                      {skyData.celestialObjects.planets.filter((p) => p.visible).length} {t("sky.planetsVisible")}
                     </span>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Style selector */}
             <div className="glass-card p-4 space-y-3">
-              <h3 className="text-xs tracking-wide text-muted-foreground font-body">Estilo visual</h3>
+              <h3 className="text-xs tracking-wide text-muted-foreground font-body">{t("sky.styleVisual")}</h3>
               <div className="grid grid-cols-2 gap-2">
                 {STYLE_OPTIONS.map((s) => (
                   <button
@@ -301,7 +292,7 @@ const SkyMap = () => {
                         : "bg-muted/30 border border-border hover:bg-muted/50 text-muted-foreground"
                     }`}
                   >
-                    {s.label}
+                    {t(s.labelKey)}
                   </button>
                 ))}
               </div>
@@ -312,16 +303,15 @@ const SkyMap = () => {
                   onChange={(e) => setShowLabels(e.target.checked)}
                   className="rounded border-border"
                 />
-                Mostrar etiquetas
+                {t("sky.showLabels")}
               </label>
             </div>
 
-            {/* Actions */}
             <button
               onClick={downloadMap}
               className="btn-gold w-full py-3 flex items-center justify-center gap-2 text-sm"
             >
-              <Download className="w-4 h-4" /> Descargar HD
+              <Download className="w-4 h-4" /> {t("sky.downloadHd")}
             </button>
           </motion.div>
         </div>
