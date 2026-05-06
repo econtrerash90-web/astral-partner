@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mail, Lock, User, Sparkles, UserPlus } from "lucide-react";
+import { Mail, Lock, User, Sparkles, UserPlus, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
 import { lovable } from "@/integrations/lovable/index";
+import { describeOAuthError, describeSignUpError, isInAppBrowser } from "@/lib/auth-errors";
 
 const Register = () => {
   const { signUp, user, loading } = useAuth();
@@ -17,6 +18,11 @@ const Register = () => {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [acceptSensitiveData, setAcceptSensitiveData] = useState(false);
   const [acceptMarketing, setAcceptMarketing] = useState(false);
+  const [inAppWarning, setInAppWarning] = useState(false);
+
+  useEffect(() => {
+    setInAppWarning(isInAppBrowser());
+  }, []);
 
   if (!loading && user) return <Navigate to="/" replace />;
 
@@ -31,7 +37,8 @@ const Register = () => {
     setIsSubmitting(true);
     const { error } = await signUp(email, password, fullName);
     if (error) {
-      toast.error(error);
+      const info = describeSignUpError(error);
+      toast.error(info.message, { description: info.hint });
     } else {
       toast.success("¡Cuenta creada! Revisa tu email para confirmar tu cuenta.");
     }
@@ -62,6 +69,24 @@ const Register = () => {
           </h1>
           <p className="text-muted-foreground font-body text-sm">Comienza tu viaje astral</p>
         </div>
+
+        <div className="mb-5 p-3 rounded-xl border border-primary/20 bg-primary/5 flex gap-2">
+          <Sparkles className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+          <p className="text-foreground/80 text-xs font-body leading-relaxed">
+            <strong>Importante:</strong> usa solo un método por correo. Si te registras con Google o Apple,
+            entrarás siempre con ese mismo botón (no recibirás correo de confirmación porque ya está verificado).
+          </p>
+        </div>
+
+        {inAppWarning && (
+          <div className="mb-5 p-3 rounded-xl border border-amber-400/30 bg-amber-500/10 flex gap-2">
+            <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <p className="text-amber-100/90 text-xs font-body leading-relaxed">
+              Abriste Astrelle desde una app (Instagram, TikTok…). El registro con Google puede fallar aquí.
+              Abre el enlace en <strong>Safari</strong> o <strong>Chrome</strong>, o usa Apple.
+            </p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {fields.map((field) => (
@@ -149,10 +174,13 @@ const Register = () => {
           <button
             type="button"
             onClick={async () => {
-              const { error } = await lovable.auth.signInWithOAuth("google", {
+              const result = await lovable.auth.signInWithOAuth("google", {
                 redirect_uri: window.location.origin,
               });
-              if (error) toast.error("Error al registrarse con Google");
+              if (result.error) {
+                const info = describeOAuthError("google", result.error);
+                toast.error(info.message, { description: info.hint });
+              }
             }}
             className="w-full py-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center gap-3 text-foreground font-body text-sm"
           >
@@ -168,10 +196,13 @@ const Register = () => {
           <button
             type="button"
             onClick={async () => {
-              const { error } = await lovable.auth.signInWithOAuth("apple", {
+              const result = await lovable.auth.signInWithOAuth("apple", {
                 redirect_uri: window.location.origin,
               });
-              if (error) toast.error("Error al registrarse con Apple");
+              if (result.error) {
+                const info = describeOAuthError("apple", result.error);
+                toast.error(info.message, { description: info.hint });
+              }
             }}
             className="w-full py-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center gap-3 text-foreground font-body text-sm"
           >

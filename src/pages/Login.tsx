@@ -1,21 +1,31 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import { Sparkles, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import { useEffect, useState } from "react";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
 import { lovable } from "@/integrations/lovable/index";
+import { describeOAuthError, isInAppBrowser } from "@/lib/auth-errors";
 
 const Login = () => {
   const { user, loading } = useAuth();
+  const [inAppWarning, setInAppWarning] = useState(false);
+
+  useEffect(() => {
+    setInAppWarning(isInAppBrowser());
+  }, []);
 
   if (!loading && user) return <Navigate to="/" replace />;
 
   const handleOAuth = async (provider: "google" | "apple") => {
-    const { error } = await lovable.auth.signInWithOAuth(provider, {
+    const result = await lovable.auth.signInWithOAuth(provider, {
       redirect_uri: window.location.origin,
     });
-    if (error) toast.error(`Error al iniciar sesión con ${provider === "google" ? "Google" : "Apple"}`);
+    if (result.error) {
+      const info = describeOAuthError(provider, result.error);
+      toast.error(info.message, { description: info.hint });
+    }
   };
 
   return (
@@ -32,7 +42,17 @@ const Login = () => {
         <h1 className="font-display text-2xl font-bold tracking-wide text-foreground mb-1">
           Astrelle
         </h1>
-        <p className="text-muted-foreground font-body text-sm mb-8">Tu universo astral</p>
+        <p className="text-muted-foreground font-body text-sm mb-6">Tu universo astral</p>
+
+        {inAppWarning && (
+          <div className="mb-5 p-3 rounded-xl border border-amber-400/30 bg-amber-500/10 text-left flex gap-2">
+            <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <p className="text-amber-100/90 text-xs font-body leading-relaxed">
+              Parece que abriste Astrelle desde una app (Instagram, TikTok…). El inicio con Google puede fallar aquí.
+              Abre el enlace en <strong>Safari</strong> o <strong>Chrome</strong>, o usa Apple.
+            </p>
+          </div>
+        )}
 
         <div className="space-y-3">
           <button
@@ -60,6 +80,16 @@ const Login = () => {
             Continuar con Apple
           </button>
         </div>
+
+        <p className="mt-5 text-muted-foreground/80 text-xs font-body leading-relaxed">
+          Usa siempre el mismo método con el que creaste tu cuenta. Si te registraste con Google,
+          inicia con Google; si lo hiciste con Apple, usa Apple.
+        </p>
+
+        <p className="mt-3 text-muted-foreground text-xs font-body">
+          ¿Cuenta con email y contraseña?{" "}
+          <Link to="/recuperar-password" className="text-primary hover:underline">Recupérala aquí</Link>
+        </p>
       </motion.div>
     </div>
   );
