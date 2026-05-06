@@ -140,7 +140,7 @@ const Ritual = () => {
             </div>
             <button onClick={() => setShowShare(!showShare)} className="w-full py-3.5 rounded-xl font-body text-sm font-medium bg-accent/15 text-accent border border-accent/20 hover:bg-accent/25 transition-all flex items-center justify-center gap-2">
               <Share2 className="w-4 h-4" />
-              Compartir
+              {t("common.share")}
             </button>
             {showShare && (
               <ResultShareButtons
