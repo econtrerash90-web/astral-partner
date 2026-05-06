@@ -132,7 +132,7 @@ const Ritual = () => {
                   <Flame className="w-8 h-8 text-primary" />
                 </div>
                 <h2 className="font-display text-xl text-foreground font-semibold mb-1">{data.title}</h2>
-                <p className="text-primary text-sm font-body">🕯️ Vela {data.candleColor} · {data.bestTime}</p>
+                <p className="text-primary text-sm font-body">🕯️ {t("ritual.candle")} {data.candleColor} · {data.bestTime}</p>
               </div>
               <div className="bg-muted/30 p-5 rounded-xl border border-border">
                 <p className="text-foreground/80 text-base font-body leading-relaxed">{data.description}</p>
