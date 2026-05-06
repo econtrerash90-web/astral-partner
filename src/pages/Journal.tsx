@@ -494,6 +494,7 @@ const Journal = () => {
 
 // Entry card component
 const EntryCard = ({ entry, expanded, onToggle, onDelete }: { entry: JournalEntry; expanded: boolean; onToggle: () => void; onDelete: (id: string) => void }) => {
+  const { t } = useI18n();
   const moodInfo = MOOD_OPTIONS.find(m => m.value === entry.mood);
   return (
     <div className="glass-card overflow-hidden">
@@ -523,16 +524,16 @@ const EntryCard = ({ entry, expanded, onToggle, onDelete }: { entry: JournalEntr
               )}
               {entry.mood_analysis && (
                 <div className="p-3 rounded-xl bg-accent/5 border border-accent/15">
-                  <p className="text-accent text-xs font-body font-medium uppercase tracking-wider mb-1">Análisis Emocional</p>
+                  <p className="text-accent text-xs font-body font-medium uppercase tracking-wider mb-1">{t("journal.emotionalAnalysis")}</p>
                   <div className="text-foreground/80 text-sm font-body">{formatAIText(entry.mood_analysis)}</div>
                 </div>
               )}
               <button
-                onClick={() => { if (confirm("¿Eliminar esta entrada?")) onDelete(entry.id); }}
+                onClick={() => { if (confirm(t("journal.confirmDelete"))) onDelete(entry.id); }}
                 className="flex items-center gap-1.5 text-destructive/50 hover:text-destructive text-xs font-body transition-colors"
               >
-                <Trash2 className="w-3 h-3" /> {/* delete */}
-                Eliminar
+                <Trash2 className="w-3 h-3" />
+                {t("journal.delete")}
               </button>
             </div>
           </motion.div>
