@@ -191,17 +191,44 @@ const BottomTabBar = () => {
           <div className="flex-1 flex items-start justify-center relative">
             <button
               onClick={() => setSheetOpen(true)}
-              className="absolute -top-6 flex items-center justify-center w-14 h-14 rounded-full transition-transform active:scale-95"
+              className="absolute -top-6 flex items-center justify-center w-14 h-14 rounded-full transition-transform active:scale-95 group"
               style={{
-                background: "var(--gradient-gold)",
-                boxShadow: isSpreadRoute || sheetOpen
-                  ? "0 0 24px hsl(var(--mystic-gold) / 0.7), 0 8px 24px hsl(0 0% 0% / 0.5)"
-                  : "0 0 16px hsl(var(--mystic-gold) / 0.4), 0 8px 24px hsl(0 0% 0% / 0.5)",
+                background:
+                  "radial-gradient(circle at 30% 25%, hsl(45 95% 75%) 0%, hsl(var(--mystic-gold)) 45%, hsl(38 70% 42%) 100%)",
+                boxShadow:
+                  isSpreadRoute || sheetOpen
+                    ? "0 0 28px hsl(var(--mystic-gold) / 0.8), 0 0 48px hsl(var(--mystic-gold) / 0.35), 0 8px 24px hsl(0 0% 0% / 0.55), inset 0 1px 0 hsl(45 95% 90% / 0.6), inset 0 -2px 4px hsl(38 70% 30% / 0.5)"
+                    : "0 0 18px hsl(var(--mystic-gold) / 0.5), 0 8px 24px hsl(0 0% 0% / 0.55), inset 0 1px 0 hsl(45 95% 90% / 0.5), inset 0 -2px 4px hsl(38 70% 30% / 0.45)",
                 border: "3px solid hsl(234 45% 8%)",
               }}
               aria-label={t("nav.mysticSpreads")}
             >
-              <Sparkles className="w-6 h-6 text-background" />
+              <svg
+                viewBox="0 0 32 32"
+                className="w-7 h-7 transition-transform duration-500 group-hover:rotate-[20deg]"
+                fill="none"
+                style={{ filter: "drop-shadow(0 1px 1px hsl(38 70% 25% / 0.6))" }}
+              >
+                {/* Outer ornamental ring */}
+                <circle cx="16" cy="16" r="11" stroke="hsl(234 45% 10%)" strokeWidth="0.6" strokeDasharray="0.8 1.6" opacity="0.7" />
+                {/* Four-point compass star */}
+                <path
+                  d="M16 4 L17.6 14.4 L28 16 L17.6 17.6 L16 28 L14.4 17.6 L4 16 L14.4 14.4 Z"
+                  fill="hsl(234 45% 8%)"
+                />
+                {/* Inner highlight star */}
+                <path
+                  d="M16 8 L16.9 15.1 L24 16 L16.9 16.9 L16 24 L15.1 16.9 L8 16 L15.1 15.1 Z"
+                  fill="hsl(45 95% 80%)"
+                  opacity="0.95"
+                />
+                {/* Center jewel */}
+                <circle cx="16" cy="16" r="1.6" fill="hsl(234 45% 8%)" />
+                <circle cx="15.5" cy="15.5" r="0.6" fill="hsl(45 100% 92%)" />
+                {/* Diagonal accent sparks */}
+                <circle cx="23.5" cy="8.5" r="0.7" fill="hsl(234 45% 8%)" />
+                <circle cx="8.5" cy="23.5" r="0.7" fill="hsl(234 45% 8%)" />
+              </svg>
             </button>
             <span className="absolute bottom-1.5 text-[10px] font-body text-muted-foreground tracking-wide">
               {t("nav.spreads")}
