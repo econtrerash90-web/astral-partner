@@ -494,6 +494,7 @@ const Journal = () => {
 
 // Entry card component
 const EntryCard = ({ entry, expanded, onToggle, onDelete }: { entry: JournalEntry; expanded: boolean; onToggle: () => void; onDelete: (id: string) => void }) => {
+  const { t } = useI18n();
   const moodInfo = MOOD_OPTIONS.find(m => m.value === entry.mood);
   return (
     <div className="glass-card overflow-hidden">
