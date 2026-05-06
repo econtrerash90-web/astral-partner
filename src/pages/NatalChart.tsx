@@ -10,7 +10,7 @@ import { useI18n } from "@/hooks/useI18n";
 import { supabase } from "@/integrations/supabase/client";
 import type { NatalChartData } from "@/lib/natal-chart-types";
 import { ZODIAC_GLYPHS } from "@/lib/natal-chart-types";
-import { getSignTrait, ELEMENT_FRIENDLY, PLANET_FRIENDLY } from "@/lib/sign-descriptions";
+import { getSignTrait, ELEMENT_FRIENDLY, PLANET_FRIENDLY, SUN_TRAITS, MOON_TRAITS, ASC_TRAITS, MC_TRAITS } from "@/lib/sign-descriptions";
 import { formatAIText } from "@/lib/format-ai-text";
 import ZodiacKnightCard from "@/components/ZodiacKnightCard";
 import ResultShareButtons from "@/components/ResultShareButtons";
