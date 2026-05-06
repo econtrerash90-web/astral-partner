@@ -99,6 +99,12 @@ const es: Dict = {
   "natal.yourPath": "Tu camino de vida",
   "natal.personalityTitle": "Tu personalidad según las estrellas",
   "natal.recalculate": "Recalcular carta",
+  "natal.behavior": "Comportamiento del usuario",
+  "natal.behaviorIntro": "Esto es lo que esta combinación dice de ti, en palabras sencillas.",
+  "natal.behaviorEssence": "Tu esencia",
+  "natal.behaviorEmotions": "Tu mundo emocional",
+  "natal.behaviorImage": "Cómo te muestras",
+  "natal.behaviorPurpose": "Tu propósito de vida",
   // Profile page
   "profile.title": "Mi Perfil",
   "profile.memberSince": "Miembro desde",
