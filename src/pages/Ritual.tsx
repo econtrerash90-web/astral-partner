@@ -75,7 +75,7 @@ const Ritual = () => {
           { onConflict: "user_id,type" }
         );
       } catch {
-        toast.error("No se pudo generar tu ritual de hoy");
+        toast.error(t("ritual.error"));
       } finally {
         setGenerating(false);
       }
