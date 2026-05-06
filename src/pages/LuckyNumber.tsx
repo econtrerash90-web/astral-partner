@@ -99,9 +99,9 @@ const LuckyNumber = () => {
       <div className="relative z-10 px-4 py-8 sm:py-12 max-w-lg mx-auto">
         <motion.header initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
           <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent mb-2" style={{ backgroundImage: "var(--gradient-title)" }}>
-            Número de la Suerte
+            {t("lucky.title")}
           </h1>
-          <p className="text-muted-foreground text-sm font-body">Basado en tu carta astral y la posición actual de los astros</p>
+          <p className="text-muted-foreground text-sm font-body">{t("lucky.subtitle")}</p>
         </motion.header>
 
         {data ? (
