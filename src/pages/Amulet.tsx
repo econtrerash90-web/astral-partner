@@ -154,7 +154,7 @@ const Amulet = () => {
               />
             )}
             <p className="text-center text-muted-foreground/50 text-[11px] font-body">
-              Tu amuleto se renueva automáticamente cada día.
+              {t("amulet.renewsDaily")}
             </p>
           </motion.div>
         ) : (
