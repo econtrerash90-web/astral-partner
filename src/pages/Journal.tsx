@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { formatAIText } from "@/lib/format-ai-text";
 import { Badge } from "@/components/ui/badge";
+import { useI18n } from "@/hooks/useI18n";
 
 interface ChartData {
   sun_sign_name: string;
@@ -29,20 +30,22 @@ interface JournalEntry {
 }
 
 const MOOD_OPTIONS = [
-  { emoji: "✨", label: "Inspirada", value: "inspirada" },
-  { emoji: "😊", label: "Feliz", value: "feliz" },
-  { emoji: "😌", label: "En paz", value: "en_paz" },
-  { emoji: "🤔", label: "Reflexiva", value: "reflexiva" },
-  { emoji: "😔", label: "Melancólica", value: "melancolica" },
-  { emoji: "😤", label: "Frustrada", value: "frustrada" },
-  { emoji: "🌀", label: "Confusa", value: "confusa" },
-  { emoji: "💪", label: "Motivada", value: "motivada" },
+  { emoji: "✨", labelKey: "journal.moodInspirada", value: "inspirada" },
+  { emoji: "😊", labelKey: "journal.moodFeliz", value: "feliz" },
+  { emoji: "😌", labelKey: "journal.moodEnPaz", value: "en_paz" },
+  { emoji: "🤔", labelKey: "journal.moodReflexiva", value: "reflexiva" },
+  { emoji: "😔", labelKey: "journal.moodMelancolica", value: "melancolica" },
+  { emoji: "😤", labelKey: "journal.moodFrustrada", value: "frustrada" },
+  { emoji: "🌀", labelKey: "journal.moodConfusa", value: "confusa" },
+  { emoji: "💪", labelKey: "journal.moodMotivada", value: "motivada" },
 ];
 
 type TabView = "write" | "calendar" | "stats";
 
 const Journal = () => {
   const { user } = useAuth();
+  const { t, language } = useI18n();
+  const localeMap: Record<string, any> = { es };
   const [chartData, setChartData] = useState<ChartData | null>(null);
   const [prompts, setPrompts] = useState<string[]>([]);
   const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
@@ -149,7 +152,7 @@ const Journal = () => {
       tags: allTags,
     } as any).select().single();
 
-    if (error) { toast.error("Error al guardar"); setIsSaving(false); return; }
+    if (error) { toast.error(t("journal.errSave")); setIsSaving(false); return; }
     setEntries([data as JournalEntry, ...entries]);
     setEntryText("");
     setSelectedMood(null);
@@ -157,13 +160,13 @@ const Journal = () => {
     setShowSaved(true);
     setTimeout(() => setShowSaved(false), 2000);
     setIsSaving(false);
-    toast.success("Entrada guardada ✨");
+    toast.success(t("journal.savedToast"));
   };
 
   const deleteEntry = async (id: string) => {
     await supabase.from("journal_entries").delete().eq("id", id);
     setEntries(entries.filter((e) => e.id !== id));
-    toast.success("Entrada eliminada");
+    toast.success(t("journal.deleted"));
   };
 
   // Calendar data
@@ -219,9 +222,9 @@ const Journal = () => {
         <div className="relative z-10 flex flex-col items-center justify-center min-h-[60vh] px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center glass-card p-8 max-w-md">
             <Star className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
-            <h2 className="font-display text-xl text-foreground mb-2">Primero genera tu carta astral</h2>
-            <p className="text-muted-foreground font-body text-sm mb-6">Necesitas tu carta astral para desbloquear el diario personalizado</p>
-            <Link to="/" className="btn-gold inline-flex items-center gap-2"><Sparkles className="w-4 h-4" /> Ir a Carta Astral</Link>
+            <h2 className="font-display text-xl text-foreground mb-2">{t("journal.needChart")}</h2>
+            <p className="text-muted-foreground font-body text-sm mb-6">{t("journal.needChartDesc")}</p>
+            <Link to="/" className="btn-gold inline-flex items-center gap-2"><Sparkles className="w-4 h-4" /> {t("journal.goChart")}</Link>
           </motion.div>
         </div>
       </div>
@@ -234,17 +237,17 @@ const Journal = () => {
       <div className="relative z-10 px-4 py-8 sm:py-12 max-w-2xl mx-auto">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-6">
           <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent mb-2" style={{ backgroundImage: "var(--gradient-title)" }}>
-            Mi Diario Astral
+            {t("journal.heroTitle")}
           </h1>
-          <p className="text-muted-foreground font-body text-sm">Reflexiones guiadas por las estrellas</p>
+          <p className="text-muted-foreground font-body text-sm">{t("journal.heroSub")}</p>
         </motion.div>
 
         {/* Tabs */}
         <div className="flex justify-center gap-1 mb-6">
           {([
-            { key: "write" as TabView, icon: BookOpen, label: "Escribir" },
-            { key: "calendar" as TabView, icon: CalendarIcon, label: "Calendario" },
-            { key: "stats" as TabView, icon: BarChart3, label: "Estadísticas" },
+            { key: "write" as TabView, icon: BookOpen, label: t("journal.tabWrite") },
+            { key: "calendar" as TabView, icon: CalendarIcon, label: t("journal.tabCalendar") },
+            { key: "stats" as TabView, icon: BarChart3, label: t("journal.tabStats") },
           ]).map(tab => (
             <button
               key={tab.key}
@@ -267,20 +270,20 @@ const Journal = () => {
             <motion.div key="write" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
               {/* Prompt */}
               <div className="glass-card p-5 sm:p-6 mb-5" style={{ background: "var(--gradient-prediction)" }}>
-                <p className="text-primary font-body text-xs uppercase tracking-wider font-medium mb-2">✨ Prompt del Día</p>
+                <p className="text-primary font-body text-xs uppercase tracking-wider font-medium mb-2">{t("journal.dailyPrompt")}</p>
                 {isLoadingPrompts ? (
                   <div className="flex items-center gap-3 text-muted-foreground">
                     <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}>
                       <Sparkles className="w-4 h-4 text-primary" />
                     </motion.div>
-                    <span className="font-body text-sm">Consultando las estrellas...</span>
+                    <span className="font-body text-sm">{t("journal.consultingStars")}</span>
                   </div>
                 ) : (
                   <>
                     <p className="text-foreground/90 text-base font-body leading-relaxed italic">{prompts[currentPromptIndex]}</p>
                     {prompts.length > 1 && (
                       <button onClick={() => setCurrentPromptIndex(i => (i + 1) % prompts.length)} className="mt-3 text-primary/70 hover:text-primary text-xs font-body font-medium transition-colors">
-                        Siguiente prompt →
+                        {t("journal.nextPrompt")}
                       </button>
                     )}
                   </>
@@ -290,7 +293,7 @@ const Journal = () => {
               {/* Mood Selector */}
               <div className="glass-card p-4 mb-5">
                 <p className="text-muted-foreground font-body text-xs uppercase tracking-wider font-medium mb-3 flex items-center gap-1.5">
-                  <SmilePlus className="w-3.5 h-3.5" /> ¿Cómo te sientes?
+                  <SmilePlus className="w-3.5 h-3.5" /> {t("journal.howFeel")}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {MOOD_OPTIONS.map(m => (
@@ -304,7 +307,7 @@ const Journal = () => {
                       }`}
                     >
                       <span>{m.emoji}</span>
-                      <span>{m.label}</span>
+                      <span>{t(m.labelKey)}</span>
                     </button>
                   ))}
                 </div>
@@ -315,7 +318,7 @@ const Journal = () => {
                 <textarea
                   value={entryText}
                   onChange={e => setEntryText(e.target.value)}
-                  placeholder="Escribe tus reflexiones aquí..."
+                  placeholder={t("journal.placeholder2")}
                   className="w-full min-h-[200px] bg-transparent border border-border rounded-xl p-4 text-foreground font-body text-base leading-relaxed resize-y outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-muted-foreground/40"
                 />
 
@@ -332,14 +335,14 @@ const Journal = () => {
                       value={tagInput}
                       onChange={e => setTagInput(e.target.value)}
                       onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addTag(); } }}
-                      placeholder="Agregar tag..."
+                      placeholder={t("journal.addTag")}
                       className="bg-transparent border-none outline-none text-xs font-body text-muted-foreground placeholder:text-muted-foreground/30 w-24"
                     />
                   )}
                 </div>
 
                 <div className="flex items-center justify-between mt-4">
-                  <span className="text-muted-foreground text-xs font-body">{wordCount} palabras</span>
+                  <span className="text-muted-foreground text-xs font-body">{wordCount} {t("journal.words")}</span>
                   <button onClick={saveEntry} disabled={!entryText.trim() || isSaving} className="btn-gold flex items-center gap-2 py-2.5 px-5 text-xs">
                     <AnimatePresence mode="wait">
                       {showSaved ? (
@@ -350,7 +353,7 @@ const Journal = () => {
                         <Save className="w-3.5 h-3.5" />
                       )}
                     </AnimatePresence>
-                    {isSaving ? "Analizando..." : showSaved ? "¡Guardado!" : "Guardar"}
+                    {isSaving ? t("journal.analyzing") : showSaved ? t("journal.saved") : t("journal.saveBtn")}
                   </button>
                 </div>
               </div>
@@ -358,7 +361,7 @@ const Journal = () => {
               {/* Entry History */}
               {entries.length > 0 && (
                 <div>
-                  <h3 className="font-display text-lg text-foreground tracking-wide mb-4">Entradas Anteriores</h3>
+                  <h3 className="font-display text-lg text-foreground tracking-wide mb-4">{t("journal.previous")}</h3>
                   <div className="space-y-2">
                     {entries.map(entry => (
                       <EntryCard key={entry.id} entry={entry} expanded={expandedEntry === entry.id} onToggle={() => setExpandedEntry(expandedEntry === entry.id ? null : entry.id)} onDelete={deleteEntry} />
@@ -429,10 +432,10 @@ const Journal = () => {
               {/* Overview */}
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { label: "Entradas", value: stats.totalEntries, icon: "📝" },
-                  { label: "Palabras", value: stats.totalWords.toLocaleString(), icon: "✍️" },
-                  { label: "Racha", value: `${stats.streak} días`, icon: "🔥" },
-                  { label: "Mood Top", value: stats.topMood ? MOOD_OPTIONS.find(m => m.value === stats.topMood[0])?.label || stats.topMood[0] : "—", icon: stats.topMood ? MOOD_OPTIONS.find(m => m.value === stats.topMood[0])?.emoji || "🎭" : "🎭" },
+                  { label: t("journal.statsEntries"), value: stats.totalEntries, icon: "📝" },
+                  { label: t("journal.statsWords"), value: stats.totalWords.toLocaleString(), icon: "✍️" },
+                  { label: t("journal.statsStreak"), value: `${stats.streak} ${t("journal.streakDays")}`, icon: "🔥" },
+                  { label: t("journal.moodTop"), value: stats.topMood ? (MOOD_OPTIONS.find(m => m.value === stats.topMood[0]) ? t(MOOD_OPTIONS.find(m => m.value === stats.topMood[0])!.labelKey) : stats.topMood[0]) : "—", icon: stats.topMood ? MOOD_OPTIONS.find(m => m.value === stats.topMood[0])?.emoji || "🎭" : "🎭" },
                 ].map(s => (
                   <div key={s.label} className="glass-card p-4 text-center">
                     <span className="text-2xl">{s.icon}</span>
@@ -445,7 +448,7 @@ const Journal = () => {
               {/* Mood Distribution */}
               {entries.some(e => e.mood) && (
                 <div className="glass-card p-5">
-                  <h3 className="font-display text-sm text-foreground tracking-wide mb-3">Distribución Emocional</h3>
+                  <h3 className="font-display text-sm text-foreground tracking-wide mb-3">{t("journal.distribution")}</h3>
                   <div className="space-y-2">
                     {MOOD_OPTIONS.map(m => {
                       const count = entries.filter(e => e.mood === m.value).length;
@@ -454,7 +457,7 @@ const Journal = () => {
                       return (
                         <div key={m.value} className="flex items-center gap-2">
                           <span className="text-sm w-6">{m.emoji}</span>
-                          <span className="text-xs font-body text-muted-foreground w-20">{m.label}</span>
+                          <span className="text-xs font-body text-muted-foreground w-20">{t(m.labelKey)}</span>
                           <div className="flex-1 h-2 rounded-full bg-muted/30 overflow-hidden">
                             <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.8, ease: "easeOut" }} className="h-full rounded-full bg-primary/60" />
                           </div>
@@ -469,7 +472,7 @@ const Journal = () => {
               {/* Top Tags */}
               {stats.topTags.length > 0 && (
                 <div className="glass-card p-5">
-                  <h3 className="font-display text-sm text-foreground tracking-wide mb-3">Tags Frecuentes</h3>
+                  <h3 className="font-display text-sm text-foreground tracking-wide mb-3">{t("journal.frequentTags")}</h3>
                   <div className="flex flex-wrap gap-2">
                     {stats.topTags.map(([tag, count]) => (
                       <Badge key={tag} variant="outline" className="text-xs">
@@ -483,7 +486,7 @@ const Journal = () => {
           )}
         </AnimatePresence>
 
-        <p className="text-center text-muted-foreground/40 text-xs mt-8 font-body">Tu diario está guardado de forma segura en la nube.</p>
+        <p className="text-center text-muted-foreground/40 text-xs mt-8 font-body">{t("journal.cloudSaved")}</p>
       </div>
     </div>
   );
@@ -528,7 +531,8 @@ const EntryCard = ({ entry, expanded, onToggle, onDelete }: { entry: JournalEntr
                 onClick={() => { if (confirm("¿Eliminar esta entrada?")) onDelete(entry.id); }}
                 className="flex items-center gap-1.5 text-destructive/50 hover:text-destructive text-xs font-body transition-colors"
               >
-                <Trash2 className="w-3 h-3" /> Eliminar
+                <Trash2 className="w-3 h-3" /> {/* delete */}
+                Eliminar
               </button>
             </div>
           </motion.div>
