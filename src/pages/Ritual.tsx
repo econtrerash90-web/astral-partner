@@ -155,7 +155,7 @@ const Ritual = () => {
           </motion.div>
         ) : (
           <div className="glass-card p-8 text-center">
-            <p className="text-muted-foreground font-body">No pudimos generar tu ritual. Intenta más tarde.</p>
+            <p className="text-muted-foreground font-body">{t("ritual.errorGeneral")}</p>
           </div>
         )}
       </div>
