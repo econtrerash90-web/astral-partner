@@ -122,7 +122,7 @@ const Ritual = () => {
         {generating && !data ? (
           <div className="glass-card p-8 text-center flex flex-col items-center gap-3">
             <Loader2 className="w-8 h-8 text-primary animate-spin" />
-            <p className="text-muted-foreground font-body text-sm">Preparando tu ritual de hoy...</p>
+            <p className="text-muted-foreground font-body text-sm">{t("ritual.preparing")}</p>
           </div>
         ) : data ? (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-5">
