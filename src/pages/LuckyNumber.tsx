@@ -134,10 +134,10 @@ const LuckyNumber = () => {
         ) : (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="glass-card p-8 text-center">
             <Star className="w-12 h-12 text-primary/40 mx-auto mb-4" />
-            <p className="text-muted-foreground font-body mb-6">Descubre qué número te favorece hoy según las estrellas</p>
+            <p className="text-muted-foreground font-body mb-6">{t("lucky.discover")}</p>
             <button onClick={generate} disabled={isLoading} className="px-8 py-3.5 rounded-xl font-body text-sm font-medium bg-primary text-primary-foreground hover:opacity-90 transition-opacity flex items-center justify-center gap-2 mx-auto disabled:opacity-50">
               <Hash className="w-4 h-4" />
-              {isLoading ? "Consultando los astros..." : "Revelar Mi Número"}
+              {isLoading ? t("lucky.consulting") : t("lucky.reveal")}
             </button>
           </motion.div>
         )}
