@@ -37,7 +37,8 @@ const Register = () => {
     setIsSubmitting(true);
     const { error } = await signUp(email, password, fullName);
     if (error) {
-      toast.error(error);
+      const info = describeSignUpError(error);
+      toast.error(info.message, { description: info.hint });
     } else {
       toast.success("¡Cuenta creada! Revisa tu email para confirmar tu cuenta.");
     }
