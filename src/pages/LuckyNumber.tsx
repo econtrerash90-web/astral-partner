@@ -116,11 +116,11 @@ const LuckyNumber = () => {
             <div className="flex gap-3">
               <button onClick={generate} disabled={isLoading} className="flex-1 py-3.5 rounded-xl font-body text-sm font-medium bg-primary/15 text-primary border border-primary/20 hover:bg-primary/25 transition-all flex items-center justify-center gap-2 disabled:opacity-50">
                 <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
-                {isLoading ? "Generando..." : "Nuevo Número"}
+                {isLoading ? t("lucky.generating") : t("lucky.newNumber")}
               </button>
               <button onClick={() => setShowShare(!showShare)} className="flex-1 py-3.5 rounded-xl font-body text-sm font-medium bg-accent/15 text-accent border border-accent/20 hover:bg-accent/25 transition-all flex items-center justify-center gap-2">
                 <Share2 className="w-4 h-4" />
-                Compartir
+                {t("common.share")}
               </button>
             </div>
             {showShare && (
