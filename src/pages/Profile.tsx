@@ -103,7 +103,7 @@ const Profile = () => {
   const handleSaveChart = async () => {
     if (!chart || !hasChanges) return;
     if (!placeComplete) {
-      toast.error("Debes ingresar Ciudad, Estado y País");
+      toast.error(t("profile.errPlaceFields"));
       return;
     }
 
@@ -119,9 +119,9 @@ const Profile = () => {
       .eq("id", chart.id);
 
     if (error) {
-      toast.error("Error al actualizar los datos");
+      toast.error(t("profile.errUpdate"));
     } else {
-      toast.success("Datos actualizados. Tus signos han sido recalculados y tus lecturas se regenerarán.");
+      toast.success(t("profile.updated"));
       setEditOpen(false);
       await loadData();
     }
@@ -130,16 +130,17 @@ const Profile = () => {
 
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newPassword.length < 8) return toast.error("Mínimo 8 caracteres");
-    if (newPassword !== confirmPassword) return toast.error("Las contraseñas no coinciden");
+    if (newPassword.length < 8) return toast.error(t("profile.errPwdMin"));
+    if (newPassword !== confirmPassword) return toast.error(t("profile.errPwdMatch"));
     setChangingPassword(true);
     const { error } = await updatePassword(newPassword);
     if (error) toast.error(error);
-    else { toast.success("Contraseña actualizada"); setNewPassword(""); setConfirmPassword(""); }
+    else { toast.success(t("profile.pwdUpdated")); setNewPassword(""); setConfirmPassword(""); }
     setChangingPassword(false);
   };
 
-  const memberSince = profile?.created_at ? new Date(profile.created_at).toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric" }) : "";
+  const localeMap: Record<string, string> = { es: "es-ES", en: "en-US", de: "de-DE", pl: "pl-PL", pt: "pt-BR" };
+  const memberSince = profile?.created_at ? new Date(profile.created_at).toLocaleDateString(localeMap[language] || "en-US", { year: "numeric", month: "long", day: "numeric" }) : "";
   const displayName = profile?.full_name || user?.user_metadata?.full_name || "—";
   const initials = displayName.slice(0, 2).toUpperCase();
 
@@ -152,16 +153,16 @@ const Profile = () => {
             {initials}
           </div>
           <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-wide bg-clip-text text-transparent mb-1" style={{ backgroundImage: "var(--gradient-title)" }}>
-            Mi Perfil
+            {t("profile.title")}
           </h1>
-          <p className="text-muted-foreground text-sm font-body">Miembro desde {memberSince}</p>
+          <p className="text-muted-foreground text-sm font-body">{t("profile.memberSince")} {memberSince}</p>
         </motion.div>
 
         <div className="space-y-4">
           {/* Personal info */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
             className="glass-card p-5">
-            <h2 className="font-body text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">Información</h2>
+            <h2 className="font-body text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">{t("profile.info")}</h2>
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <User className="w-4 h-4 text-primary/60" />
@@ -208,20 +209,20 @@ const Profile = () => {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
               className="glass-card p-5">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-body text-sm font-medium text-muted-foreground uppercase tracking-wider">Tu Carta Astral</h2>
+                <h2 className="font-body text-sm font-medium text-muted-foreground uppercase tracking-wider">{t("profile.yourChart")}</h2>
                 <button
                   onClick={openEditDialog}
                   className="flex items-center gap-1.5 text-xs text-primary/70 hover:text-primary transition-colors font-body"
                 >
                   <Pencil className="w-3 h-3" />
-                  Editar datos
+                  {t("profile.editData")}
                 </button>
               </div>
               <div className="grid grid-cols-3 gap-3 text-center mb-4">
                 {[
-                  { emoji: chart.sun_sign_symbol, label: "Sol", value: chart.sun_sign_name },
-                  { emoji: "🌙", label: "Luna", value: chart.moon_sign },
-                  { emoji: "⬆️", label: "Ascendente", value: chart.ascendant },
+                  { emoji: chart.sun_sign_symbol, label: t("profile.sun"), value: chart.sun_sign_name },
+                  { emoji: "🌙", label: t("profile.moon"), value: chart.moon_sign },
+                  { emoji: "⬆️", label: t("profile.ascendant"), value: chart.ascendant },
                 ].map((item) => (
                   <div key={item.label} className="bg-muted/30 rounded-xl p-3">
                     <p className="text-2xl mb-1">{item.emoji}</p>
@@ -233,7 +234,7 @@ const Profile = () => {
               <div className="space-y-1.5 text-xs text-muted-foreground font-body">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-3 h-3 text-primary/40" />
-                  <span>{new Date(chart.birth_date + "T00:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}</span>
+                  <span>{new Date(chart.birth_date + "T00:00:00").toLocaleDateString(localeMap[language] || "en-US", { day: "numeric", month: "long", year: "numeric" })}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="w-3 h-3 text-primary/40" />
@@ -250,20 +251,20 @@ const Profile = () => {
           {/* Stats */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
             className="glass-card p-5">
-            <h2 className="font-body text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">Estadísticas</h2>
+            <h2 className="font-body text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">{t("profile.statistics")}</h2>
             <div className="grid grid-cols-2 gap-3">
               <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl">
                 <BookOpen className="w-5 h-5 text-accent/60" />
                 <div>
                   <p className="text-foreground text-xl font-display font-bold">{stats.entries}</p>
-                  <p className="text-muted-foreground text-xs font-body">Entradas</p>
+                  <p className="text-muted-foreground text-xs font-body">{t("profile.entries")}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl">
                 <TrendingUp className="w-5 h-5 text-accent/60" />
                 <div>
                   <p className="text-foreground text-xl font-display font-bold">{stats.predictions}</p>
-                  <p className="text-muted-foreground text-xs font-body">Predicciones</p>
+                  <p className="text-muted-foreground text-xs font-body">{t("profile.predictions")}</p>
                 </div>
               </div>
             </div>
@@ -272,24 +273,24 @@ const Profile = () => {
           {/* Change password */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
             className="glass-card p-5">
-            <h2 className="font-body text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">Cambiar Contraseña</h2>
+            <h2 className="font-body text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">{t("profile.changePassword")}</h2>
             <form onSubmit={handleChangePassword} className="space-y-3">
               <div>
                 <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
-                  <Lock className="w-3 h-3 text-primary/60" /> Nueva Contraseña
+                  <Lock className="w-3 h-3 text-primary/60" /> {t("profile.newPassword")}
                 </label>
                 <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
-                  className="input-modern" placeholder="Mínimo 8 caracteres" />
+                  className="input-modern" placeholder={t("profile.pwdMinPlaceholder")} />
               </div>
               <div>
                 <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
-                  <Lock className="w-3 h-3 text-primary/60" /> Confirmar
+                  <Lock className="w-3 h-3 text-primary/60" /> {t("profile.confirmPassword")}
                 </label>
                 <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="input-modern" placeholder="Repite tu contraseña" />
+                  className="input-modern" placeholder={t("profile.pwdRepeatPlaceholder")} />
               </div>
               <button type="submit" disabled={changingPassword} className="btn-gold py-2.5">
-                {changingPassword ? "Actualizando..." : "Actualizar Contraseña"}
+                {changingPassword ? t("profile.updating") : t("profile.updateBtn")}
               </button>
             </form>
           </motion.div>
@@ -297,9 +298,9 @@ const Profile = () => {
           {/* Data management (ARCO) */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
             className="glass-card p-5">
-            <h2 className="font-body text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">Mis Datos (Derechos ARCO)</h2>
+            <h2 className="font-body text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">{t("profile.arcoTitle")}</h2>
             <p className="text-muted-foreground text-xs font-body mb-4 leading-relaxed">
-              Conforme a la LFPDPPP, puedes acceder, rectificar, cancelar u oponerte al tratamiento de tus datos personales.
+              {t("profile.arcoDesc")}
             </p>
             <div className="space-y-3">
               <button
@@ -324,9 +325,9 @@ const Profile = () => {
                     a.download = `astrelle-datos-${new Date().toISOString().slice(0, 10)}.json`;
                     a.click();
                     URL.revokeObjectURL(a.href);
-                    toast.success("Datos exportados exitosamente");
+                    toast.success(t("profile.exportSuccess"));
                   } catch {
-                    toast.error("Error al exportar los datos");
+                    toast.error(t("profile.exportError"));
                   }
                   setExporting(false);
                 }}
@@ -334,7 +335,7 @@ const Profile = () => {
                 className="w-full btn-glass flex items-center justify-center gap-2 py-2.5 text-sm"
               >
                 {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-                Exportar mis datos
+                {t("profile.exportBtn")}
               </button>
 
               <button
@@ -342,7 +343,7 @@ const Profile = () => {
                 className="w-full btn-glass-destructive flex items-center justify-center gap-2 py-2.5 text-sm"
               >
                 <Trash2 className="w-4 h-4" />
-                Eliminar mi cuenta y datos
+                {t("profile.deleteBtn")}
               </button>
             </div>
           </motion.div>
@@ -351,15 +352,15 @@ const Profile = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
             className="glass-card p-5">
             <h2 className="font-body text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
-              <Shield className="w-4 h-4 text-primary/70" /> Seguridad y Legal
+              <Shield className="w-4 h-4 text-primary/70" /> {t("profile.legalTitle")}
             </h2>
             <div className="space-y-1">
               {[
-                { to: "/terminos", label: "Términos y Condiciones" },
-                { to: "/privacidad", label: "Política de Privacidad" },
-                { to: "/cookies", label: "Política de Cookies" },
-                { to: "/descargo", label: "Descargo de Responsabilidad" },
-                { to: "/reembolso", label: "Política de Reembolso" },
+                { to: "/terminos", label: t("profile.linkTerms") },
+                { to: "/privacidad", label: t("profile.linkPrivacy") },
+                { to: "/cookies", label: t("profile.linkCookies") },
+                { to: "/descargo", label: t("profile.linkDisclaimer") },
+                { to: "/reembolso", label: t("profile.linkRefund") },
               ].map((link) => (
                 <Link
                   key={link.to}
@@ -381,7 +382,7 @@ const Profile = () => {
             className="w-full btn-glass flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground"
           >
             <LogOut className="w-4 h-4" />
-            Cerrar Sesión
+            {t("profile.signOut")}
           </button>
 
           {/* Powered by Elfawa AI Technologies */}
@@ -397,7 +398,7 @@ const Profile = () => {
                 alt="Elfawa AI Technologies"
                 className="w-full max-w-[260px] h-auto rounded-lg"
               />
-              <span className="text-[10px] font-body text-muted-foreground/60">Powered by Elfawa AI Technologies · 2026</span>
+              <span className="text-[10px] font-body text-muted-foreground/60">{t("profile.poweredBy")}</span>
             </a>
           </div>
         </div>
@@ -408,10 +409,10 @@ const Profile = () => {
         <DialogContent className="bg-card border-border max-w-md">
           <DialogHeader>
             <DialogTitle className="font-display text-lg text-destructive flex items-center gap-2">
-              <Trash2 className="w-5 h-5" /> Eliminar Cuenta
+              <Trash2 className="w-5 h-5" /> {t("profile.deleteDialogTitle")}
             </DialogTitle>
             <DialogDescription className="font-body text-sm">
-              Esta acción es <strong>permanente e irreversible</strong>. Se eliminarán todos tus datos: carta astral, lecturas, diario, predicciones, fechas importantes y tu cuenta de usuario.
+              {t("profile.deleteDialogDesc")}
             </DialogDescription>
           </DialogHeader>
 
@@ -419,27 +420,27 @@ const Profile = () => {
             <div className="flex items-start gap-3 p-4 rounded-xl bg-destructive/10 border border-destructive/20">
               <AlertTriangle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
               <div className="font-body text-sm text-foreground/90 space-y-1">
-                <p className="font-medium">Se eliminarán permanentemente:</p>
+                <p className="font-medium">{t("profile.willDelete")}</p>
                 <ul className="text-xs text-muted-foreground list-disc pl-4 space-y-0.5">
-                  <li>Tu perfil y carta astral</li>
-                  <li>Todas las lecturas y predicciones</li>
-                  <li>Entradas del diario astral</li>
-                  <li>Fechas importantes guardadas</li>
-                  <li>Tu cuenta de usuario</li>
+                  <li>{t("profile.willDelete1")}</li>
+                  <li>{t("profile.willDelete2")}</li>
+                  <li>{t("profile.willDelete3")}</li>
+                  <li>{t("profile.willDelete4")}</li>
+                  <li>{t("profile.willDelete5")}</li>
                 </ul>
               </div>
             </div>
 
             <div>
               <label className="text-foreground/80 font-body text-sm mb-2 block">
-                Escribe <strong>"ELIMINAR"</strong> para confirmar:
+                {t("profile.typeToConfirm")}
               </label>
               <input
                 type="text"
                 value={deleteConfirmText}
                 onChange={(e) => setDeleteConfirmText(e.target.value)}
                 className="input-modern"
-                placeholder="ELIMINAR"
+                placeholder={t("profile.deleteWord")}
               />
             </div>
           </div>
@@ -450,11 +451,11 @@ const Profile = () => {
               className="btn-glass px-4 py-2 text-sm"
               disabled={deleting}
             >
-              Cancelar
+              {t("common.cancel")}
             </button>
             <button
               onClick={async () => {
-                if (deleteConfirmText !== "ELIMINAR" || !session?.access_token) return;
+                if (deleteConfirmText !== t("profile.deleteWord") || !session?.access_token) return;
                 setDeleting(true);
                 try {
                   const url = import.meta.env.VITE_SUPABASE_URL;
@@ -467,20 +468,20 @@ const Profile = () => {
                     body: JSON.stringify({ action: "delete" }),
                   });
                   if (!res.ok) throw new Error();
-                  toast.success("Tu cuenta ha sido eliminada. Hasta pronto. ✨");
+                  toast.success(t("profile.deleted"));
                   setDeleteOpen(false);
                   await signOut();
                   navigate("/");
                 } catch {
-                  toast.error("Error al eliminar la cuenta. Intenta de nuevo.");
+                  toast.error(t("profile.deleteError"));
                 }
                 setDeleting(false);
               }}
-              disabled={deleting || deleteConfirmText !== "ELIMINAR"}
+              disabled={deleting || deleteConfirmText !== t("profile.deleteWord")}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90 px-4 py-2 text-sm rounded-xl font-body font-medium transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-              {deleting ? "Eliminando..." : "Eliminar permanentemente"}
+              {deleting ? t("profile.deleting") : t("profile.deletePermanent")}
             </button>
           </DialogFooter>
         </DialogContent>
@@ -490,9 +491,9 @@ const Profile = () => {
       <Dialog open={editOpen} onOpenChange={(open) => { setEditOpen(open); if (!open) setConfirmStep(false); }}>
         <DialogContent className="bg-card border-border max-w-md">
           <DialogHeader>
-            <DialogTitle className="font-display text-lg">Editar Datos de Nacimiento</DialogTitle>
+            <DialogTitle className="font-display text-lg">{t("profile.editChartTitle")}</DialogTitle>
             <DialogDescription className="font-body text-sm">
-              Al cambiar estos datos, tus signos se recalcularán automáticamente y las lecturas actuales se regenerarán.
+              {t("profile.editChartDesc")}
             </DialogDescription>
           </DialogHeader>
 
@@ -501,7 +502,7 @@ const Profile = () => {
               <div>
                 <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
                   <Calendar className="w-3.5 h-3.5 text-primary" />
-                  Fecha de Nacimiento
+                  {t("form.birthDate")}
                 </label>
                 <input
                   type="date"
@@ -514,7 +515,7 @@ const Profile = () => {
               <div>
                 <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
                   <Clock className="w-3.5 h-3.5 text-primary" />
-                  Hora de Nacimiento
+                  {t("form.birthTime")}
                 </label>
                 <input
                   type="time"
@@ -526,7 +527,7 @@ const Profile = () => {
               <div>
                 <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
                   <Building2 className="w-3.5 h-3.5 text-primary" />
-                  Ciudad <span className="text-destructive">*</span>
+                  {t("form.city")} <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="text"
@@ -535,13 +536,13 @@ const Profile = () => {
                   required
                   maxLength={80}
                   className="input-modern"
-                  placeholder="Ciudad de México"
+                  placeholder={t("profile.cityPh")}
                 />
               </div>
               <div>
                 <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
                   <Map className="w-3.5 h-3.5 text-primary" />
-                  Estado o Provincia <span className="text-destructive">*</span>
+                  {t("form.state")} <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="text"
@@ -550,13 +551,13 @@ const Profile = () => {
                   required
                   maxLength={80}
                   className="input-modern"
-                  placeholder="CDMX"
+                  placeholder={t("profile.statePh")}
                 />
               </div>
               <div>
                 <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
                   <Globe className="w-3.5 h-3.5 text-primary" />
-                  País <span className="text-destructive">*</span>
+                  {t("form.country")} <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="text"
@@ -566,7 +567,7 @@ const Profile = () => {
                   maxLength={80}
                   autoComplete="country-name"
                   className="input-modern"
-                  placeholder="México"
+                  placeholder={t("profile.countryPh")}
                 />
               </div>
             </div>
@@ -575,9 +576,9 @@ const Profile = () => {
               <div className="flex items-start gap-3 p-4 rounded-xl bg-destructive/10 border border-destructive/20">
                 <AlertTriangle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
                 <div className="font-body text-sm text-foreground/90 space-y-2">
-                  <p className="font-medium">¿Estás segura de que deseas continuar?</p>
+                  <p className="font-medium">{t("profile.areYouSure")}</p>
                   <p className="text-muted-foreground text-xs">
-                    Al modificar tus datos de nacimiento, se eliminarán tus lecturas diarias, predicciones semanales, límites y extras actuales. Se generarán nuevos contenidos basados en tu nueva configuración astral.
+                    {t("profile.areYouSureDesc")}
                   </p>
                 </div>
               </div>
@@ -590,7 +591,7 @@ const Profile = () => {
               className="btn-glass px-4 py-2 text-sm"
               disabled={saving}
             >
-              Cancelar
+              {t("common.cancel")}
             </button>
             <button
               onClick={handleSaveChart}
@@ -600,12 +601,12 @@ const Profile = () => {
               {saving ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Guardando...
+                  {t("profile.saving")}
                 </>
               ) : confirmStep ? (
-                "Confirmar cambios"
+                t("profile.confirmChanges")
               ) : (
-                "Guardar"
+                t("profile.saveBtn")
               )}
             </button>
           </DialogFooter>
