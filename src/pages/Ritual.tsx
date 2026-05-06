@@ -20,6 +20,7 @@ interface RitualData {
 
 const Ritual = () => {
   const { user } = useAuth();
+  const { t } = useI18n();
   const resultRef = useRef<HTMLDivElement>(null);
   const [chartData, setChartData] = useState<{ sun_sign_name: string; moon_sign: string; ascendant: string } | null>(null);
   const [data, setData] = useState<RitualData | null>(null);
