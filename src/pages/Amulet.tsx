@@ -134,7 +134,7 @@ const Amulet = () => {
               </div>
               <h2 className="font-display text-2xl text-foreground font-semibold mb-4">{data.stone}</h2>
               <div className="bg-muted/30 p-5 rounded-xl border border-border mb-4">
-                <p className="text-muted-foreground text-xs font-body tracking-wide mb-2">Propiedades</p>
+                <p className="text-muted-foreground text-xs font-body tracking-wide mb-2">{t("amulet.properties")}</p>
                 <p className="text-foreground/80 text-base font-body leading-relaxed">{data.properties}</p>
               </div>
               <div className="bg-primary/5 p-5 rounded-xl border border-primary/15">
