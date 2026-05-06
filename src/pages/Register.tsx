@@ -196,10 +196,13 @@ const Register = () => {
           <button
             type="button"
             onClick={async () => {
-              const { error } = await lovable.auth.signInWithOAuth("apple", {
+              const result = await lovable.auth.signInWithOAuth("apple", {
                 redirect_uri: window.location.origin,
               });
-              if (error) toast.error("Error al registrarse con Apple");
+              if (result.error) {
+                const info = describeOAuthError("apple", result.error);
+                toast.error(info.message, { description: info.hint });
+              }
             }}
             className="w-full py-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center gap-3 text-foreground font-body text-sm"
           >
