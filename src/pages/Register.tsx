@@ -18,6 +18,11 @@ const Register = () => {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [acceptSensitiveData, setAcceptSensitiveData] = useState(false);
   const [acceptMarketing, setAcceptMarketing] = useState(false);
+  const [inAppWarning, setInAppWarning] = useState(false);
+
+  useEffect(() => {
+    setInAppWarning(isInAppBrowser());
+  }, []);
 
   if (!loading && user) return <Navigate to="/" replace />;
 
