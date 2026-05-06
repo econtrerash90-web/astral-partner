@@ -89,7 +89,7 @@ const Amulet = () => {
     return (
       <div className="min-h-screen relative flex items-center justify-center">
         <StarField />
-        <div className="relative z-10 animate-pulse text-muted-foreground font-body">Cargando...</div>
+        <div className="relative z-10 animate-pulse text-muted-foreground font-body">{t("common.loading")}</div>
       </div>
     );
   }
