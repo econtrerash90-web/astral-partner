@@ -42,7 +42,17 @@ const Login = () => {
         <h1 className="font-display text-2xl font-bold tracking-wide text-foreground mb-1">
           Astrelle
         </h1>
-        <p className="text-muted-foreground font-body text-sm mb-8">Tu universo astral</p>
+        <p className="text-muted-foreground font-body text-sm mb-6">Tu universo astral</p>
+
+        {inAppWarning && (
+          <div className="mb-5 p-3 rounded-xl border border-amber-400/30 bg-amber-500/10 text-left flex gap-2">
+            <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <p className="text-amber-100/90 text-xs font-body leading-relaxed">
+              Parece que abriste Astrelle desde una app (Instagram, TikTok…). El inicio con Google puede fallar aquí.
+              Abre el enlace en <strong>Safari</strong> o <strong>Chrome</strong>, o usa Apple.
+            </p>
+          </div>
+        )}
 
         <div className="space-y-3">
           <button
