@@ -77,7 +77,7 @@ const Amulet = () => {
           { onConflict: "user_id,type" }
         );
       } catch {
-        toast.error("No se pudo generar tu amuleto de hoy");
+        toast.error(t("amulet.error"));
       } finally {
         setGenerating(false);
       }
