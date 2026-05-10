@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { NatalChartData } from "@/lib/natal-chart-types";
 import { ZODIAC_GLYPHS } from "@/lib/natal-chart-types";
 import { getSignTrait, ELEMENT_FRIENDLY, PLANET_FRIENDLY, SUN_TRAITS, MOON_TRAITS, ASC_TRAITS, MC_TRAITS } from "@/lib/sign-descriptions";
-import { formatAIText } from "@/lib/format-ai-text";
+import { formatAIText, highlightAstralTerms } from "@/lib/format-ai-text";
 import ZodiacKnightCard from "@/components/ZodiacKnightCard";
 import ResultShareButtons from "@/components/ResultShareButtons";
 
@@ -466,7 +466,13 @@ const NatalChart = () => {
                                   className="overflow-hidden"
                                 >
                                   <div className="pt-3 px-1 text-foreground/80 text-sm font-body leading-relaxed">
-                                    {formatAIText(astralChart.analysis)}
+                                    {formatAIText(
+                                      highlightAstralTerms(astralChart.analysis, [
+                                        t("natal.termAsc"),
+                                        t("natal.termMc"),
+                                        t("natal.termMoon"),
+                                      ])
+                                    )}
                                   </div>
                                 </motion.div>
                               )}

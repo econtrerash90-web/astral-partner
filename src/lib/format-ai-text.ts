@@ -33,6 +33,26 @@ export function formatAIText(text: string): React.ReactNode[] {
   });
 }
 
+/**
+ * Wraps each occurrence of the given astral terms in **bold** markdown,
+ * so they get highlighted via formatAIText. Skips terms already inside **...**.
+ */
+export function highlightAstralTerms(text: string, terms: string[]): string {
+  if (!text || !terms?.length) return text;
+  // Sort by length desc to avoid partial matches (e.g. "Luna" before "Lunar").
+  const sorted = [...new Set(terms.filter(Boolean))].sort((a, b) => b.length - a.length);
+  let result = text;
+  for (const term of sorted) {
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    // Match the term as a whole word, case-insensitive, not already wrapped in **
+    const re = new RegExp(`(?<!\\*)\\b(${escaped})\\b(?!\\*)`, "gi");
+    result = result.replace(re, "**$1**");
+  }
+  // Collapse accidental nested bolds like ****Luna****
+  result = result.replace(/\*{4,}/g, "**");
+  return result;
+}
+
 /** Parse inline bold (**text**) and return React nodes */
 function formatInline(text: string): React.ReactNode[] {
   const parts: React.ReactNode[] = [];
