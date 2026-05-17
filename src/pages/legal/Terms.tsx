@@ -16,7 +16,7 @@ const Terms = () => (
       <div className="prose prose-invert prose-sm max-w-none space-y-6 text-foreground/80 font-body leading-relaxed">
         <section>
           <h2 className="font-display text-lg text-foreground tracking-wide">1. Aceptación de los Términos</h2>
-          <p>Al acceder y utilizar Astrelle ("la Aplicación"), operada por Elfawa AI Technologies ("nosotros"), aceptas estos Términos y Condiciones en su totalidad. Si no estás de acuerdo, debes abstenerte de usar la Aplicación.</p>
+          <p>Al acceder y utilizar Astrelle ("la Aplicación"), operada por <a href="https://elfawa-ai-technologies.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Elfawa AI Technologies</a> ("nosotros"), aceptas estos Términos y Condiciones en su totalidad. Si no estás de acuerdo, debes abstenerte de usar la Aplicación.</p>
         </section>
 
         <section>
