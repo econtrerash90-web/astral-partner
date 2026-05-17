@@ -16,7 +16,7 @@ const Terms = () => (
       <div className="prose prose-invert prose-sm max-w-none space-y-6 text-foreground/80 font-body leading-relaxed">
         <section>
           <h2 className="font-display text-lg text-foreground tracking-wide">1. Aceptación de los Términos</h2>
-          <p>Al acceder y utilizar Astrelle ("la Aplicación"), operada por Elfawa ("nosotros"), aceptas estos Términos y Condiciones en su totalidad. Si no estás de acuerdo, debes abstenerte de usar la Aplicación.</p>
+          <p>Al acceder y utilizar Astrelle ("la Aplicación"), operada por Elfawa AI Technologies ("nosotros"), aceptas estos Términos y Condiciones en su totalidad. Si no estás de acuerdo, debes abstenerte de usar la Aplicación.</p>
         </section>
 
         <section>
@@ -37,7 +37,7 @@ const Terms = () => (
 
         <section>
           <h2 className="font-display text-lg text-foreground tracking-wide">4. Propiedad Intelectual</h2>
-          <p>Todo el contenido de la Aplicación (diseño, textos, gráficos, logotipos, código fuente y análisis generados por IA) es propiedad de Elfawa o sus licenciantes. Queda prohibida su reproducción, distribución o modificación sin autorización expresa.</p>
+          <p>Todo el contenido de la Aplicación (diseño, textos, gráficos, logotipos, código fuente y análisis generados por IA) es propiedad de Elfawa AI Technologies o sus licenciantes. Queda prohibida su reproducción, distribución o modificación sin autorización expresa.</p>
         </section>
 
         <section>
@@ -80,7 +80,7 @@ const Terms = () => (
 
         <section>
           <h2 className="font-display text-lg text-foreground tracking-wide">9. Ley Aplicable</h2>
-          <p>Estos términos se rigen por las leyes aplicables en la jurisdicción donde opera Elfawa. Cualquier disputa será resuelta ante los tribunales competentes.</p>
+          <p>Estos términos se rigen por las leyes aplicables en la jurisdicción donde opera Elfawa AI Technologies. Cualquier disputa será resuelta ante los tribunales competentes.</p>
         </section>
 
         <section>

@@ -17,7 +17,7 @@ const Privacy = () => (
       <div className="prose prose-invert prose-sm max-w-none space-y-6 text-foreground/80 font-body leading-relaxed">
         <section>
           <h2 className="font-display text-lg text-foreground tracking-wide">I. Identidad del Responsable</h2>
-          <p><strong>Elfawa</strong> (en adelante "el Responsable"), con domicilio en México, es responsable del tratamiento de sus datos personales a través de la plataforma <strong>Astrelle Guide</strong> (en adelante "la Aplicación"), accesible en <a href="https://astrelle-guide.app" className="text-primary hover:underline">astrelle-guide.app</a>.</p>
+          <p><strong>Elfawa AI Technologies</strong> (en adelante "el Responsable"), con domicilio en México, es responsable del tratamiento de sus datos personales a través de la plataforma <strong>Astrelle Guide</strong> (en adelante "la Aplicación"), accesible en <a href="https://astrelle-guide.app" className="text-primary hover:underline">astrelle-guide.app</a>.</p>
           <p>Para cualquier comunicación relacionada con este aviso, puede contactarnos en: <a href="mailto:privacidad@astrelle-guide.app" className="text-primary hover:underline">privacidad@astrelle-guide.app</a></p>
         </section>
 
