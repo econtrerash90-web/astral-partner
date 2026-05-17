@@ -37,6 +37,7 @@ import Tarot from "./pages/Tarot";
 import Secret from "./pages/Secret";
 import Angels from "./pages/Angels";
 import Oracle from "./pages/Oracle";
+import Dreams from "./pages/Dreams";
 import Premium from "./pages/Premium";
 import SkyMap from "./pages/SkyMap";
 import NatalChart from "./pages/NatalChart";
@@ -84,6 +85,7 @@ const AppRoutes = () => {
         <Route path="/el-secreto" element={<ProtectedRoute><Secret /></ProtectedRoute>} />
         <Route path="/angeles" element={<ProtectedRoute><Angels /></ProtectedRoute>} />
         <Route path="/oraculo" element={<ProtectedRoute><Oracle /></ProtectedRoute>} />
+        <Route path="/suenos" element={<ProtectedRoute><Dreams /></ProtectedRoute>} />
         <Route path="/premium" element={<ProtectedRoute><Premium /></ProtectedRoute>} />
         <Route path="/sky-map" element={<ProtectedRoute><SkyMap /></ProtectedRoute>} />
         <Route path="/carta-natal" element={<ProtectedRoute><NatalChart /></ProtectedRoute>} />
