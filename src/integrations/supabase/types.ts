@@ -194,6 +194,7 @@ export type Database = {
         Row: {
           angels_count: number
           created_at: string
+          dream_count: number
           id: string
           limit_date: string
           oracle_count: number
@@ -204,6 +205,7 @@ export type Database = {
         Insert: {
           angels_count?: number
           created_at?: string
+          dream_count?: number
           id?: string
           limit_date: string
           oracle_count?: number
@@ -214,6 +216,7 @@ export type Database = {
         Update: {
           angels_count?: number
           created_at?: string
+          dream_count?: number
           id?: string
           limit_date?: string
           oracle_count?: number
@@ -246,6 +249,36 @@ export type Database = {
           id?: string
           reading_date?: string
           reading_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dream_entries: {
+        Row: {
+          created_at: string
+          dream_text: string
+          id: string
+          interpretation: string
+          mood: string | null
+          symbols: string[] | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dream_text: string
+          id?: string
+          interpretation: string
+          mood?: string | null
+          symbols?: string[] | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dream_text?: string
+          id?: string
+          interpretation?: string
+          mood?: string | null
+          symbols?: string[] | null
           user_id?: string
         }
         Relationships: []
