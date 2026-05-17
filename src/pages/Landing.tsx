@@ -158,7 +158,7 @@ const Landing = () => {
             <Link to="/descargo" className="text-muted-foreground/40 hover:text-muted-foreground/70 text-[11px] font-body transition-colors">Descargo</Link>
             <Link to="/reembolso" className="text-muted-foreground/40 hover:text-muted-foreground/70 text-[11px] font-body transition-colors">Reembolso</Link>
           </div>
-          <p className="text-muted-foreground/30 text-[11px] font-body">© 2026 Astrelle · Todos los derechos reservados</p>
+          <p className="text-muted-foreground/30 text-[11px] font-body">© 2026 Elfawa AI Technologies · Todos los derechos reservados</p>
         </div>
       </div>
     </div>
