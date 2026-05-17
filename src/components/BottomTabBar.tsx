@@ -12,6 +12,7 @@ import {
   Heart,
   Flame,
   Gem,
+  Moon,
   Trophy,
   X,
 } from "lucide-react";
@@ -32,6 +33,7 @@ const buildSpreadOptions = (t: (k: string) => string) => [
   { to: "/el-secreto", label: t("nav.secret"), icon: Crown },
   { to: "/angeles", label: t("nav.angels"), icon: Feather },
   { to: "/oraculo", label: t("nav.oracle"), icon: SquareAsterisk },
+  { to: "/suenos", label: "Sueños", icon: Moon },
   { to: "/ritual", label: t("nav.ritual"), icon: Flame },
   { to: "/amuleto", label: t("nav.amulet"), icon: Gem },
 ];
