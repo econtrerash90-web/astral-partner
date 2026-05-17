@@ -1,0 +1,2 @@
+REVOKE EXECUTE ON FUNCTION public.increment_reading_count(uuid, date, text) FROM authenticated, anon, PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.invalidate_user_ai_cache() FROM authenticated, anon, PUBLIC;
