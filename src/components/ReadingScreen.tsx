@@ -143,10 +143,8 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
         content: enriched,
       });
 
-      await supabase.rpc("increment_reading_count", {
-        p_user_id: user.id,
-        p_date: today,
-        p_type: type,
+      await supabase.functions.invoke("increment-reading", {
+        body: { type },
       });
 
       setUsedToday(prev => prev + 1);

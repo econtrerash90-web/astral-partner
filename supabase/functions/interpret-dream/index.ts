@@ -220,11 +220,25 @@ Devuelve este JSON exacto:
       });
     }
 
-    await supabase.rpc("increment_reading_count", {
-      p_user_id: userId,
-      p_date: today,
-      p_type: "dream",
-    });
+    // Increment dream_count directly via service role (no exposed RPC)
+    const admin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+    await admin
+      .from("daily_limits")
+      .upsert({ user_id: userId, limit_date: today }, { onConflict: "user_id,limit_date" });
+    const { data: limRow } = await admin
+      .from("daily_limits")
+      .select("dream_count")
+      .eq("user_id", userId)
+      .eq("limit_date", today)
+      .single();
+    await admin
+      .from("daily_limits")
+      .update({ dream_count: ((limRow as any)?.dream_count ?? 0) + 1 })
+      .eq("user_id", userId)
+      .eq("limit_date", today);
 
     return new Response(JSON.stringify({ dream: inserted }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -63,7 +63,7 @@ export const I18nProvider = ({ children }: { children: ReactNode }) => {
       await supabase.from("profiles").update({ preferred_language: lang } as any).eq("id", user.id);
       // Invalidate AI-generated cached content so it regenerates in the new language
       try {
-        await (supabase as any).rpc("invalidate_user_ai_cache");
+        await supabase.functions.invoke("invalidate-ai-cache");
       } catch (e) {
         console.warn("Language cache invalidation failed", e);
       }
