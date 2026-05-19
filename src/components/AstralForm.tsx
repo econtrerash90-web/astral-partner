@@ -212,10 +212,11 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                 <div className="mt-3 p-4 rounded-xl bg-muted/10 border border-border/15 space-y-4">
                   {/* Timezone select */}
                   <div>
-                    <label className="block text-xs font-body text-muted-foreground mb-1.5">
+                    <label htmlFor="astral-tz-select" className="block text-xs font-body text-muted-foreground mb-1.5">
                       {t("form.timezone")}
                     </label>
                     <select
+                      id="astral-tz-select"
                       value={tzOverride || resolvedTz}
                       onChange={(e) => setTzOverride(e.target.value)}
                       className="input-modern"
@@ -256,10 +257,11 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
 
                   {/* UTC override */}
                   <div>
-                    <label className="block text-xs font-body text-muted-foreground mb-1.5">
+                    <label htmlFor="astral-utc-input" className="block text-xs font-body text-muted-foreground mb-1.5">
                       {t("form.utcInstant")}
                     </label>
                     <input
+                      id="astral-utc-input"
                       type="text"
                       value={displayedUtc}
                       onChange={(e) => {

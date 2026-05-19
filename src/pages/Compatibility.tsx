@@ -373,20 +373,24 @@ const FieldInput = ({
   type?: string;
   placeholder?: string;
   max?: string;
-}) => (
-  <div>
-    <label className="text-foreground/80 font-body text-sm font-medium mb-2 block">
-      {label}
-    </label>
-    <input
-      type={type}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      max={max}
-      className="input-modern"
-    />
-  </div>
-);
+}) => {
+  const id = React.useId();
+  return (
+    <div>
+      <label htmlFor={id} className="text-foreground/80 font-body text-sm font-medium mb-2 block">
+        {label}
+      </label>
+      <input
+        id={id}
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        max={max}
+        className="input-modern"
+      />
+    </div>
+  );
+};
 
 export default Compatibility;
