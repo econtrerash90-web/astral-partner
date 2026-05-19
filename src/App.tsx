@@ -108,6 +108,7 @@ const AppRoutes = () => {
   return (
     <>
       <ScrollToTop />
+      <SeoManager />
       {user && <BetaBanner />}
       <div style={user ? { paddingBottom: "calc(4rem + env(safe-area-inset-bottom))" } : undefined}>
       <Routes>
