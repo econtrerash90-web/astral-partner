@@ -153,6 +153,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
         {fields.map((field, i) => {
           const optional = field.name === "birthTime";
           const hint = "hint" in field ? (field as { hint?: string }).hint : undefined;
+          const fieldId = `astral-field-${field.name}`;
           return (
             <motion.div
               key={field.name}
@@ -160,11 +161,12 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.06 }}
             >
-              <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
+              <label htmlFor={fieldId} className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
                 <field.icon className="w-3.5 h-3.5 text-primary" />
                 {field.label} {!optional && <span className="text-destructive">*</span>}
               </label>
               <input
+                id={fieldId}
                 type={field.type}
                 name={field.name}
                 value={formData[field.name as keyof InternalFormData]}
@@ -210,10 +212,11 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
                 <div className="mt-3 p-4 rounded-xl bg-muted/10 border border-border/15 space-y-4">
                   {/* Timezone select */}
                   <div>
-                    <label className="block text-xs font-body text-muted-foreground mb-1.5">
+                    <label htmlFor="astral-tz-select" className="block text-xs font-body text-muted-foreground mb-1.5">
                       {t("form.timezone")}
                     </label>
                     <select
+                      id="astral-tz-select"
                       value={tzOverride || resolvedTz}
                       onChange={(e) => setTzOverride(e.target.value)}
                       className="input-modern"
@@ -254,10 +257,11 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
 
                   {/* UTC override */}
                   <div>
-                    <label className="block text-xs font-body text-muted-foreground mb-1.5">
+                    <label htmlFor="astral-utc-input" className="block text-xs font-body text-muted-foreground mb-1.5">
                       {t("form.utcInstant")}
                     </label>
                     <input
+                      id="astral-utc-input"
                       type="text"
                       value={displayedUtc}
                       onChange={(e) => {

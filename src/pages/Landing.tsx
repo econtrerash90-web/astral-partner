@@ -35,7 +35,8 @@ const Landing = () => {
               </div>
 
               <h1 className="font-display text-6xl sm:text-7xl lg:text-8xl font-bold tracking-wide bg-clip-text text-transparent mb-6" style={{ backgroundImage: "var(--gradient-title)" }}>
-                ASTRELLE
+                <span aria-hidden="true">ASTRELLE</span>
+                <span className="sr-only">ASTRELLE — Tu guía personal basada en las estrellas</span>
               </h1>
 
               <p className="text-foreground/60 text-lg sm:text-xl font-body font-light max-w-xl mx-auto mb-10 leading-relaxed">
