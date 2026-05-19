@@ -153,6 +153,7 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
         {fields.map((field, i) => {
           const optional = field.name === "birthTime";
           const hint = "hint" in field ? (field as { hint?: string }).hint : undefined;
+          const fieldId = `astral-field-${field.name}`;
           return (
             <motion.div
               key={field.name}
@@ -160,11 +161,12 @@ const AstralForm = ({ onSubmit, isLoading }: AstralFormProps) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.06 }}
             >
-              <label className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
+              <label htmlFor={fieldId} className="flex items-center gap-2 text-foreground/80 font-body text-sm font-medium mb-2">
                 <field.icon className="w-3.5 h-3.5 text-primary" />
                 {field.label} {!optional && <span className="text-destructive">*</span>}
               </label>
               <input
+                id={fieldId}
                 type={field.type}
                 name={field.name}
                 value={formData[field.name as keyof InternalFormData]}

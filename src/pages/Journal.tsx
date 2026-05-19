@@ -361,7 +361,7 @@ const Journal = () => {
               {/* Entry History */}
               {entries.length > 0 && (
                 <div>
-                  <h3 className="font-display text-lg text-foreground tracking-wide mb-4">{t("journal.previous")}</h3>
+                  <h2 className="font-display text-lg text-foreground tracking-wide mb-4">{t("journal.previous")}</h2>
                   <div className="space-y-2">
                     {entries.map(entry => (
                       <EntryCard key={entry.id} entry={entry} expanded={expandedEntry === entry.id} onToggle={() => setExpandedEntry(expandedEntry === entry.id ? null : entry.id)} onDelete={deleteEntry} />
@@ -378,7 +378,7 @@ const Journal = () => {
               <div className="glass-card p-5 sm:p-6">
                 <div className="flex items-center justify-between mb-4">
                   <button onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1))} className="text-muted-foreground hover:text-foreground transition-colors text-sm">←</button>
-                  <h3 className="font-display text-lg text-foreground capitalize">{format(calendarMonth, "MMMM yyyy", { locale: es })}</h3>
+                  <h2 className="font-display text-lg text-foreground capitalize">{format(calendarMonth, "MMMM yyyy", { locale: es })}</h2>
                   <button onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1))} className="text-muted-foreground hover:text-foreground transition-colors text-sm">→</button>
                 </div>
 
@@ -448,7 +448,7 @@ const Journal = () => {
               {/* Mood Distribution */}
               {entries.some(e => e.mood) && (
                 <div className="glass-card p-5">
-                  <h3 className="font-display text-sm text-foreground tracking-wide mb-3">{t("journal.distribution")}</h3>
+                  <h2 className="font-display text-sm text-foreground tracking-wide mb-3">{t("journal.distribution")}</h2>
                   <div className="space-y-2">
                     {MOOD_OPTIONS.map(m => {
                       const count = entries.filter(e => e.mood === m.value).length;
@@ -472,7 +472,7 @@ const Journal = () => {
               {/* Top Tags */}
               {stats.topTags.length > 0 && (
                 <div className="glass-card p-5">
-                  <h3 className="font-display text-sm text-foreground tracking-wide mb-3">{t("journal.frequentTags")}</h3>
+                  <h2 className="font-display text-sm text-foreground tracking-wide mb-3">{t("journal.frequentTags")}</h2>
                   <div className="flex flex-wrap gap-2">
                     {stats.topTags.map(([tag, count]) => (
                       <Badge key={tag} variant="outline" className="text-xs">

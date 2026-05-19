@@ -232,7 +232,7 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
           className="flex items-center justify-between mb-6">
-          <button onClick={() => navigate("/")} className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/20 transition-all">
+          <button onClick={() => navigate("/")} aria-label="Volver al inicio" className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/20 transition-all">
             <ArrowLeft className="w-5 h-5" />
           </button>
           <h1 className="font-display text-lg font-bold tracking-wide bg-clip-text text-transparent" style={{ backgroundImage: "var(--gradient-title)" }}>
@@ -331,7 +331,7 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
                           <p className="section-label mb-1">
                             {card.position === "Pasado" ? "🌙" : card.position === "Presente" ? "✨" : "☀️"} {card.position}
                           </p>
-                          <h3 className="font-display text-base text-foreground font-semibold mb-2">{card.name}</h3>
+                          <h2 className="font-display text-base text-foreground font-semibold mb-2">{card.name}</h2>
                           <p className="text-foreground/70 text-sm font-body leading-relaxed">{card.meaning}</p>
                         </div>
                       </div>
@@ -569,7 +569,7 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
                 {zoomedCard.position && (
                   <p className="section-label mb-1">{zoomedCard.position}</p>
                 )}
-                <h3 className="font-display text-xl text-foreground font-semibold mb-2">{zoomedCard.name}</h3>
+                <h2 className="font-display text-xl text-foreground font-semibold mb-2">{zoomedCard.name}</h2>
                 {zoomedCard.meaning && (
                   <p className="text-foreground/75 text-sm font-body leading-relaxed">{zoomedCard.meaning}</p>
                 )}

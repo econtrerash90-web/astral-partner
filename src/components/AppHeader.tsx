@@ -97,6 +97,9 @@ const AppHeader = () => {
         <div className="relative" ref={userMenuRef}>
           <button
             onClick={() => setUserMenuOpen(!userMenuOpen)}
+            aria-label={t("header.myProfile")}
+            aria-expanded={userMenuOpen}
+            aria-haspopup="menu"
             className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-xl hover:bg-muted/50 transition-colors"
           >
             <div className="w-7 h-7 rounded-lg bg-primary/15 text-primary flex items-center justify-center text-xs font-bold font-display">
