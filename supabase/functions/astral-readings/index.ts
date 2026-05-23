@@ -251,6 +251,20 @@ serve(async (req) => {
     const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
     const parsed = JSON.parse(cleaned);
 
+    // Authoritative server-side increment of daily limit counter
+    try {
+      await adminClient
+        .from("daily_limits")
+        .upsert({ user_id: user.id, limit_date: today }, { onConflict: "user_id,limit_date" });
+      await adminClient
+        .from("daily_limits")
+        .update({ [countField]: used + 1 })
+        .eq("user_id", user.id)
+        .eq("limit_date", today);
+    } catch (incErr) {
+      console.error("astral-readings increment error:", incErr);
+    }
+
     return new Response(JSON.stringify(parsed), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
