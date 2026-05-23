@@ -18,6 +18,17 @@ const FIELDS = [
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // Require an admin shared secret to invoke this audit function.
+  // Configure AUDIT_ADMIN_SECRET in Supabase secrets and pass it as `X-Admin-Secret` header.
+  const adminSecret = Deno.env.get("AUDIT_ADMIN_SECRET");
+  const providedSecret = req.headers.get("x-admin-secret");
+  if (!adminSecret || !providedSecret || providedSecret !== adminSecret) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
