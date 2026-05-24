@@ -59,13 +59,14 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
+    const origin = Deno.env.get("APP_ORIGIN") ?? "https://astrelle-guide.app";
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [{ price: priceId, quantity: 1 }],
       mode: "subscription",
-      success_url: `${req.headers.get("origin")}/premium?success=true`,
-      cancel_url: `${req.headers.get("origin")}/premium?canceled=true`,
+      success_url: `${origin}/premium?success=true`,
+      cancel_url: `${origin}/premium?canceled=true`,
     });
 
     return new Response(JSON.stringify({ url: session.url }), {
