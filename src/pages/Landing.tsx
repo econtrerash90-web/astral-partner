@@ -3,7 +3,7 @@ import { motion, useInView, useMotionValue, useTransform, animate } from "framer
 import { useEffect, useRef, useState } from "react";
 import {
   Sparkles, Star, BookOpen, TrendingUp, Heart, Shield, ArrowRight,
-  Moon, Sun, ChevronRight, Check, Lock, Zap, Eye, Compass, Flame, Quote
+  Moon, Sun, Check, Lock, Eye, Quote
 } from "lucide-react";
 import StarField from "@/components/StarField";
 import { PageSeo } from "@/components/PageSeo";
