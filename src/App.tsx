@@ -24,6 +24,7 @@ const PAGE_META: Record<string, { title: string; description: string }> = {
   "/ritual": { title: "Ritual Diario | Astrelle", description: "Recibe un ritual personalizado con velas alineado a tu carta astral. Renueva tu energía todos los días con Astrelle." },
   "/amuleto": { title: "Amuleto de la Suerte | Astrelle", description: "Descubre tu piedra de poder de hoy alineada con tu carta astral. Propiedades, usos y significado personalizado." },
   "/tarot": { title: "Tarot | Astrelle", description: "Haz tu pregunta y recibe una lectura de tarot personalizada basada en tu energía astral. Una carta, una respuesta del universo." },
+  "/cruz-celta": { title: "Cruz Celta | Astrelle", description: "Lectura profunda de Cruz Celta con 10 cartas interpretadas según tu carta astral. Una mirada simbólica para reflexionar sobre tu momento de vida." },
   "/el-secreto": { title: "El Secreto | Astrelle", description: "Revela el secreto que el universo tiene para ti hoy. Una lectura mística personalizada basada en tu carta astral." },
   "/angeles": { title: "Mensaje de Ángeles | Astrelle", description: "Recibe un mensaje angelical personalizado para tu día. Guía espiritual basada en tu energía astral y posición de los astros." },
   "/oraculo": { title: "Oráculo | Astrelle", description: "Consulta el oráculo y recibe una predicción personalizada. Sabiduría ancestral aplicada a tu carta astral y momento actual." },
@@ -88,6 +89,7 @@ import Secret from "./pages/Secret";
 import Angels from "./pages/Angels";
 import Oracle from "./pages/Oracle";
 import Dreams from "./pages/Dreams";
+import CelticCross from "./pages/CelticCross";
 import Premium from "./pages/Premium";
 import SkyMap from "./pages/SkyMap";
 import NatalChart from "./pages/NatalChart";
@@ -133,6 +135,7 @@ const AppRoutes = () => {
         <Route path="/ritual" element={<ProtectedRoute><Ritual /></ProtectedRoute>} />
         <Route path="/amuleto" element={<ProtectedRoute><Amulet /></ProtectedRoute>} />
         <Route path="/tarot" element={<ProtectedRoute><Tarot /></ProtectedRoute>} />
+        <Route path="/cruz-celta" element={<ProtectedRoute><CelticCross /></ProtectedRoute>} />
         <Route path="/el-secreto" element={<ProtectedRoute><Secret /></ProtectedRoute>} />
         <Route path="/angeles" element={<ProtectedRoute><Angels /></ProtectedRoute>} />
         <Route path="/oraculo" element={<ProtectedRoute><Oracle /></ProtectedRoute>} />

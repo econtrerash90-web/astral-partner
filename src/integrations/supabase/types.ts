@@ -193,6 +193,7 @@ export type Database = {
       daily_limits: {
         Row: {
           angels_count: number
+          celtic_count: number
           created_at: string
           dream_count: number
           id: string
@@ -204,6 +205,7 @@ export type Database = {
         }
         Insert: {
           angels_count?: number
+          celtic_count?: number
           created_at?: string
           dream_count?: number
           id?: string
@@ -215,6 +217,7 @@ export type Database = {
         }
         Update: {
           angels_count?: number
+          celtic_count?: number
           created_at?: string
           dream_count?: number
           id?: string
