@@ -66,6 +66,11 @@ const Premium = () => {
 
   return (
     <div className="min-h-screen relative">
+      <PageSeo
+        title="Premium — Desbloquea tu potencial | Astrelle"
+        description="Accede a lecturas ilimitadas, carta astral completa, compatibilidad avanzada y más con Astrelle Premium+."
+        path="/premium"
+      />
       <StarField />
       <div className="relative z-10 px-4 py-8 sm:py-12 max-w-2xl mx-auto space-y-6">
 
