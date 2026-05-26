@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { normalizeBirthFields } from "@/lib/normalize-text";
 import elfawaLogo from "@/assets/elfawa-logo.png";
 import {
+import { PageSeo } from "@/components/PageSeo";
   Dialog,
   DialogContent,
   DialogDescription,
@@ -146,6 +147,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen relative">
+      <PageSeo title="Mi perfil | Astrelle" description="Gestiona tus datos de nacimiento, idioma y preferencias." path="/perfil" />
       <StarField />
       <div className="relative z-10 px-4 py-8 sm:py-12 max-w-2xl mx-auto">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">

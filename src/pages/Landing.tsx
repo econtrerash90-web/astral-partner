@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Sparkles, Star, BookOpen, TrendingUp, Heart, Shield, ArrowRight, Moon, Sun, ChevronRight } from "lucide-react";
 import StarField from "@/components/StarField";
+import { PageSeo } from "@/components/PageSeo";
 
 const features = [
   { icon: Star, title: "Tu Perfil Astral", desc: "Descubre qué dice tu fecha de nacimiento sobre tu personalidad y emociones.", color: "feature-icon", textColor: "text-primary" },
@@ -19,6 +20,7 @@ const testimonials = [
 const Landing = () => {
   return (
     <div className="min-h-screen relative">
+      <PageSeo title="Astrelle — Tu guía astral diaria" description="Carta natal, horóscopos, lecturas místicas y diario emocional en lenguaje cotidiano. Empieza gratis." path="/" />
       <StarField />
       <div className="relative z-10">
         {/* Hero */}

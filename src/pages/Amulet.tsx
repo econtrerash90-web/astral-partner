@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useI18n } from "@/hooks/useI18n";
 import { supabase } from "@/integrations/supabase/client";
 import ResultShareButtons from "@/components/ResultShareButtons";
+import { PageSeo } from "@/components/PageSeo";
 
 interface AmuletData {
   stone: string;
@@ -88,6 +89,7 @@ const Amulet = () => {
   if (pageLoading) {
     return (
       <div className="min-h-screen relative flex items-center justify-center">
+        <PageSeo title="Tu amuleto | Astrelle" description="Descubre tu amuleto personal según tu carta astral." path="/amuleto" />
         <StarField />
         <div className="relative z-10 animate-pulse text-muted-foreground font-body">{t("common.loading")}</div>
       </div>

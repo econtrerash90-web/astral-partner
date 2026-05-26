@@ -7,6 +7,7 @@ import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
 import { lovable } from "@/integrations/lovable/index";
 import { describeOAuthError, describeSignUpError, isInAppBrowser } from "@/lib/auth-errors";
+import { PageSeo } from "@/components/PageSeo";
 
 const Register = () => {
   const { signUp, user, loading } = useAuth();
@@ -54,6 +55,7 @@ const Register = () => {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center">
+      <PageSeo title="Crear cuenta | Astrelle" description="Regístrate gratis en Astrelle y descubre tu carta astral personalizada." path="/registro" />
       <StarField />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
