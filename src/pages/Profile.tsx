@@ -11,7 +11,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { normalizeBirthFields } from "@/lib/normalize-text";
 import elfawaLogo from "@/assets/elfawa-logo.png";
 import {
-import { PageSeo } from "@/components/PageSeo";
   Dialog,
   DialogContent,
   DialogDescription,
@@ -20,6 +19,7 @@ import { PageSeo } from "@/components/PageSeo";
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { PageSeo } from "@/components/PageSeo";
 
 interface ChartData {
   id: string;
