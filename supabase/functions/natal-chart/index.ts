@@ -221,7 +221,7 @@ Formato de respuesta (JSON, sin markdown):
 
   } catch (e) {
     console.error("natal-chart error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Error desconocido" }), {
+    return new Response(JSON.stringify({ error: "natal_chart_unavailable" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
