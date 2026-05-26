@@ -1,0 +1,17 @@
+# Astrelle
+
+> Astrelle es una guía de bienestar personal basada en tu carta astral: horóscopos diarios, lecturas místicas, diario emocional y mapa estelar interactivo. Lenguaje cotidiano, sin jerga técnica.
+
+## Pages
+
+- [Inicio](/): Presentación de Astrelle, qué incluye y cómo empezar.
+- [Crear cuenta](/registro): Regístrate para generar tu carta astral personalizada.
+- [Iniciar sesión](/login): Acceso a tu cuenta y panel astral.
+
+## Legal
+
+- [Términos](/terminos): Términos del servicio.
+- [Privacidad](/privacidad): Política de privacidad y manejo de datos.
+- [Cookies](/cookies): Uso de cookies.
+- [Descargo](/descargo): Aviso de entretenimiento.
+- [Reembolso](/reembolso): Política de reembolso de la suscripción Premium.
