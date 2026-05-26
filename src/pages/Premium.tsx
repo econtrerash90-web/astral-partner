@@ -12,7 +12,6 @@ const FaqItem = ({ q, a }: { q: string; a: string }) => {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-b border-border/20 last:border-b-0">
-      <PageSeo title="Astrelle Premium" description="Acceso ilimitado a lecturas, mapa estelar avanzado y análisis profundo. Suscripción mensual o anual." path="/premium" />
       <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between py-4 text-left gap-3">
         <span className="text-sm font-body font-medium text-foreground">{q}</span>
         <ChevronDown className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
