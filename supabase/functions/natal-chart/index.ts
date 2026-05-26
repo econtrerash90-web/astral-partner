@@ -38,7 +38,7 @@ serve(async (req) => {
     const __LANG_INSTRUCTION__ = languageInstruction(__LANG_CODE__);
 
     const body = await req.json();
-    const { birthDate, birthPlace, birthTimezone: tzOverride, birthUtc: utcOverride } = body;
+    let { birthDate, birthPlace, birthTimezone: tzOverride, birthUtc: utcOverride } = body;
     let { birthTime } = body;
     let timeEstimated = false;
 
@@ -48,8 +48,30 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    // Strict input validation
+    if (typeof birthDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(birthDate)) {
+      return new Response(JSON.stringify({ error: "Fecha inválida" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (typeof birthPlace !== "string" || birthPlace.length > 200) {
+      return new Response(JSON.stringify({ error: "Lugar inválido" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    birthPlace = birthPlace.replace(/[\r\n`]+/g, " ").trim();
+    if (tzOverride !== undefined && (typeof tzOverride !== "string" || !/^[A-Za-z_]+(?:\/[A-Za-z_\-+0-9]+){0,2}$/.test(tzOverride) || tzOverride.length > 64)) {
+      return new Response(JSON.stringify({ error: "Zona horaria inválida" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (utcOverride !== undefined && (typeof utcOverride !== "string" || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?Z$/.test(utcOverride))) {
+      return new Response(JSON.stringify({ error: "UTC inválido" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     // Default to noon when birth time is missing.
-    if (!birthTime || typeof birthTime !== "string" || !/^\d{2}:\d{2}/.test(birthTime)) {
+    if (!birthTime || typeof birthTime !== "string" || !/^\d{2}:\d{2}$/.test(birthTime)) {
       birthTime = "12:00";
       timeEstimated = true;
     }
