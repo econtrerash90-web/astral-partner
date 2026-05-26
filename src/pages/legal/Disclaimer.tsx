@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, AlertTriangle } from "lucide-react";
 import StarField from "@/components/StarField";
+import { PageSeo } from "@/components/PageSeo";
 
 const Disclaimer = () => (
   <div className="min-h-screen relative">
+    <PageSeo title="Descargo de responsabilidad | Astrelle" description="Aviso sobre el carácter de entretenimiento de Astrelle." path="/descargo" />
     <StarField />
     <div className="relative z-10 max-w-3xl mx-auto px-4 py-12">
       <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm mb-8 transition-colors">
