@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
 import StarField from "@/components/StarField";
 import AchievementsSection from "@/components/AchievementsSection";
+import { PageSeo } from "@/components/PageSeo";
 
 const Achievements = () => {
   return (
     <div className="min-h-screen relative">
+      <PageSeo title="Logros | Astrelle" description="Tus logros desbloqueados en tu camino astral." path="/logros" />
       <StarField />
       <div className="relative z-10 px-4 py-8 sm:py-12 max-w-2xl mx-auto">
         <motion.div

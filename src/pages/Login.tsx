@@ -7,6 +7,7 @@ import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
 import { lovable } from "@/integrations/lovable/index";
 import { describeOAuthError, isInAppBrowser } from "@/lib/auth-errors";
+import { PageSeo } from "@/components/PageSeo";
 
 const Login = () => {
   const { user, loading } = useAuth();
@@ -30,6 +31,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center">
+      <PageSeo title="Iniciar sesión | Astrelle" description="Accede a tu cuenta Astrelle para ver tu carta astral, horóscopo y lecturas diarias." path="/login" />
       <StarField />
       <motion.div
         initial={{ opacity: 0, y: 20 }}

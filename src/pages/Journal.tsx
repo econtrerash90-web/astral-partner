@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatAIText } from "@/lib/format-ai-text";
 import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/hooks/useI18n";
+import { PageSeo } from "@/components/PageSeo";
 
 interface ChartData {
   sun_sign_name: string;
@@ -218,6 +219,7 @@ const Journal = () => {
   if (!chartData) {
     return (
       <div className="min-h-screen relative">
+        <PageSeo title="Diario emocional | Astrelle" description="Escribe cómo te sientes con prompts guiados y análisis emocional personalizado." path="/diario" />
         <StarField />
         <div className="relative z-10 flex flex-col items-center justify-center min-h-[60vh] px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center glass-card p-8 max-w-md">

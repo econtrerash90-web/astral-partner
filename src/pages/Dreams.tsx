@@ -7,6 +7,7 @@ import StarField from "@/components/StarField";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { formatAIText } from "@/lib/format-ai-text";
+import { PageSeo } from "@/components/PageSeo";
 
 interface DreamEntry {
   id: string;
@@ -101,6 +102,7 @@ const Dreams = () => {
 
   return (
     <div className="min-h-screen relative">
+      <PageSeo title="Interpretación de sueños | Astrelle" description="Cuenta tu sueño y recibe una interpretación basada en tu carta astral." path="/suenos" />
       <StarField />
       <div className="relative z-10 max-w-2xl mx-auto px-4 pt-8 pb-24">
         <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm mb-6 transition-colors">

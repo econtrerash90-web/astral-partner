@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useSubscription, PLANS } from "@/hooks/useSubscription";
 import { useI18n } from "@/hooks/useI18n";
+import { PageSeo } from "@/components/PageSeo";
 
 const FaqItem = ({ q, a }: { q: string; a: string }) => {
   const [open, setOpen] = useState(false);

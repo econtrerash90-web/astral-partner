@@ -5,6 +5,7 @@ import { Mail, ArrowLeft, KeyRound } from "lucide-react";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
+import { PageSeo } from "@/components/PageSeo";
 
 const ForgotPassword = () => {
   const { resetPassword } = useAuth();
@@ -24,6 +25,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center">
+      <PageSeo title="Recuperar contraseña | Astrelle" description="Recupera el acceso a tu cuenta Astrelle." path="/recuperar-password" />
       <StarField />
       <motion.div
         initial={{ opacity: 0, y: 20 }}

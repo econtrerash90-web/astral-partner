@@ -11,6 +11,7 @@ import { getZodiacSign } from "@/lib/astral-calculations";
 import type { SignName } from "@/lib/compatibility";
 import { formatAIText } from "@/lib/format-ai-text";
 import { useI18n } from "@/hooks/useI18n";
+import { PageSeo } from "@/components/PageSeo";
 
 interface ChartRow {
   full_name: string;
@@ -122,6 +123,7 @@ const Compatibility = () => {
   if (loading) {
     return (
       <div className="min-h-screen relative flex items-center justify-center">
+        <PageSeo title="Compatibilidad astral | Astrelle" description="Descubre tu compatibilidad con otra persona: amor, amistad, trabajo o familia." path="/compatibilidad" />
         <StarField />
         <Loader2 className="w-6 h-6 text-primary animate-spin relative z-10" />
       </div>

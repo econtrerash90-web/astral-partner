@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import StarField from "@/components/StarField";
+import { PageSeo } from "@/components/PageSeo";
 
 const Terms = () => (
   <div className="min-h-screen relative">
+    <PageSeo title="Términos y condiciones | Astrelle" description="Términos del servicio de Astrelle." path="/terminos" />
     <StarField />
     <div className="relative z-10 max-w-3xl mx-auto px-4 py-12">
       <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm mb-8 transition-colors">

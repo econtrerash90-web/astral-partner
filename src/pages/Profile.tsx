@@ -19,6 +19,7 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { PageSeo } from "@/components/PageSeo";
 
 interface ChartData {
   id: string;
@@ -146,6 +147,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen relative">
+      <PageSeo title="Mi perfil | Astrelle" description="Gestiona tus datos de nacimiento, idioma y preferencias." path="/perfil" />
       <StarField />
       <div className="relative z-10 px-4 py-8 sm:py-12 max-w-2xl mx-auto">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">

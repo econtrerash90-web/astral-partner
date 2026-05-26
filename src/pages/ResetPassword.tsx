@@ -5,6 +5,7 @@ import { Lock, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import StarField from "@/components/StarField";
 import { useAuth } from "@/hooks/useAuth";
+import { PageSeo } from "@/components/PageSeo";
 
 const ResetPassword = () => {
   const { updatePassword } = useAuth();
@@ -36,6 +37,7 @@ const ResetPassword = () => {
   if (!isRecovery) {
     return (
       <div className="min-h-screen relative flex items-center justify-center">
+        <PageSeo title="Restablecer contraseña | Astrelle" description="Define una nueva contraseña para tu cuenta Astrelle." path="/reset-password" />
         <StarField />
         <div className="relative z-10 text-center">
           <p className="text-foreground font-body text-lg">Enlace inválido o expirado.</p>

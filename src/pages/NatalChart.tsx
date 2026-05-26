@@ -14,6 +14,7 @@ import { getSignTrait, ELEMENT_FRIENDLY, PLANET_FRIENDLY, SUN_TRAITS, MOON_TRAIT
 import { formatAIText, highlightAstralTerms } from "@/lib/format-ai-text";
 import ZodiacKnightCard from "@/components/ZodiacKnightCard";
 import ResultShareButtons from "@/components/ResultShareButtons";
+import { PageSeo } from "@/components/PageSeo";
 
 interface AstralChartRow {
   full_name: string;
@@ -171,6 +172,7 @@ const NatalChart = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
+      <PageSeo title="Tu carta natal | Astrelle" description="Explora tu carta natal interactiva con casas, planetas y aspectos en lenguaje cotidiano." path="/carta-natal" />
       <StarField />
       <div className="relative z-10 max-w-2xl mx-auto px-4 pt-20 pb-6">
         <motion.div

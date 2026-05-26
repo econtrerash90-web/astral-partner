@@ -13,6 +13,7 @@ import { useI18n } from "@/hooks/useI18n";
 import { supabase } from "@/integrations/supabase/client";
 import { generateSkyMap, getMoonPhaseDescription, type SkyMapData } from "@/services/skyMap";
 import { toast } from "sonner";
+import { PageSeo } from "@/components/PageSeo";
 
 interface ImportantDate {
   id: string;
@@ -139,6 +140,7 @@ const SkyMap = () => {
   if (!isPremium) {
     return (
       <div className="min-h-screen relative">
+        <PageSeo title="Mapa estelar | Astrelle" description="Mira el cielo de tu fecha de nacimiento o de cualquier momento especial." path="/sky-map" />
         <StarField />
         <div className="relative z-10 px-4 py-16 max-w-md mx-auto text-center">
           <div className="w-16 h-16 rounded-2xl bg-primary/15 flex items-center justify-center mx-auto mb-4">

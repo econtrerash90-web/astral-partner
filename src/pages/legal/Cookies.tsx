@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import StarField from "@/components/StarField";
+import { PageSeo } from "@/components/PageSeo";
 
 const Cookies = () => (
   <div className="min-h-screen relative">
+    <PageSeo title="Política de cookies | Astrelle" description="Cómo Astrelle utiliza cookies y tecnologías similares." path="/cookies" />
     <StarField />
     <div className="relative z-10 max-w-3xl mx-auto px-4 py-12">
       <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm mb-8 transition-colors">
