@@ -30,6 +30,7 @@ const buildMainTabs = (t: (k: string) => string) => [
 
 const buildSpreadOptions = (t: (k: string) => string) => [
   { to: "/tarot", label: t("nav.tarot"), icon: Layers },
+  { to: "/cruz-celta", label: "Cruz Celta", icon: SquareAsterisk },
   { to: "/el-secreto", label: t("nav.secret"), icon: Crown },
   { to: "/angeles", label: t("nav.angels"), icon: Feather },
   { to: "/oraculo", label: t("nav.oracle"), icon: SquareAsterisk },
