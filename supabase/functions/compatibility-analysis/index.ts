@@ -65,6 +65,39 @@ serve(async (req) => {
       });
     }
 
+    // Input validation to prevent prompt injection / abuse
+    const VALID_TYPES = ["amor", "laboral", "amistad", "paternidad", "especial"];
+    const sanitize = (v: unknown, max: number): string =>
+      typeof v === "string" ? v.replace(/[\r\n`]+/g, " ").slice(0, max).trim() : "";
+    if (!VALID_TYPES.includes(body.type)) {
+      return new Response(JSON.stringify({ error: "Tipo inválido" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(body.partnerBirthDate)) {
+      return new Response(JSON.stringify({ error: "Fecha inválida" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (body.partnerBirthTime && !/^\d{2}:\d{2}$/.test(body.partnerBirthTime)) {
+      return new Response(JSON.stringify({ error: "Hora inválida" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    body.userName = sanitize(body.userName, 100);
+    body.partnerName = sanitize(body.partnerName, 100);
+    body.partnerBirthPlace = sanitize(body.partnerBirthPlace, 200);
+    body.userSign = sanitize(body.userSign, 30);
+    body.userMoon = sanitize(body.userMoon, 30);
+    body.userAsc = sanitize(body.userAsc, 30);
+    body.partnerSign = sanitize(body.partnerSign, 30);
+    body.specialDetail = sanitize(body.specialDetail, 500);
+    if (!body.partnerName) {
+      return new Response(JSON.stringify({ error: "Nombre inválido" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
