@@ -150,11 +150,57 @@ const Index = () => {
             }
           } catch {}
         }
+
+        // Load cached current astro event
+        const { data: cachedEvent } = await supabase
+          .from("astral_extras" as any)
+          .select("result")
+          .eq("user_id", user.id)
+          .eq("type", "current_event")
+          .maybeSingle();
+        const cachedEventResult = (cachedEvent as any)?.result as AstroEvent | undefined;
+        const todayStr = new Date().toISOString().slice(0, 10);
+        if (cachedEventResult?.validUntil && cachedEventResult.validUntil >= todayStr) {
+          setAstroEvent(cachedEventResult);
+        }
       }
       setIsLoading(false);
     };
     load();
   }, [user]);
+
+  const generateAstroEvent = useCallback(async (force = false) => {
+    if (!user || !chartData) return;
+    setIsLoadingEvent(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("current-astro-event", {
+        body: {
+          sunSign: chartData.sun_sign_name,
+          moonSign: chartData.moon_sign,
+          ascendant: chartData.ascendant,
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      setAstroEvent(data as AstroEvent);
+      await supabase.from("astral_extras" as any).upsert(
+        { user_id: user.id, type: "current_event", result: data, created_at: new Date().toISOString() },
+        { onConflict: "user_id,type" }
+      );
+    } catch (e) {
+      console.error("Astro event error:", e);
+      if (force) toast.error(t("home.errorEvent"));
+    } finally {
+      setIsLoadingEvent(false);
+    }
+  }, [user, chartData, t]);
+
+  useEffect(() => {
+    if (chartData && !astroEvent && !isLoading && !isLoadingEvent) {
+      generateAstroEvent();
+    }
+  }, [chartData, astroEvent, isLoading]);
+
 
   const generateHoroscope = useCallback(async () => {
     if (!user || !chartData) return;
