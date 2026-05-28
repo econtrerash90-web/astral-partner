@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Sparkles, BookOpen, Hash, Flame, Gem, Sun, Moon, ArrowUp, Heart, Briefcase, Activity, Palette, Clock, AlertTriangle, ChevronRight, RefreshCw, Layers, Crown, Feather, SquareAsterisk, Lock, Map, ChevronDown, Share2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Star, Sparkles, BookOpen, Hash, Flame, Gem, Sun, Moon, ArrowUp, Heart, Briefcase, Activity, Palette, Clock, AlertTriangle, ChevronRight, RefreshCw, Layers, Crown, Feather, SquareAsterisk, Lock, Map, ChevronDown, Share2, Orbit, Feather as FeatherIcon, PenLine } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { es as esLocale, enUS, de as deLocale, pl as plLocale, pt as ptLocale } from "date-fns/locale";
 import { toast } from "sonner";
@@ -50,6 +50,18 @@ interface DailyHoroscope {
   journalPrompt: string;
 }
 
+interface AstroEvent {
+  eventName: string;
+  dateRange: string;
+  whatItIs: string;
+  howItAffectsYou: string;
+  reflectionPrompt: string;
+  tips: string[];
+  eventKind?: string;
+  validUntil?: string;
+  generatedAt?: string;
+}
+
 interface ChartRow {
   full_name: string;
   birth_date: string;
@@ -69,6 +81,7 @@ const Index = () => {
   const { user } = useAuth();
   const { t, language } = useI18n();
   const { isPremium } = useSubscription();
+  const navigate = useNavigate();
   const [chartData, setChartData] = useState<ChartRow | null>(null);
   const [horoscope, setHoroscope] = useState<DailyHoroscope | null>(null);
   const [luckyNumber, setLuckyNumber] = useState<number | null>(null);
@@ -77,7 +90,10 @@ const Index = () => {
   const [showForm, setShowForm] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [showShareCard, setShowShareCard] = useState(false);
+  const [astroEvent, setAstroEvent] = useState<AstroEvent | null>(null);
+  const [isLoadingEvent, setIsLoadingEvent] = useState(false);
   const shareCardRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     if (!user) return;
@@ -134,11 +150,57 @@ const Index = () => {
             }
           } catch {}
         }
+
+        // Load cached current astro event
+        const { data: cachedEvent } = await supabase
+          .from("astral_extras" as any)
+          .select("result")
+          .eq("user_id", user.id)
+          .eq("type", "current_event")
+          .maybeSingle();
+        const cachedEventResult = (cachedEvent as any)?.result as AstroEvent | undefined;
+        const todayStr = new Date().toISOString().slice(0, 10);
+        if (cachedEventResult?.validUntil && cachedEventResult.validUntil >= todayStr) {
+          setAstroEvent(cachedEventResult);
+        }
       }
       setIsLoading(false);
     };
     load();
   }, [user]);
+
+  const generateAstroEvent = useCallback(async (force = false) => {
+    if (!user || !chartData) return;
+    setIsLoadingEvent(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("current-astro-event", {
+        body: {
+          sunSign: chartData.sun_sign_name,
+          moonSign: chartData.moon_sign,
+          ascendant: chartData.ascendant,
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      setAstroEvent(data as AstroEvent);
+      await supabase.from("astral_extras" as any).upsert(
+        { user_id: user.id, type: "current_event", result: data, created_at: new Date().toISOString() },
+        { onConflict: "user_id,type" }
+      );
+    } catch (e) {
+      console.error("Astro event error:", e);
+      if (force) toast.error(t("home.errorEvent"));
+    } finally {
+      setIsLoadingEvent(false);
+    }
+  }, [user, chartData, t]);
+
+  useEffect(() => {
+    if (chartData && !astroEvent && !isLoading && !isLoadingEvent) {
+      generateAstroEvent();
+    }
+  }, [chartData, astroEvent, isLoading]);
+
 
   const generateHoroscope = useCallback(async () => {
     if (!user || !chartData) return;
@@ -363,6 +425,104 @@ const Index = () => {
             </div>
           ) : null}
         </motion.div>
+
+        {/* ─── Evento astrológico actual ─── */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.18 }}
+          className="glass-card p-5 sm:p-6"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="feature-icon-accent w-8 h-8 rounded-xl">
+                <Orbit className="w-4 h-4 text-accent" />
+              </div>
+              <h2 className="font-display text-base text-foreground tracking-wide">
+                {t("home.currentEvent.title")}
+              </h2>
+            </div>
+            <button
+              onClick={() => generateAstroEvent(true)}
+              disabled={isLoadingEvent}
+              className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+              title={t("home.regenerate")}
+            >
+              <RefreshCw className={`w-4 h-4 ${isLoadingEvent ? "animate-spin" : ""}`} />
+            </button>
+          </div>
+
+          {isLoadingEvent && !astroEvent ? (
+            <div className="flex items-center gap-3 py-8 justify-center">
+              <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+              <p className="text-muted-foreground text-sm font-body">{t("home.currentEvent.loading")}</p>
+            </div>
+          ) : astroEvent ? (
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-display text-lg text-foreground tracking-wide">
+                  {astroEvent.eventName}
+                </h3>
+                <p className="text-xs font-body text-muted-foreground mt-1 flex items-center gap-1.5">
+                  <Clock className="w-3 h-3" /> {astroEvent.dateRange}
+                </p>
+              </div>
+
+              <p className="text-foreground/85 text-sm font-body leading-relaxed">
+                {astroEvent.whatItIs}
+              </p>
+
+              <div className="glass-card-elevated p-4 border-accent/20">
+                <p className="text-xs font-body text-accent/90 uppercase tracking-wider mb-2">
+                  {t("home.currentEvent.howItAffects")}
+                </p>
+                <p className="text-sm font-body text-foreground/90 leading-relaxed">
+                  {astroEvent.howItAffectsYou}
+                </p>
+              </div>
+
+              {astroEvent.tips?.length > 0 && (
+                <div>
+                  <p className="text-xs font-body text-muted-foreground uppercase tracking-wider mb-2">
+                    {t("home.currentEvent.howToUse")}
+                  </p>
+                  <ul className="space-y-2">
+                    {astroEvent.tips.map((tip, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm font-body text-foreground/85">
+                        <Sparkles className="w-3.5 h-3.5 text-primary mt-1 shrink-0" />
+                        <span>{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {astroEvent.reflectionPrompt && (
+                <div className="glass-card-elevated p-4 border-primary/15 space-y-3">
+                  <p className="text-xs font-body text-primary/90 uppercase tracking-wider flex items-center gap-1.5">
+                    <FeatherIcon className="w-3 h-3" /> {t("home.currentEvent.reflection")}
+                  </p>
+                  <p className="text-sm font-body italic text-foreground/90 leading-relaxed">
+                    "{astroEvent.reflectionPrompt}"
+                  </p>
+                  <button
+                    onClick={() => {
+                      try {
+                        sessionStorage.setItem("astrelle_journal_prompt", astroEvent.reflectionPrompt);
+                      } catch {}
+                      navigate("/journal");
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary/15 hover:bg-primary/25 border border-primary/25 transition-all text-sm font-body text-foreground"
+                  >
+                    <PenLine className="w-4 h-4 text-primary" />
+                    {t("home.currentEvent.writeReflection")}
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : null}
+        </motion.div>
+
 
         {/* ─── Share My Day ─── */}
         {horoscope && (

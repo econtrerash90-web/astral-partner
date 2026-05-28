@@ -75,13 +75,24 @@ const Journal = () => {
       if (chartRes.data) setChartData(chartRes.data);
       if (entriesRes.data) setEntries(entriesRes.data as JournalEntry[]);
       const dailyPrompt = (readingRes.data?.content as any)?.journalPrompt;
-      if (dailyPrompt && typeof dailyPrompt === "string") {
-        setPrompts([dailyPrompt]);
+      let initialPrompts: string[] = [];
+      try {
+        const preset = sessionStorage.getItem("astrelle_journal_prompt");
+        if (preset) {
+          initialPrompts.push(preset);
+          sessionStorage.removeItem("astrelle_journal_prompt");
+        }
+      } catch {}
+      if (dailyPrompt && typeof dailyPrompt === "string" && !initialPrompts.includes(dailyPrompt)) {
+        initialPrompts.push(dailyPrompt);
       }
+      if (initialPrompts.length) setPrompts(initialPrompts);
       setLoading(false);
     };
     load();
   }, [user]);
+
+
 
   const generatePrompts = useCallback(async (data: ChartData) => {
     setIsLoadingPrompts(true);
