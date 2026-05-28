@@ -242,7 +242,8 @@ const Index = () => {
   }, [user, chartData]);
 
   useEffect(() => {
-    if (chartData && !horoscope && !isLoading && !isLoadingHoroscope) {
+    if (chartData && !horoscope && !isLoading && !isLoadingHoroscope && !horoscopeGenRef.current) {
+      horoscopeGenRef.current = true;
       generateHoroscope();
     }
   }, [chartData, horoscope, isLoading]);
