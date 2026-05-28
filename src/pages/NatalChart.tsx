@@ -41,7 +41,7 @@ const NatalChart = () => {
   const knightRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  const fetchAndCache = async (chart: AstralChartRow) => {
+  const fetchAndCache = async (chart: AstralChartRow, forceRegenerateAnalysis = false) => {
     try {
       const { data, error } = await supabase.functions.invoke("natal-chart", {
         body: {
@@ -64,8 +64,7 @@ const NatalChart = () => {
           { onConflict: "user_id,type" }
         );
 
-        // Sync moon_sign and ascendant in astral_charts with the precise
-        // Swiss Ephemeris values (DB trigger uses a simplified estimation).
+        // Sync precise Swiss Ephemeris signs into astral_charts once
         try {
           const moonPlanet = (data as NatalChartData).planets?.find((p) => p.name === "Luna");
           const ascSign = (data as NatalChartData).ascendant?.sign;
@@ -83,38 +82,30 @@ const NatalChart = () => {
           console.warn("Could not sync chart signs:", syncErr);
         }
 
-        // Regenerate the personality analysis using the precise Swiss Ephemeris
-        // signs (Sun/Moon/Ascendant + Midheaven) when missing or when stored
-        // signs differ from the precise ones.
-        try {
-          const cd = data as NatalChartData;
-          const sunPlanet = cd.planets?.find((p) => p.name === "Sol");
-          const moonPlanet = cd.planets?.find((p) => p.name === "Luna");
-          const sunSign = sunPlanet?.sign ?? chart.sun_sign_name;
-          const moonSign = moonPlanet?.sign ?? chart.moon_sign;
-          const ascSign = cd.ascendant?.sign ?? chart.ascendant;
-          const mcSign = cd.midheaven?.sign;
-
-          const needsRegen = !chart.analysis
-            || (sunPlanet && sunPlanet.sign !== chart.sun_sign_name)
-            || (moonPlanet && moonPlanet.sign !== chart.moon_sign)
-            || (cd.ascendant && cd.ascendant.sign !== chart.ascendant);
-
-          if (needsRegen) {
+        // Personality analysis: only regenerate when there is none stored or
+        // when the user manually forced a refresh. Avoids a second AI call on
+        // every first visit.
+        const needsAnalysis = forceRegenerateAnalysis || !chart.analysis;
+        if (needsAnalysis) {
+          try {
+            const cd = data as NatalChartData;
+            const sunPlanet = cd.planets?.find((p) => p.name === "Sol");
+            const moonPlanet = cd.planets?.find((p) => p.name === "Luna");
+            const sunSign = sunPlanet?.sign ?? chart.sun_sign_name;
+            const moonSign = moonPlanet?.sign ?? chart.moon_sign;
+            const ascSign = cd.ascendant?.sign ?? chart.ascendant;
+            const mcSign = cd.midheaven?.sign;
             const { data: ana } = await supabase.functions.invoke("astral-analysis", {
-              body: {
-                sunSign, moonSign, ascendant: ascSign, midheaven: mcSign,
-                birthPlace: chart.birth_place,
-              },
+              body: { sunSign, moonSign, ascendant: ascSign, midheaven: mcSign, birthPlace: chart.birth_place },
             });
             const newAnalysis = (ana as any)?.analysis;
             if (newAnalysis) {
               await supabase.from("astral_charts").update({ analysis: newAnalysis }).eq("user_id", user.id);
               setAstralChart((prev) => (prev ? { ...prev, analysis: newAnalysis } as AstralChartRow : prev));
             }
+          } catch (anaErr) {
+            console.warn("Could not regenerate analysis:", anaErr);
           }
-        } catch (anaErr) {
-          console.warn("Could not regenerate analysis:", anaErr);
         }
       }
       return true;
@@ -160,13 +151,16 @@ const NatalChart = () => {
     }
 
     if (!hasCached) {
-      const ok = await fetchAndCache(chart as AstralChartRow);
+      const ok = await fetchAndCache(chart as AstralChartRow, forceRegenerate);
       if (!ok) toast.error(t("natal.errorRetry"));
       setLoading(false);
     }
   };
 
+  const loadedRef = useRef(false);
   useEffect(() => {
+    if (!user || loadedRef.current) return;
+    loadedRef.current = true;
     loadChart();
   }, [user]);
 
