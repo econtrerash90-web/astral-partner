@@ -81,6 +81,7 @@ const Index = () => {
   const { user } = useAuth();
   const { t, language } = useI18n();
   const { isPremium } = useSubscription();
+  const navigate = useNavigate();
   const [chartData, setChartData] = useState<ChartRow | null>(null);
   const [horoscope, setHoroscope] = useState<DailyHoroscope | null>(null);
   const [luckyNumber, setLuckyNumber] = useState<number | null>(null);
@@ -89,7 +90,10 @@ const Index = () => {
   const [showForm, setShowForm] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [showShareCard, setShowShareCard] = useState(false);
+  const [astroEvent, setAstroEvent] = useState<AstroEvent | null>(null);
+  const [isLoadingEvent, setIsLoadingEvent] = useState(false);
   const shareCardRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     if (!user) return;
