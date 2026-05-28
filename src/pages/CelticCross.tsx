@@ -129,12 +129,12 @@ const CelticCross = () => {
       }
       setResult(data as CelticResult);
       const today = format(new Date(), "yyyy-MM-dd");
-      await supabase.from("daily_readings").insert({
+      await supabase.from("daily_readings").upsert({
         user_id: user.id,
         reading_date: today,
         reading_type: "celtic",
         content: data as any,
-      });
+      }, { onConflict: "user_id,reading_date,reading_type" });
       setUsedToday(n => n + 1);
     } catch (e) {
       console.error(e);
