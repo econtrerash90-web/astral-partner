@@ -100,7 +100,8 @@ const Index = () => {
 
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || loadedRef.current) return;
+    loadedRef.current = true;
     const load = async () => {
       const { data: chart } = await supabase
         .from("astral_charts")
@@ -123,9 +124,10 @@ const Index = () => {
 
         if (reading?.content) {
           setHoroscope(reading.content as unknown as DailyHoroscope);
+          horoscopeGenRef.current = true; // already have today's reading
         }
 
-        // Load cached lucky number
+        // Load cached lucky number (persistent until birth data changes)
         const { data: cached } = await supabase
           .from("astral_extras" as any)
           .select("result")
@@ -135,7 +137,7 @@ const Index = () => {
         if (cached && (cached as any).result?.number) {
           setLuckyNumber((cached as any).result.number);
         } else {
-          // Generate silently
+          // Generate silently — only when truly absent
           try {
             const { data: result } = await supabase.functions.invoke("astral-extras", {
               body: {
@@ -166,6 +168,7 @@ const Index = () => {
         const todayStr = new Date().toISOString().slice(0, 10);
         if (cachedEventResult?.validUntil && cachedEventResult.validUntil >= todayStr) {
           setAstroEvent(cachedEventResult);
+          eventGenRef.current = true; // cache still valid, skip auto-generate
         }
       }
       setIsLoading(false);
