@@ -203,7 +203,8 @@ const Index = () => {
   }, [user, chartData, t]);
 
   useEffect(() => {
-    if (chartData && !astroEvent && !isLoading && !isLoadingEvent) {
+    if (chartData && !astroEvent && !isLoading && !isLoadingEvent && !eventGenRef.current) {
+      eventGenRef.current = true;
       generateAstroEvent();
     }
   }, [chartData, astroEvent, isLoading]);
