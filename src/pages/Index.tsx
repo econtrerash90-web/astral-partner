@@ -50,6 +50,18 @@ interface DailyHoroscope {
   journalPrompt: string;
 }
 
+interface AstroEvent {
+  eventName: string;
+  dateRange: string;
+  whatItIs: string;
+  howItAffectsYou: string;
+  reflectionPrompt: string;
+  tips: string[];
+  eventKind?: string;
+  validUntil?: string;
+  generatedAt?: string;
+}
+
 interface ChartRow {
   full_name: string;
   birth_date: string;
