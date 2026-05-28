@@ -59,6 +59,13 @@ const es: Dict = {
   "home.errorHoroscope": "No se pudo generar tu lectura del día. Intenta de nuevo.",
   "home.profileReady": "¡Tu perfil personal está listo!",
   "home.errorProfile": "No pudimos crear tu perfil. Intenta de nuevo.",
+  "home.errorEvent": "No pudimos cargar el evento astrológico. Intenta de nuevo.",
+  "home.currentEvent.title": "Evento Astrológico Actual",
+  "home.currentEvent.loading": "Leyendo la energía del cielo...",
+  "home.currentEvent.howItAffects": "Cómo te afecta a ti",
+  "home.currentEvent.howToUse": "Cómo aprovecharlo",
+  "home.currentEvent.reflection": "Invitación a reflexionar",
+  "home.currentEvent.writeReflection": "Escribir en mi diario",
   // Astral Form
   "form.fullName": "Nombre Completo",
   "form.birthDate": "Fecha de Nacimiento",
