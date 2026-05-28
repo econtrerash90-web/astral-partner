@@ -151,13 +151,16 @@ const NatalChart = () => {
     }
 
     if (!hasCached) {
-      const ok = await fetchAndCache(chart as AstralChartRow);
+      const ok = await fetchAndCache(chart as AstralChartRow, forceRegenerate);
       if (!ok) toast.error(t("natal.errorRetry"));
       setLoading(false);
     }
   };
 
+  const loadedRef = useRef(false);
   useEffect(() => {
+    if (!user || loadedRef.current) return;
+    loadedRef.current = true;
     loadChart();
   }, [user]);
 
