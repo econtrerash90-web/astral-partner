@@ -93,6 +93,10 @@ const Index = () => {
   const [astroEvent, setAstroEvent] = useState<AstroEvent | null>(null);
   const [isLoadingEvent, setIsLoadingEvent] = useState(false);
   const shareCardRef = useRef<HTMLDivElement>(null);
+  const loadedRef = useRef(false);
+  const horoscopeGenRef = useRef(false);
+  const eventGenRef = useRef(false);
+
 
 
   useEffect(() => {
