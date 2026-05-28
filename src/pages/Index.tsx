@@ -426,6 +426,104 @@ const Index = () => {
           ) : null}
         </motion.div>
 
+        {/* ─── Evento astrológico actual ─── */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.18 }}
+          className="glass-card p-5 sm:p-6"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="feature-icon-accent w-8 h-8 rounded-xl">
+                <Orbit className="w-4 h-4 text-accent" />
+              </div>
+              <h2 className="font-display text-base text-foreground tracking-wide">
+                {t("home.currentEvent.title")}
+              </h2>
+            </div>
+            <button
+              onClick={() => generateAstroEvent(true)}
+              disabled={isLoadingEvent}
+              className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+              title={t("home.regenerate")}
+            >
+              <RefreshCw className={`w-4 h-4 ${isLoadingEvent ? "animate-spin" : ""}`} />
+            </button>
+          </div>
+
+          {isLoadingEvent && !astroEvent ? (
+            <div className="flex items-center gap-3 py-8 justify-center">
+              <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+              <p className="text-muted-foreground text-sm font-body">{t("home.currentEvent.loading")}</p>
+            </div>
+          ) : astroEvent ? (
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-display text-lg text-foreground tracking-wide">
+                  {astroEvent.eventName}
+                </h3>
+                <p className="text-xs font-body text-muted-foreground mt-1 flex items-center gap-1.5">
+                  <Clock className="w-3 h-3" /> {astroEvent.dateRange}
+                </p>
+              </div>
+
+              <p className="text-foreground/85 text-sm font-body leading-relaxed">
+                {astroEvent.whatItIs}
+              </p>
+
+              <div className="glass-card-elevated p-4 border-accent/20">
+                <p className="text-xs font-body text-accent/90 uppercase tracking-wider mb-2">
+                  {t("home.currentEvent.howItAffects")}
+                </p>
+                <p className="text-sm font-body text-foreground/90 leading-relaxed">
+                  {astroEvent.howItAffectsYou}
+                </p>
+              </div>
+
+              {astroEvent.tips?.length > 0 && (
+                <div>
+                  <p className="text-xs font-body text-muted-foreground uppercase tracking-wider mb-2">
+                    {t("home.currentEvent.howToUse")}
+                  </p>
+                  <ul className="space-y-2">
+                    {astroEvent.tips.map((tip, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm font-body text-foreground/85">
+                        <Sparkles className="w-3.5 h-3.5 text-primary mt-1 shrink-0" />
+                        <span>{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {astroEvent.reflectionPrompt && (
+                <div className="glass-card-elevated p-4 border-primary/15 space-y-3">
+                  <p className="text-xs font-body text-primary/90 uppercase tracking-wider flex items-center gap-1.5">
+                    <FeatherIcon className="w-3 h-3" /> {t("home.currentEvent.reflection")}
+                  </p>
+                  <p className="text-sm font-body italic text-foreground/90 leading-relaxed">
+                    "{astroEvent.reflectionPrompt}"
+                  </p>
+                  <button
+                    onClick={() => {
+                      try {
+                        sessionStorage.setItem("astrelle_journal_prompt", astroEvent.reflectionPrompt);
+                      } catch {}
+                      navigate("/journal");
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary/15 hover:bg-primary/25 border border-primary/25 transition-all text-sm font-body text-foreground"
+                  >
+                    <PenLine className="w-4 h-4 text-primary" />
+                    {t("home.currentEvent.writeReflection")}
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : null}
+        </motion.div>
+
+
         {/* ─── Share My Day ─── */}
         {horoscope && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="space-y-3">
