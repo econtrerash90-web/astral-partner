@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Sparkles, BookOpen, Hash, Flame, Gem, Sun, Moon, ArrowUp, Heart, Briefcase, Activity, Palette, Clock, AlertTriangle, ChevronRight, RefreshCw, Layers, Crown, Feather, SquareAsterisk, Lock, Map, ChevronDown, Share2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Star, Sparkles, BookOpen, Hash, Flame, Gem, Sun, Moon, ArrowUp, Heart, Briefcase, Activity, Palette, Clock, AlertTriangle, ChevronRight, RefreshCw, Layers, Crown, Feather, SquareAsterisk, Lock, Map, ChevronDown, Share2, Orbit, Feather as FeatherIcon, PenLine } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { es as esLocale, enUS, de as deLocale, pl as plLocale, pt as ptLocale } from "date-fns/locale";
 import { toast } from "sonner";
