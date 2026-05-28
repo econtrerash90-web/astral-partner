@@ -178,9 +178,10 @@ const CelticCross = () => {
         description="Recibe una lectura profunda de Cruz Celta con 10 cartas, interpretadas según tu carta astral. Una mirada simbólica para reflexionar sobre tu momento actual."
         path="/cruz-celta"
       />
-      <div className="min-h-screen relative" style={{ background: "linear-gradient(180deg, hsl(234 45% 6%) 0%, hsl(234 45% 4%) 100%)" }}>
+      <div className="min-h-screen relative overflow-x-hidden w-full max-w-full" style={{ background: "linear-gradient(180deg, hsl(234 45% 6%) 0%, hsl(234 45% 4%) 100%)" }}>
         <StarField />
-        <div className="relative z-10 px-4 py-6 sm:py-8 max-w-2xl mx-auto">
+        <div className="relative z-10 px-4 py-6 sm:py-8 max-w-2xl mx-auto w-full">
+
 
           {/* Header */}
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-6">
