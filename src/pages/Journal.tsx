@@ -92,9 +92,7 @@ const Journal = () => {
     load();
   }, [user]);
 
-    };
-    load();
-  }, [user]);
+
 
   const generatePrompts = useCallback(async (data: ChartData) => {
     setIsLoadingPrompts(true);
