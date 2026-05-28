@@ -136,12 +136,12 @@ const ReadingScreen = ({ type }: ReadingScreenProps) => {
       setResult(enriched);
 
       const today = format(new Date(), "yyyy-MM-dd");
-      await supabase.from("daily_readings").insert({
+      await supabase.from("daily_readings").upsert({
         user_id: user.id,
         reading_date: today,
         reading_type: type,
         content: enriched,
-      });
+      }, { onConflict: "user_id,reading_date,reading_type" });
 
       await supabase.functions.invoke("increment-reading", {
         body: { type },

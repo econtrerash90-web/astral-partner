@@ -129,12 +129,12 @@ const CelticCross = () => {
       }
       setResult(data as CelticResult);
       const today = format(new Date(), "yyyy-MM-dd");
-      await supabase.from("daily_readings").insert({
+      await supabase.from("daily_readings").upsert({
         user_id: user.id,
         reading_date: today,
         reading_type: "celtic",
         content: data as any,
-      });
+      }, { onConflict: "user_id,reading_date,reading_type" });
       setUsedToday(n => n + 1);
     } catch (e) {
       console.error(e);
@@ -178,9 +178,10 @@ const CelticCross = () => {
         description="Recibe una lectura profunda de Cruz Celta con 10 cartas, interpretadas según tu carta astral. Una mirada simbólica para reflexionar sobre tu momento actual."
         path="/cruz-celta"
       />
-      <div className="min-h-screen relative" style={{ background: "linear-gradient(180deg, hsl(234 45% 6%) 0%, hsl(234 45% 4%) 100%)" }}>
+      <div className="min-h-screen relative overflow-x-hidden w-full max-w-full" style={{ background: "linear-gradient(180deg, hsl(234 45% 6%) 0%, hsl(234 45% 4%) 100%)" }}>
         <StarField />
-        <div className="relative z-10 px-4 py-6 sm:py-8 max-w-2xl mx-auto">
+        <div className="relative z-10 px-4 py-6 sm:py-8 max-w-2xl mx-auto w-full">
+
 
           {/* Header */}
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-6">
@@ -315,7 +316,7 @@ const CelticCross = () => {
                 <motion.div
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                   onClick={() => setActiveCard(null)}
-                  className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center p-4 bg-black/70 backdrop-blur-md"
+                  className="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md overflow-y-auto"
                 >
                   <motion.div
                     initial={{ y: 40, scale: 0.97, opacity: 0 }}
