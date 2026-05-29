@@ -60,7 +60,7 @@ const CelticCross = () => {
   const [revealedUpTo, setRevealedUpTo] = useState(0);
   const [activeCard, setActiveCard] = useState<number | null>(null);
 
-  const limit = 1;
+  const limit = 2;
   const remaining = Math.max(0, limit - usedToday);
 
   useEffect(() => {
