@@ -140,8 +140,7 @@ serve(async (req) => {
       .eq("limit_date", today)
       .maybeSingle();
     const used = (limitRow?.celtic_count as number | undefined) ?? 0;
-    // For now treat all users as free tier — Stripe check skipped for speed
-    const limit = DAILY_LIMIT_FREE;
+    const limit = 2;
     if (used >= limit) {
       return new Response(
         JSON.stringify({ error: "limit_reached", message: "Has alcanzado tu límite diario para la Cruz Celta." }),
