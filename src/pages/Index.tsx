@@ -519,7 +519,7 @@ const Index = () => {
                       try {
                         sessionStorage.setItem("astrelle_journal_prompt", astroEvent.reflectionPrompt);
                       } catch {}
-                      navigate("/journal");
+                      navigate("/diario");
                     }}
                     className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary/15 hover:bg-primary/25 border border-primary/25 transition-all text-sm font-body text-foreground"
                   >
