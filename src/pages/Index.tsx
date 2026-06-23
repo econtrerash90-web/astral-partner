@@ -284,6 +284,13 @@ const Index = () => {
         analysis,
       } as any);
 
+      // Recompute Moon/Ascendant with Swiss Ephemeris (real astronomy)
+      try {
+        await supabase.functions.invoke("recalculate-chart", { body: {} });
+      } catch (e) {
+        console.error("recalculate-chart failed:", e);
+      }
+
       const { data: chart } = await supabase
         .from("astral_charts")
         .select("*")
