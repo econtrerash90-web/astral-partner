@@ -122,6 +122,11 @@ const Profile = () => {
     if (error) {
       toast.error(t("profile.errUpdate"));
     } else {
+      try {
+        await supabase.functions.invoke("recalculate-chart", { body: {} });
+      } catch (e) {
+        console.error("recalculate-chart failed:", e);
+      }
       toast.success(t("profile.updated"));
       setEditOpen(false);
       await loadData();
